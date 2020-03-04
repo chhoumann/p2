@@ -1,9 +1,9 @@
 # P2 - Recommender Systems
 
-*Project 2 source code for B2-24.*
+## Project 2 source code for B2-24.
 Implementation of a recommender system in a web application.
 
-*To run the server:*
+## To run the server:
 1. If first time: ```npm install```
 2. ```npm run start```
 3. Locally running on http://localhost:3000
