@@ -1,0 +1,28 @@
+{
+  "name": "p2_b2_24",
+  "version": "1.0.0",
+  "description": "P2 project for group B2-24. Topic: Recommender Systems.",
+  "main": "nodeServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chhoumann/p2.git"
+  },
+  "keywords": [
+    "recommender system"
+  ],
+  "author": "B2-24",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chhoumann/p2/issues"
+  },
+  "homepage": "https://github.com/chhoumann/p2#readme",
+  "dependencies": {
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2"
+  }
+}
