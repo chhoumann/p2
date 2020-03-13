@@ -15,11 +15,7 @@ Simply run ```npm install``` while inside the folder in order to retrieve the ne
 ### Installation
 NodeJS can be installed from their [official website](https://nodejs.org/en/download/). This will be used to install the remaining technologies.
 
-Jest: ```npm install --save-dev jest```
-
-TypeScript: ```npm install -g TypeScript```
-
-Then, using ```npm install``` from inside the main directory for this application, the remaining packages will be installed.
+Using ```npm install``` from inside the main directory for this application, the remaining packages will be installed.
 
 ### Compiling TypeScript
 Use ```tsc filename.ts``` to compile a TypeScript file.
