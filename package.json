@@ -23,6 +23,7 @@
   "dependencies": {
     "ejs": "^3.0.1",
     "express": "^4.17.1",
+    "neat-csv": "^5.2.0",
     "nodemon": "^2.0.2",
     "typescript": "^3.8.3"
   },
