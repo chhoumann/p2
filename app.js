@@ -16,6 +16,7 @@ app.get('/', (req, res) => {
 
 // Builds database.
 // Horrible on memory but confines our project to JS only (no use of external DBs).
+// Remember that it is the pointers to the objects which are copied, not the objects themselves.
 setTimeout(() => {
     db.UserDB = loadData.buildUserDB()
     db.movies = loadData.movies;
