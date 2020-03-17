@@ -26,7 +26,7 @@ Simply run ```npm test``` to test.
 ### To run the server:
 1. ```npm install```
 2. ```npm start```
-3. You can now find the web application locally running on http://localhost:3000
+3. You can now find the web application locally running on http://localhost:8000
 
 Due to Nodemon (NPM package) the server will automatically refresh with new updates in the files.
 This is done to make the development & testing process easier.

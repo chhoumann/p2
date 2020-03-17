@@ -25,4 +25,10 @@ setTimeout(() => {
 }, 500); // Arbitrary interval. The above takes time to load depending on machine speed -
          // this is to accommodate that.
 
-server = app.listen(3000);
+
+let port = process.env.PORT;
+if (port == null || port == "") {
+    port = 8000;
+}
+
+server = app.listen(8000);
