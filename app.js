@@ -31,4 +31,4 @@ if (port == null || port == "") {
     port = 8000;
 }
 
-server = app.listen(8000);
+server = app.listen(port);
