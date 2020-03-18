@@ -3,10 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="./scripts/add-form.js" defer></script>
     <title>Movie reccomendation</title>
 </head>
 <body>
-    <h1>Add your frinds to the group: </h1>
-    <nav>first member</nav>
+    <div>
+        <fieldset>
+            <h1>Add your frinds to the group: </h1>
+            <form id="groupMember" action="../assets/scripts/create-movie-rec.js" method="POST">
+                <label id="ID-box">Enter ID</label><br>
+                <input type="text" name="ID"><br>
+                <label id="ID-box">Enter ID</label><br>
+                <input type="text" name="ID"><br>
+                <button type="button" id="add-person">  ➕  </button><br>
+                <input type="submit" value="submit" id="a-form">
+            </form>
+        </fieldset>
+    </div>
 </body>
 </html>
