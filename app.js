@@ -13,6 +13,9 @@ app.use(express.static('assets'));
 app.get('/', (req, res) => {
     res.render('test');
 });
+app.get('/Profile', (req, res) => {
+    res.render('Profile');
+  });
 
 // Builds database.
 // Horrible on memory but confines our project to JS only (no use of external DBs).
