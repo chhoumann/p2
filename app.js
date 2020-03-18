@@ -14,6 +14,9 @@ app.get('/', (req, res) => {
     res.render('test');
 
 });
+app.get('/Profile', (req, res) => {
+    res.render('Profile');
+  });
 
 app.get('/movie-rec', (req, res) => {
     res.render('movie-rec');
