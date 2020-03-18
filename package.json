@@ -4,7 +4,7 @@
   "description": "P2 project for group B2-24. Topic: Recommender Systems.",
   "main": "nodeServer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon app"
   },
   "repository": {
@@ -23,6 +23,11 @@
   "dependencies": {
     "ejs": "^3.0.1",
     "express": "^4.17.1",
-    "nodemon": "^2.0.2"
+    "neat-csv": "^5.2.0",
+    "nodemon": "^2.0.2",
+    "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "jest": "^25.1.0"
   }
 }
