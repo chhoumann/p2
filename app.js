@@ -11,7 +11,7 @@ app.use(express.static('assets'));
 
 // Routes
 app.get('/', (req, res) => {
-    res.render('index');
+    res.render('test');
 });
 
 // Builds database.
