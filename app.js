@@ -12,8 +12,16 @@ app.use(express.static('assets'));
 // Routes
 app.get('/', (req, res) => {
     res.render('test');
-});
 
+});
+app.get('/Profile', (req, res) => {
+    res.render('Profile');
+  });
+
+app.get('/movie-rec', (req, res) => {
+    res.render('movie-rec');
+
+});
 // Builds database.
 // Horrible on memory but confines our project to JS only (no use of external DBs).
 // Remember that it is the pointers to the objects which are copied, not the objects themselves.
