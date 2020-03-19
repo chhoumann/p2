@@ -8,8 +8,46 @@
     <title>Profile creation</title>
 </head>
 <body>
-    <h1 id="header">Profile</h1>
-    <form></form>
-    <p>Lorem Ipsum</p>
+    <h1 id = "header">Profile creation</h1>
+    <form id="account" action="./scripts/create-account.js" method="POST">  
+        <label for="uname">Username:</label><br>
+        <input type="text" id="uname" name="pword"><br> <br>
+        <label for="pword">Password:</label><br>
+        <input type="password" id="pword" name="pword"> <br> 
+        <input type="checkbox" onclick="myFunction()">Show Password <br> <br>
+        <input type="radio" id="male" name="gender" value="male">
+        <label for="male">Male</label><br>
+        <input type="radio" id="female" name="gender" value="female">
+        <label for="female">Female</label><br>
+        <input type="radio" id="other" name="gender" value="other">
+        <label for="other">Other</label>
+        <p></p>
+        <input id="button" type="submit"></button>
+</form>
 </body>
 </html>
+
+<style> 
+#uname {
+    margin-top: 8px;
+    width: 200px;
+}
+#pword {
+    margin-top: 8px;
+    width: 200px;
+}
+#button {
+    margin-top: 10px;
+    width: 120px;
+}
+</style>
+
+<script> function myFunction() {
+    let x = document.getElementById("pword");
+    if (x.type === "password") {
+      x.type = "text";
+    } else {
+      x.type = "password";
+    }
+  }
+</script>
