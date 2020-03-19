@@ -16,9 +16,13 @@ app.get('/', (req, res) => {
     res.render('test');
 
 });
-app.get('/Profile', (req, res) => {
-    res.render('Profile');
+app.get('/profile', (req, res) => {
+    res.render('profile');
   });
+
+app.get('/connect-with-friends', (req, res) => {
+  res.render('connect-with-friends');
+});
 
 app.get('/movie-rec', (req, res) => {
     res.render('movie-rec');
