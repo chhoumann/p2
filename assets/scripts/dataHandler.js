@@ -39,10 +39,9 @@ module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB() {
 // Gets ratings for movie depending on given movieId.
 module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id) {
     let results = [];
-    let tempArray;
-    loadData.getRatingData().then(res => tempArray = res);
+    let tempArray = await loadData.getRatingData();
     tempArray.forEach(rating => {
-        if (rating.movieId === id) { results.push(rating)};
+        if (parseFloat(rating.movieId) === id) { results.push(rating)};
     });
     return results;
 }

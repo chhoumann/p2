@@ -1,5 +1,4 @@
 // Til test i browser for at se om main.js tages i brug af index.
-console.log("Test");
 
 module.exports = {};
 
