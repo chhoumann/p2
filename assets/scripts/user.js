@@ -10,6 +10,9 @@ class User {
     }
 }
 
+// Our user of the site
+let ourUser = new User(0000);
+
 // Testing changing user attributes
 let user1 = new User(0001);
 console.log("User ID:" + user1.userID);
