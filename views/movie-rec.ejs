@@ -10,14 +10,15 @@
     <div>
         <fieldset>
             <h1>Add your frinds to the group: </h1>
-            <form id="groupMember" action="../assets/scripts/create-movie-rec.js" method="POST">
+            <form id="groupMember" action="../assets/scripts/create-movie-rec.js" method="GET">
                 <label id="ID-box">Enter ID</label><br>
                 <input type="text" name="ID"><br>
                 <label id="ID-box">Enter ID</label><br>
                 <input type="text" name="ID"><br>
-                <button type="button" id="add-person">  ➕  </button><br>
-                <input type="submit" value="submit" id="a-form">
+                <button type="button" id="addPerson">  ➕  </button><br>
+                <!-- <input type="submit" value="submit" id="a-form">     -->
             </form>
+            <button type="submit" id="submitForm" value="submit" form="groupMember">See reccomendation</button><br>
         </fieldset>
     </div>
 </body>
