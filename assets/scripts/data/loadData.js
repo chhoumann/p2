@@ -3,7 +3,7 @@
     To use, one should include a setTimeout() such that the functions can load the
         files and parse the data, otherwise it will fail.
 */
-const neatCsv = require ('neat-csv'); // Used to parse CSV files.
+const neatCsv = require('neat-csv'); // Used to parse CSV files.
 const fs = require('fs').promises; // Used to read files.
 
 // PATHS & USER-COUNT
