@@ -1,7 +1,8 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <script src="scripts/updateProfile.js" defer></script>
+    <link href="/assets/stylesheets/style.css" type="text/css">
     <link href="style/stylesheet.css" type="text/css" rel="stylesheet">
     <meta http-equiv="Content-Type" const="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,9 +10,9 @@
 </head>
 <body>
     <h1 id = "header">Profile creation</h1>
-    <form id="account" action="./scripts/create-account.js" method="POST">  
+    <form id="account" action="/something" method="POST">  
         <label for="uname">Username:</label><br>
-        <input type="text" id="uname" name="pword"><br> <br>
+        <input type="text" id="uname" name="uname"><br> <br>
         <label for="pword">Password:</label><br>
         <input type="password" id="pword" name="pword"> <br> 
         <input type="checkbox" onclick="myFunction()">Show Password <br> <br>
@@ -22,32 +23,22 @@
         <input type="radio" id="other" name="gender" value="other">
         <label for="other">Other</label>
         <p></p>
-        <input id="button" type="submit"></button>
+        <input id="button" type="submit">
 </form>
 </body>
 </html>
 
-<style> 
-#uname {
-    margin-top: 8px;
-    width: 200px;
-}
-#pword {
-    margin-top: 8px;
-    width: 200px;
-}
-#button {
-    margin-top: 10px;
-    width: 120px;
-}
-</style>
 
-<script> function myFunction() {
-    let x = document.getElementById("pword");
-    if (x.type === "password") {
-      x.type = "text";
-    } else {
-      x.type = "password";
-    }
+<script> 
+    function myFunction() {
+        let x = document.getElementById("pword");
+        if (x.type === "password") {
+        x.type = "text";
+        } else {
+        x.type = "password";
+        }
   }
+
 </script>
+
+

@@ -2,7 +2,6 @@ let express = require('express');
 let app = express();  
 let bodyParser = require('body-parser');  
 // Create application/x-www-form-urlencoded parser  
-
 let urlencodedParser = bodyParser.urlencoded({ extended: false })  
 app.use(express.static('public'));  
 app.get('/scripts/Profile.ejs', function (req, res) {  

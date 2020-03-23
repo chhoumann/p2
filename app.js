@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 const arrayOfUserIds = [3, 5, 4, 2, 1]; // Used for testing. Users 1-5 are test-users.
 let testGroup;
+let bodyParser = require('body-parser'); 
+let urlencodedParser = bodyParser.urlencoded({ extended: false })  
 let db = {};
 
 // Setting the template engine (ejs)
@@ -28,6 +30,35 @@ app.get('/movie-rec', (req, res) => {
     res.render('movie-rec');
 
 });
+app.get('/createAccount', (req, res) => {
+    res.render('createAccount');
+
+});
+
+
+
+// Create application/x-www-form-urlencoded parser  
+/* app.use(express.static('public')); // ! Den her er ikke nødvendig. Vi bruger 'assets', ikke 'public'. */  
+
+/* app.get('/scripts/Profile.ejs', function (req, res) {  
+   res.sendFile( "/scripts" + "/" + "Profile.ejs" );  
+}) // ! Ved ikke helt hvad det her er?  */
+
+// Dette sender informationerne fra formen fra http://localhost:8000/Profile til http://localhost:8000/something
+// Der er redirect efter submit, men dette logger desuden requesten til consollen samt skriver det på '/something'.
+// TODO: Der burde tilføjes funktionalitet som skriver alt dette til en json fil (vores database over brugere) og tjekker duplicates.
+// TODO: Desuden også validering for at se om 1. duplicates og 2. der er indtastet gyldigt input. Men 2. skal ikke ske på server-siden pt.
+app.post('/something', urlencodedParser, function (req, res) {  
+   // Prepare output in JSON format  
+   response = {  
+       uname:req.body.uname,  // Overvej at bruge de fulde ord frem for forkortelser, selv om det er lettere
+       pword:req.body.pword,
+       gender:req.body.gender  
+   };  
+   console.log(response);
+   res.end(JSON.stringify(response)); // Her skrives til '/something'  
+})  
+
 
 // Builds database.
 // Horrible on memory but confines our project to JS only (no use of external DBs).
