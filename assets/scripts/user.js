@@ -6,6 +6,7 @@ class User {
         this.userID = userID;
         this.userName = "Your name";
         this.friends = [];  // Contains ID's of friends.
+        // this.moviePreferences = []; // ? Suggestion: array of objects containing movie IDs and ratings of each movie.
     }
     changeUserName(newUserName) {
         this.userName = newUserName;
