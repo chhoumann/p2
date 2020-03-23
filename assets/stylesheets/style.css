@@ -1,3 +1,17 @@
 #header {
     color: tomato;
 }
+
+#uname {
+    margin-top: 8px;
+    width: 200px;
+}
+#pword {
+    margin-top: 8px;
+    width: 200px;
+}
+#button {
+    margin-top: 10px;
+    width: 120px;
+}
+
