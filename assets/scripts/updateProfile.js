@@ -1,4 +1,3 @@
-require('./scripts/Profile');
 function myFunction() {
         let x = document.getElementById("pword");
         if (x.type === "password") {

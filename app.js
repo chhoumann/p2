@@ -30,20 +30,16 @@ app.get('/movie-rec', (req, res) => {
     res.render('movie-rec');
 
 });
+
+app.get('/updateProfile', (req, res) => {
+    res.render('updateProfile');
+
+});
+
 app.get('/createAccount', (req, res) => {
     res.render('createAccount');
 
 });
-
-
-
-// Create application/x-www-form-urlencoded parser  
-/* app.use(express.static('public')); // ! Den her er ikke nødvendig. Vi bruger 'assets', ikke 'public'. */  
-
-/* app.get('/scripts/Profile.ejs', function (req, res) {  
-   res.sendFile( "/scripts" + "/" + "Profile.ejs" );  
-}) // ! Ved ikke helt hvad det her er?  */
-
 // Dette sender informationerne fra formen fra http://localhost:8000/Profile til http://localhost:8000/something
 // Der er redirect efter submit, men dette logger desuden requesten til consollen samt skriver det på '/something'.
 // TODO: Der burde tilføjes funktionalitet som skriver alt dette til en json fil (vores database over brugere) og tjekker duplicates.
