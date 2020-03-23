@@ -1,4 +1,4 @@
-const dataHandler = require('./assets/scripts/dataHandler');
+const dataHandler = require('./assets/scripts/data/dataHandler');
 const express = require('express');
 const app = express();
 const arrayOfUserIds = [3, 5, 4, 2, 1]; // Used for testing. Users 1-5 are test-users.
