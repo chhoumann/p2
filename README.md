@@ -4,12 +4,13 @@
 Implementation of a recommender system in a web application.
 
 ## Notes
-We have chosen to use **TypeScript** for our JS code.
+We have chosen to use **ES6** for our JS code.
 For testing our code, we have chosen **Jest**.
 Furthermore, we use **NodeJS** (and *Express*) for our backend.
 Any other choices will be noted here in the future.
 
-Due to a multitude of packages and npm being available, *'node_modules'* has been included in *.git_ignore*.
+Due to a multitude of packages used, and npm being available, *'node_modules'* has been included in *.git_ignore*.
+
 Simply run ```npm install``` while inside the folder in order to retrieve the necessary packages (also see *Installation* below).
 
 ### Installation
@@ -17,14 +18,14 @@ NodeJS can be installed from their [official website](https://nodejs.org/en/down
 
 Using ```npm install``` from inside the main directory for this application, the remaining packages will be installed.
 
-### Compiling TypeScript
-Use ```tsc filename.ts``` to compile a TypeScript file.
+<!-- ### Compiling TypeScript
+Use ```tsc filename.ts``` to compile a TypeScript file. -->
 
 ### Testing with Jest
 Simply run ```npm test``` to test.
 
-### To run the server:
-1. ```npm install```
+### Running the server
+1. If not done already: ```npm install```
 2. ```npm start```
 3. You can now find the web application locally running on http://localhost:8000
 
