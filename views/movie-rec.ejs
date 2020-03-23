@@ -4,17 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="./scripts/add-form.js" defer></script>
+    <script type="text/javascript" src="./scripts/create-movie-rec.js" defer></script>
     <title>Movie reccomendation</title>
 </head>
 <body>
     <div>
         <fieldset>
-            <h1>Add your frinds to the group: </h1>
-            <form id="groupMember" action="../assets/scripts/create-movie-rec.js" method="GET">
+            <h1>Add your friends to the group: </h1>
+            <form id="groupMember" onsubmit="return getMovieRec(event)">
                 <label id="ID-box">Enter ID</label><br>
-                <input type="text" name="ID"><br>
+                <input type="text" id="ID-box-1" name="ID"><br>
                 <label id="ID-box">Enter ID</label><br>
-                <input type="text" name="ID"><br>
+                <input type="text" id="ID-box-2" name="ID"><br>
                 <button type="button" id="addPerson">  ➕  </button><br>
                 <!-- <input type="submit" value="submit" id="a-form">     -->
             </form>

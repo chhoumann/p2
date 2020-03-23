@@ -4,42 +4,33 @@
 // Logic to accept a friend request(?)
 
 
-
 let User = require('./user');
-let someUser = new User.User(67);
-
-// Global array of added friends, containing userID's
-let addedFriends = [];
-
-// The import is successful and can print data about this object
-console.log(someUser);
-someUser.changeUserName("Bob");
-console.log(someUser);
+let ourUser = User.createUser;
 
 // A function for alerting the friend was added
-function addToFriendList() {
-    let friendID = document.getElementById("fname").value;
-    friendID = parseInt(friendID);
+function addToFriendList(friendID) {
     if (isValidID(friendID)){
-        alert("Friend with ID: " + document.getElementById("fname").value + " was added to your friends list");
-        addedFriends.push(friendID); // FIXME: Later this should be added to our user object's array
+        // alert("Friend with ID: " + friendID + " was added to your friends list");
+        console.log("Friend with ID: " + friendID + " was added to your friends list");
+        ourUser.friends.push(friendID);
     }
     else {
-        alert("Error - not a valid ID");
-        alert(someUser.userName);
-        console.log(someUser.userName);
+        // alert("Error - not a valid ID");
+        console.log("Error: " + friendID + " is not a valid ID");
     }
-    
 }
 
-// Validate whether the input ID is valid
-function isValidID(ID) {
-    if (Number.isInteger(ID)){
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+// The HTML validates input is a number. Here we check range and if integer
+function isValidID(id) { if (id >= 1 && id <=1000 && Number.isInteger(id)) return true; };
+
+
+addToFriendList(50);
+addToFriendList(14);
+addToFriendList(5.6);
+console.log("Our user's username: " + ourUser.userName);
+console.log("Our user's user ID: " + ourUser.userID);
+console.log("Your friends: " + ourUser.friends);
+
+
 
 
