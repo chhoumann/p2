@@ -1,4 +1,5 @@
 const loadData = require('./loadData');
+const utility = require('../../../utility');
 const USERS_IN_TOTAL = 610; // Amount of users in the dataset.
 
 // Group Functionality. Default size of group is 5 users.
@@ -28,9 +29,15 @@ module.exports.getRatingsForUser = async function getRatingsForUser(index, ratin
 module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB() {
     let userDB = [];
     let ratingsData;
-    await loadData.getRatingData().then(res => ratingsData = res);
-    for (let i = 0; i <= USERS_IN_TOTAL; i++) {
-        await this.getRatingsForUser(i, ratingsData).then(res => userDB.push(res));
+    try {
+        await loadData.getRatingData().then(res => ratingsData = res);
+        for (let i = 0; i <= USERS_IN_TOTAL; i++) {
+            await this.getRatingsForUser(i, ratingsData).then(res => userDB.push(res));
+        }
+    }
+    catch {
+        utility.logError("Could not build Movie Lens UserDB.");
+        return;
     }
     return userDB;
 }
@@ -39,9 +46,15 @@ module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB() {
 // Gets ratings for movie depending on given movieId.
 module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id) {
     let results = [];
-    let tempArray = await loadData.getRatingData();
-    tempArray.forEach(rating => {
-        if (parseFloat(rating.movieId) === id) { results.push(rating)};
-    });
+    try {
+        let tempArray = await loadData.getRatingData();
+        tempArray.forEach(rating => {
+            if (parseFloat(rating.movieId) === id) { results.push(rating)};
+        });
+    }
+    catch {
+        utility.logError(`Could not get ratings for movie with ID: ${id}`);
+        return;
+    }
     return results;
 }

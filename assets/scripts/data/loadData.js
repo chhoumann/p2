@@ -5,6 +5,8 @@
 */
 const neatCsv = require('neat-csv'); // Used to parse CSV files.
 const fs = require('fs').promises; // Used to read files.
+const utility = require('../../../utility');
+const {performance} = require('perf_hooks');
 
 // PATHS & USER-COUNT
 const MOVIES_CSV_PATH = './dataset/ml-latest-small/movies.csv';
@@ -12,12 +14,17 @@ const LINKS_CSV_PATH = './dataset/ml-latest-small/links.csv';
 const RATINGS_CSV_PATH = './dataset/ml-latest-small/ratings.csv';
 
 async function getData(path) {
+    let result;
     try {
-        const result = await fs.readFile(path);
-        return neatCsv(result);
-    } catch(e) {
-        console.error(e);
+        let startTime = performance.now();
+        result = await fs.readFile(path);
+        utility.printTestAndTime(path, result, startTime);
     }
+    catch(error) { 
+        utility.logError(`${error.name} in loading ${error.path}!`);
+        return;
+    }
+    return neatCsv(result);
 };
 
 module.exports.getMovieData = async() => { return await getData(MOVIES_CSV_PATH) };

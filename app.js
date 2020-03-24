@@ -43,7 +43,7 @@ const initialize = async () => {
         let startTime = performance.now();
         db.userDB = await dataHandler.buildMovieLensUserDB();
         utility.printTestAndTime("UserDB", db.userDB, startTime);
-        
+
         startTime = performance.now();
         testGroup = dataHandler.groupUsers(db.userDB, 5, arrayOfUserIds);
         utility.printTestAndTime("Testgroup", testGroup, startTime);
