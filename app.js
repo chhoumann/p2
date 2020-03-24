@@ -28,8 +28,8 @@ app.use('/', routes);
 app.post('/something', urlencodedParser, function (req, res) {  
    // Prepare output in JSON format  
    response = {  
-       uname:req.body.uname,  // Overvej at bruge de fulde ord frem for forkortelser, selv om det er lettere
-       pword:req.body.pword,
+       username:req.body.username,  // Overvej at bruge de fulde ord frem for forkortelser, selv om det er lettere
+       password:req.body.password,
        gender:req.body.gender  
    };  
    console.log(response);
