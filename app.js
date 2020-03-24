@@ -8,6 +8,7 @@ const arrayOfUserIds = [3, 5, 4, 2, 1]; // Used for testing. Users 1-5 are test-
 const SEPARATOR = "----------------------------------------------";
 const app = express();
 let testGroup;
+let port;
 let urlencodedParser = bodyParser.urlencoded({ extended: false })  
 let db = {};
 
@@ -35,26 +36,36 @@ app.post('/something', urlencodedParser, function (req, res) {
    res.end(JSON.stringify(response)); // Her skrives til '/something' som klienten modtager
 });
 
-// Builds database & test group.
+// Used to start the server and print 
+const startServer = () => {
+    try {
+        // Heroku support.
+        port = process.env.PORT;
+        if (port == null || port == "") port = 8000;
+        server = app.listen(port);
+    }
+    finally {
+        console.log(`\n Server successfully running at http://127.0.0.1:${port}/`);
+    }
+}
+
+// Builds database & test group. Basically anything that should be loaded before the user interacts with the web application.
 // Horrible on memory but confines our project to JS only (no use of external DBs).
-const initialize = async () => {
+const initialize = async (serverStartCallback) => {
     console.log(SEPARATOR);
     try {
         let startTime = performance.now();
         db.userDB = await dataHandler.buildMovieLensUserDB();
         utility.printTestAndTime("UserDB", db.userDB, startTime);
-
+        
         startTime = performance.now();
         testGroup = dataHandler.groupUsers(db.userDB, 5, arrayOfUserIds);
         utility.printTestAndTime("Testgroup", testGroup, startTime);
     }
     catch(error) { utility.logError(error) };
+    
+    serverStartCallback();
     console.log(SEPARATOR);
 }
 
-// Heroku support.
-let port = process.env.PORT;
-if (port == null || port == "") { port = 8000; }
-
-initialize();
-server = app.listen(port);
+initialize(startServer);
