@@ -43,10 +43,7 @@ const startServer = () => {
         port = process.env.PORT;
         if (port == null || port == "") port = 8000;
         server = app.listen(port);
-    }
-    finally {
-        console.log(`\n Server successfully running at http://127.0.0.1:${port}/`);
-    }
+    } finally { console.log(`\n Server successfully running at http://127.0.0.1:${port}/`); }
 }
 
 // Builds database & test group. Basically anything that should be loaded before the user interacts with the web application.
@@ -61,8 +58,7 @@ const initialize = async (serverStartCallback) => {
         startTime = performance.now();
         testGroup = dataHandler.groupUsers(db.userDB, 5, arrayOfUserIds);
         utility.printTestAndTime("Testgroup", testGroup, startTime);
-    }
-    catch(error) { utility.logError(error) };
+    } catch(error) { utility.logError(error) };
     
     serverStartCallback();
     console.log(SEPARATOR);
