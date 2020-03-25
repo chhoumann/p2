@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const routes = require('./routes.js')
 const express = require('express');
 const {performance} = require('perf_hooks');
-var fs = require('fs');
+const fs = require('fs');
 const arrayOfUserIds = [3, 5, 4, 2, 1]; // Used for testing. Users 1-5 are test-users.
 const SEPARATOR = "----------------------------------------------";
 const app = express();
@@ -13,17 +13,11 @@ let port;
 let urlencodedParser = bodyParser.urlencoded({ extended: false })  
 let db = {};
 
-let userDB = {
-    users: []
-};
-userDB.users.push({id: 0, username: "Mr. Zero"});
-userDB.users.push({id: 1, username: "Mr. One"});
-let json = JSON.stringify(userDB);
-fs.writeFile('dbOfUsers.json', json, function(err) {
-    if (err) throw err;
-    console.log('complete');
-    }
-);
+db.userDB =  [];
+db.userDB.push({id: 0, username: "Mr. Zero"});
+db.userDB.push({id: 1, username: "Mr. One"});
+let json = JSON.stringify(db.userDB);
+fs.writeFile('dbOfUsers.json', json, (err) => { if (err) throw err; }); // Overvej om den her skal ned i initialize()
 
 // Setting the template engine (ejs)
 app.set('view engine', 'ejs');
@@ -65,11 +59,11 @@ const initialize = async (serverStartCallback) => {
     console.log(SEPARATOR);
     try {
         let startTime = performance.now();
-        db.userDB = await dataHandler.buildMovieLensUserDB();
-        utility.printTestAndTime("UserDB", db.userDB, startTime);
+        db.MovieLensUserDB = await dataHandler.buildMovieLensUserDB();
+        utility.printTestAndTime("MovieLensUserDB", db.MovieLensUserDB, startTime);
         
         startTime = performance.now();
-        testGroup = dataHandler.groupUsers(db.userDB, 5, arrayOfUserIds);
+        testGroup = dataHandler.groupUsers(db.MovieLensUserDB, 5, arrayOfUserIds);
         utility.printTestAndTime("Testgroup", testGroup, startTime);
     } catch(error) { utility.logError(error) };
     
