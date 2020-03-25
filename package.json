@@ -5,7 +5,7 @@
   "main": "nodeServer.js",
   "scripts": {
     "test": "jest",
-    "start": "nodemon app"
+    "start": "nodemon app --ignore dbOfUsers.json"
   },
   "repository": {
     "type": "git",
