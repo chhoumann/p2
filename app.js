@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const routes = require('./routes.js')
 const express = require('express');
 const {performance} = require('perf_hooks');
+var fs = require('fs');
 const arrayOfUserIds = [3, 5, 4, 2, 1]; // Used for testing. Users 1-5 are test-users.
 const SEPARATOR = "----------------------------------------------";
 const app = express();
@@ -11,6 +12,18 @@ let testGroup;
 let port;
 let urlencodedParser = bodyParser.urlencoded({ extended: false })  
 let db = {};
+
+let userDB = {
+    users: []
+};
+userDB.users.push({id: 0, username: "Mr. Zero"});
+userDB.users.push({id: 1, username: "Mr. One"});
+let json = JSON.stringify(userDB);
+fs.writeFile('dbOfUsers.json', json, function(err) {
+    if (err) throw err;
+    console.log('complete');
+    }
+);
 
 // Setting the template engine (ejs)
 app.set('view engine', 'ejs');
