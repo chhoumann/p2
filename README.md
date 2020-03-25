@@ -18,9 +18,6 @@ NodeJS can be installed from their [official website](https://nodejs.org/en/down
 
 Using ```npm install``` from inside the main directory for this application, the remaining packages will be installed.
 
-<!-- ### Compiling TypeScript
-Use ```tsc filename.ts``` to compile a TypeScript file. -->
-
 ### Testing with Jest
 Simply run ```npm test``` to test.
 
