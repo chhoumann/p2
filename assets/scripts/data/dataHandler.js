@@ -36,7 +36,7 @@ module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB() {
         }
     }
     catch {
-        utility.logError("Could not build Movie Lens UserDB.");
+        utility.logError("Could not build MovieLens UserDB.");
         return;
     }
     return userDB;
