@@ -1,4 +1,6 @@
+const groupRec = require('./assets/scripts/groupRecommendation');
 const dataHandler = require('./assets/scripts/data/dataHandler');
+const loadData = require('./assets/scripts/data/loadData');
 const utility = require('./utility');
 const bodyParser = require('body-parser'); 
 const routes = require('./routes.js')
@@ -59,12 +61,23 @@ const initialize = async (serverStartCallback) => {
     console.log(SEPARATOR);
     try {
         let startTime = performance.now();
-        db.MovieLensUserDB = await dataHandler.buildMovieLensUserDB();
+        db.ratingsDB = await loadData.getRatingData();
+        db.MovieLensUserDB = await dataHandler.buildMovieLensUserDB(db.ratingsDB);
         utility.printTestAndTime("MovieLensUserDB", db.MovieLensUserDB, startTime);
+        
+        startTime = performance.now();
+        db.movieDB = await loadData.getMovieData();
+        db.movieDB.forEach(movie => {
+            movie.ratings = dataHandler.getRatingsForMovieID(movie.movieId, db.ratingsDB);
+        });
+        utility.printTestAndTime("MovieDB + Ratings", db.movieDB, startTime);
+        // 9742 movies in DB. The forEach makes this take a lot longer, but is necessary for recommender system.
         
         startTime = performance.now();
         testGroup = dataHandler.groupUsers(db.MovieLensUserDB, 5, arrayOfUserIds);
         utility.printTestAndTime("Testgroup", testGroup, startTime);
+        
+        // groupRec.makeGroupRec(testGroup, db.movieDB, 3);
 
         /* console.log("Write testgroup to JSON file.");
         let testGroupJSON = JSON.stringify(testGroup);
