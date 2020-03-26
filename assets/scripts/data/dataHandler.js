@@ -45,10 +45,11 @@ module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB(rating
 module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id, ratingsData) {
     let results = [];
     try {
-        let tempArray = ratingsData;
-        tempArray.forEach(rating => {
+        // let tempArray = ratingsData;
+        results = ratingsData.filter(item => item.movieId === id);
+        /* tempArray.forEach(rating => {
             if (rating.movieId === id) { results.push(rating)};
-        });
+        }); */
     }
     catch {
         utility.logError(`Could not get ratings for movie with ID: ${id}`);
@@ -63,6 +64,6 @@ module.exports.getAverage = function getAverage(arrayOfIntegers) {
     let sum = 0;
     for (let i = 0; i < arrayOfIntegers.length; i++) {
         sum += parseInt(arrayOfIntegers[i].rating);
-        return sum / arrayOfIntegers.length;
     }
+    return sum / arrayOfIntegers.length;
 }
