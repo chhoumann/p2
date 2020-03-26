@@ -12,10 +12,10 @@ module.exports.groupUsers = function groupUsers(fromArrayOfUsers, groupSize = 5,
 }
 
 // Used to get the ratings for each individual user.
-module.exports.getRatingsForUser = async function getRatingsForUser(index, ratingsData) {
+module.exports.getRatingsForUser = async function getRatingsForUser(userID, ratingsData) {
     let results = [];
     ratingsData.forEach(rating => {
-        if (rating.userId == index) {
+        if (rating.userId == userID) {
             results.push({
                 movieId: rating.movieId,
                 ratings: rating.rating
@@ -26,11 +26,9 @@ module.exports.getRatingsForUser = async function getRatingsForUser(index, ratin
 }
 
 // Builds database of users. Index 0 is empty. Starts from 1 and goes to 610. See why below.
-module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB() {
+module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB(ratingsData) {
     let userDB = [];
-    let ratingsData;
     try {
-        await loadData.getRatingData().then(res => ratingsData = res);
         for (let i = 0; i <= USERS_IN_TOTAL; i++) {
             await this.getRatingsForUser(i, ratingsData).then(res => userDB.push(res));
         }
@@ -44,12 +42,12 @@ module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB() {
 
 // In regards to the project, this function is more of a 'nice-to-have'.
 // Gets ratings for movie depending on given movieId.
-module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id) {
+module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id, ratingsData) {
     let results = [];
     try {
-        let tempArray = await loadData.getRatingData();
+        let tempArray = ratingsData;
         tempArray.forEach(rating => {
-            if (parseFloat(rating.movieId) === id) { results.push(rating)};
+            if (rating.movieId === id) { results.push(rating)};
         });
     }
     catch {
