@@ -35,7 +35,7 @@ app.use('/', routes);
 app.post('/something', urlencodedParser, function (req, res) {  
    // Prepare output in JSON format  
    response = {  
-       username:req.body.username,  // Overvej at bruge de fulde ord frem for forkortelser, selv om det er lettere
+       username:req.body.username,
        password:req.body.password,
        gender:req.body.gender  
    };  
@@ -65,6 +65,10 @@ const initialize = async (serverStartCallback) => {
         startTime = performance.now();
         testGroup = dataHandler.groupUsers(db.MovieLensUserDB, 5, arrayOfUserIds);
         utility.printTestAndTime("Testgroup", testGroup, startTime);
+
+        /* console.log("Write testgroup to JSON file.");
+        let testGroupJSON = JSON.stringify(testGroup);
+        fs.writeFile('testGroupUsers.json', testGroupJSON, (err) => { if (err) throw err; }); */
     } catch(error) { utility.logError(error) };
     
     serverStartCallback();

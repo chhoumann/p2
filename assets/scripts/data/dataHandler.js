@@ -58,3 +58,13 @@ module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id) {
     }
     return results;
 }
+
+// In regards to the project, this function is more of a 'nice-to-have'.
+// Used to get average of array of integers.
+module.exports.getAverage = function getAverage(arrayOfIntegers) {
+    let sum = 0;
+    for (let i = 0; i < arrayOfIntegers.length; i++) {
+        sum += parseInt(arrayOfIntegers[i].rating);
+        return sum / arrayOfIntegers.length;
+    }
+}
