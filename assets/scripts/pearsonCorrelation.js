@@ -6,7 +6,7 @@
 const U1 = "u1Ratings";
 const U2 = "u2Ratings";
 
-
+// Given references to two user objects, return an object containing the collection of ratings
 const getSampleData = (u1, u2) => {
     let collectionOfRatings = { u1Ratings: [], u2Ratings: [] };
     let minLen = Math.min(u1.length, u2.length);
@@ -19,6 +19,8 @@ const getSampleData = (u1, u2) => {
     return collectionOfRatings;
 }
 
+// Modified function from:
+// https://gist.github.com/matt-west/6500993
 const pearsonCorrelation = (prefs, p1, p2) => {
     let si = [];
   
@@ -60,5 +62,5 @@ const pearsonCorrelation = (prefs, p1, p2) => {
     return num / den;
 }
 
+// Exports to use elsewhere. Wraps data collecter function in implementation of Pearson 
 module.exports.getCorrelation = (dataset, item1, item2) => { return pearsonCorrelation(getSampleData(dataset[item1], dataset[item2]), U1, U2) };
-console.log(this.getCorrelation(data, 1, 2));
