@@ -1,50 +1,64 @@
-const Math = require('mathjs');
-const data = require('./testGroupUsers.json');
-const dataHandler = require('./data/dataHandler');
-
 /*
     ! [X] Lav test gruppe
-    ! [ ] Implementer Pearson
+    ! [X] Implementer Pearson
     ! [ ] Implementer Utilitarian Strategy
-    UTS = samlet præferenceprofil (matrice) = 1 bruger som matrice -> pearson correlation = for hvert punkt i matricen
 */
-
-dataHandler.getAverage(dataHandler.getRatingsForUser())
-
-// Returns a value between -1 and 1 representing similarity, given two items.
-// Positive values mean positive association
-function pearsonCorrelation(i,j) {
-    return (pearsonNumerator(i,j) / pearsonDenominator(i,j))    
-}
+const U1 = "u1Ratings";
+const U2 = "u2Ratings";
 
 
-function pearsonNumerator(i,j) {
-    for (let i = 0; i < data[i].length; i++) {
-        if (data[i].movieId == data[].movieId)
-        sum += data[i].rating-average.movieId.avg
+const getSampleData = (u1, u2) => {
+    let collectionOfRatings = { u1Ratings: [], u2Ratings: [] };
+    let minLen = Math.min(u1.length, u2.length);
+
+    for (let i = 0; i < minLen; i++) {
+        if (u1[i].ratings !== undefined) obj.u1Ratings.push(parseFloat(u1[i].ratings)); 
+        if (u2[i].ratings !== undefined) obj.u2Ratings.push(parseFloat(u2[i].ratings));
     }
+    
+    return collectionOfRatings;
 }
 
-function pearsonDenominator(i,j) {
-    for(let i = 0; i < data[i].length); i++){
-        if()
-        
+const pearsonCorrelation = (prefs, p1, p2) => {
+    let si = [];
+  
+    for (let key in prefs[p1]) {
+      if (prefs[p2][key]) si.push(key);
     }
-}
-
-
-
-/* function pseudoPearsonCorrelation(i,j){
-    for (user 1 to n) {
-        sum.tæller += UserID_1.rating.movieID-movieID.rating.average*UserID_1.rating.movieID-MovieID.rating.average;
-        sim.tæller = sum.tæller;
-        sim.nævner = Math.sqrt(sum((UserID_1.rating.movieID-movieID.rating.average)^2))*Math.sqrt(sum((UserID_1.rating.movieID-MovieID.rating.average)^2));
+  
+    let n = si.length;
+  
+    if (n == 0) return 0;
+  
+    let sum1 = 0;
+    for (let i = 0; i < si.length; i++) sum1 += prefs[p1][si[i]];
+  
+    let sum2 = 0;
+    for (let i = 0; i < si.length; i++) sum2 += prefs[p2][si[i]];
+  
+    let sum1Sq = 0;
+    for (let i = 0; i < si.length; i++) {
+      sum1Sq += Math.pow(prefs[p1][si[i]], 2);
     }
+  
+    let sum2Sq = 0;
+    for (let i = 0; i < si.length; i++) {
+      sum2Sq += Math.pow(prefs[p2][si[i]], 2);
+    }
+  
+    let pSum = 0;
+    for (let i = 0; i < si.length; i++) {
+      pSum += prefs[p1][si[i]] * prefs[p2][si[i]];
+    }
+  
+    let num = pSum - (sum1 * sum2 / n);
+    let den = Math.sqrt((sum1Sq - Math.pow(sum1, 2) / n) *
+        (sum2Sq - Math.pow(sum2, 2) / n));
+  
+    if (den == 0) return 0;
+  
+    return num / den;
 }
- */
 
-
-
-
-
-
+module.exports.getCorrelation = (dataset, item1, item2) => { return pearsonCorrelation(getSampleData(dataset[item1], dataset[item2]), U1, U2) };
+console.log(this.getCorrelation(data, 1, 2));
