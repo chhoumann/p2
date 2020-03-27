@@ -15,3 +15,15 @@ module.exports.logError = (error) => { console.log(RED_COLOR_TERMINAL, error, RE
 module.exports.testIfUndefined = (item, itemName) => { if (item === undefined) { throw this.errorLoading(itemName) } else { this.successLoading(itemName); return true; } };
 module.exports.timeFunction = (item, initialTime) => { console.log(`   - Loading ${item} took ${((performance.now() - initialTime)/1000).toPrecision(2)} seconds.`); }
 module.exports.printTestAndTime = (itemName, item, startTime) => { if (this.testIfUndefined(item, itemName)) this.timeFunction(itemName, startTime); };
+// (Test) For finding the total amount of genres as well as their names:
+module.exports.getTotalGenresInDB = (movieDB) => {
+    let totalMovieGenres = [];
+    movieDB.forEach(movie => {
+        totalMovieGenres.push(movie.genres);
+    })
+    totalMovieGenres = Array.prototype.concat.apply([], totalMovieGenres);
+    let unique = totalMovieGenres.filter((v, i, a) => a.indexOf(v) === i); 
+    console.log(unique);
+    console.log(unique.length);
+}
+module.exports.reduceArray = (arrayOfArrays) => { return Array.prototype.concat.apply([], arrayOfArrays)};
