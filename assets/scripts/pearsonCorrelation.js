@@ -12,8 +12,8 @@ const getSampleData = (u1, u2) => {
     let minLen = Math.min(u1.length, u2.length);
 
     for (let i = 0; i < minLen; i++) {
-        if (u1[i].ratings !== undefined) obj.u1Ratings.push(parseFloat(u1[i].ratings)); 
-        if (u2[i].ratings !== undefined) obj.u2Ratings.push(parseFloat(u2[i].ratings));
+        if (u1[i].ratings !== undefined) collectionOfRatings.u1Ratings.push(parseFloat(u1[i].ratings)); 
+        if (u2[i].ratings !== undefined) collectionOfRatings.u2Ratings.push(parseFloat(u2[i].ratings));
     }
     
     return collectionOfRatings;
@@ -21,6 +21,7 @@ const getSampleData = (u1, u2) => {
 
 // Modified function from:
 // https://gist.github.com/matt-west/6500993
+// License: MIT (http://opensource.org/licenses/MIT).
 const pearsonCorrelation = (prefs, p1, p2) => {
     let si = [];
   
