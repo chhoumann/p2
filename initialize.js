@@ -1,5 +1,6 @@
 // Modules
 const groupRec = require('./assets/scripts/groupRecommendation');
+const pearsonCorrelation = require('./assets/scripts/pearsonCorrelation')
 const dataHandler = require('./assets/scripts/data/dataHandler');
 const loadData = require('./assets/scripts/data/loadData');
 const utility = require('./utility');
@@ -31,12 +32,13 @@ const buildMovieLensUserDatabase = async (ratingsDB) => {
 
 const buildMovieDB = async (ratingsDB) => {
     let startTime = performance.now();
-    movieDB = await loadData.getMovieData();
+    const movieDB = await loadData.getMovieData();
     // 9742 movies in DB. The forEach makes this take a lot longer, but is necessary for recommender system.
     // Perhaps there is a better & faster solution?
     await movieDB.forEach(async movie => {
         movie.ratings = await dataHandler.getRatingsForMovieID(movie.movieId, ratingsDB);
         movie.averageRating = dataHandler.getAverage(movie.ratings);
+        movie.genres = dataHandler.getGenresFromMovie(movie);
     });
     utility.printTestAndTime("MovieDB, Ratings, & Average Ratings", movieDB, startTime);
     return movieDB;
@@ -97,7 +99,10 @@ module.exports.initialize = async (serverStartCallback) => {
             const testGroup = await buildTestGroup(movieLensUserDB);   
             writeToFile(TESTGROUP_PATH, testGroup);
             
-            // groupRec.makeGroupRec(testGroup, db.movieDB, 3);
+            // console.log(pearsonCorrelation.getCorrelation(testGroup, 0, 1));
+            //console.log(pearsonCorrelation.getCorrelation(testGroup, 0, 1));
+
+            groupRec.makeGroupRec(testGroup, movieDB, 3);
         } catch(error) { utility.logError(error) };
     };
     serverStartCallback();
