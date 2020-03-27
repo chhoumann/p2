@@ -1,6 +1,7 @@
 const loadData = require('./loadData');
 const utility = require('../../../utility');
 const USERS_IN_TOTAL = 610; // Amount of users in the dataset.
+const GENRE_SEPARATOR = '|';
 
 // Group Functionality. Default size of group is 5 users.
 module.exports.groupUsers = function groupUsers(fromArrayOfUsers, groupSize = 5, arrayOfUserIds) {
@@ -66,4 +67,38 @@ module.exports.getAverage = function getAverage(arrayOfIntegers) {
         sum += parseInt(arrayOfIntegers[i].rating);
     }
     return sum / arrayOfIntegers.length;
+}
+
+// Receives single movie entry and returns the genres in an array.
+module.exports.getGenresFromMovie = function getGenresFromMovie(movieEntry) {
+    const genreString = movieEntry.genres;
+    return genreString.split(GENRE_SEPARATOR);
+}
+
+module.exports.getMoviesWatched = (user) => {
+    let moviesWatched = [];
+    user.forEach(entry => {moviesWatched.push(entry.movieId)});
+    return moviesWatched;
+}
+
+module.exports.matchGenres = (genresWatchedByUser) => {
+    let genres = {
+    'Adventure': 0, 'Animation': 0,
+    'Children': 0,  'Comedy': 0,
+    'Fantasy': 0,   'Romance': 0,
+    'Drama': 0,     'Action': 0,
+    'Crime': 0,     'Thriller': 0,
+    'Horror': 0,    'Mystery': 0,
+    'Sci-Fi': 0,    'War': 0,
+    'Musical': 0,   'Documentary': 0,
+    'IMAX': 0,      'Western': 0,
+    'Film-Noir': 0
+    }
+
+    genresWatchedByUser.forEach(genre => {
+        genres[genre]++;
+    })
+
+    return genres;
+
 }
