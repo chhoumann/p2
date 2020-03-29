@@ -1,4 +1,5 @@
 const bodyParser = require('body-parser'); 
+const {performance} = require('perf_hooks');
 const fs = require('fs');
 const express = require('express');
 const routes = require('./routes')
@@ -16,6 +17,22 @@ let json = JSON.stringify(db.userDB);
 fs.writeFile('dbOfUsers.json', json, (err) => { if (err) throw err; });
 */
 
+let userDbFile = './db/dbOfUsers.json';
+// Error handling (hvis JSON er tom / ugyldig) => init tomt array, ellers sæt db.userDB = JSON.parse(userDbFile)
+function test() {
+    try {
+        let userDBLoaded = fs.readFile(userDbFile);
+        if (userDBLoaded == undefined) throw "fejl forfanden";
+    }
+    catch(error) {
+        console.log(error);
+    }
+}
+ 
+console.log(`Det her: ${test()}`);
+
+// console.log(JSON.stringify(userDbFile));
+// console.log(JSON.parse(userDbFile));
 // Setting the template engine (ejs)
 app.set('view engine', 'ejs');
 
@@ -36,7 +53,12 @@ app.post('/something', urlencodedParser, function (req, res) {
        password:req.body.password,
        gender:req.body.gender  
    };  
-   console.log(response);
+   db.userDB.push(response);
+   let newDB = JSON.stringify(db.userDB);
+   fs.writeFile('./db/dbOfUsers.json', newDB, function(err){
+       if (err) throw err;
+       console.log("complete");
+   });
    res.end(JSON.stringify(response)); // Her skrives til '/something' som klienten modtager
 });
 
