@@ -1,7 +1,7 @@
 // Get movie recommendation for multiple users
 
-function getMovieRec(e){
-    e.preventDefault();
+function getMovieRec(event){
+    event.preventDefault();
     
     // Get number of input fields
     let form = document.getElementById("groupMember");
@@ -18,5 +18,4 @@ function getMovieRec(e){
     // TODO: Add some kind of check that the given users exists?
 
     // TODO: Get the different users movie preferences and calculate a recommendation 
-    
 }

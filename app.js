@@ -1,19 +1,21 @@
-const dataHandler = require('./assets/scripts/data/dataHandler');
-const utility = require('./utility');
 const bodyParser = require('body-parser'); 
-const routes = require('./routes.js');
-const express = require('express');
 const {performance} = require('perf_hooks');
 const fs = require('fs');
-const arrayOfUserIds = [3, 5, 4, 2, 1]; // Used for testing. Users 1-5 are test-users.
-const SEPARATOR = "----------------------------------------------";
+const express = require('express');
+const routes = require('./routes')
+const initialize = require('./initialize');
 const app = express();
-let testGroup;
-let port;
 let urlencodedParser = bodyParser.urlencoded({ extended: false })  
-let db = {};
+let port;
 
-db.userDB = [];
+/* // * Ikke længere relevant at bruge db objektet. Desuden er dette blot en test - fjern senere.  
+let db = {};
+db.userDB =  [];
+db.userDB.push({id: 0, username: "Mr. Zero"});
+db.userDB.push({id: 1, username: "Mr. One"});
+let json = JSON.stringify(db.userDB);
+fs.writeFile('dbOfUsers.json', json, (err) => { if (err) throw err; });
+*/
 
 let userDbFile = './db/dbOfUsers.json';
 // Error handling (hvis JSON er tom / ugyldig) => init tomt array, ellers sæt db.userDB = JSON.parse(userDbFile)
@@ -47,7 +49,7 @@ app.use('/', routes);
 app.post('/something', urlencodedParser, function (req, res) {  
    // Prepare output in JSON format  
    response = {  
-       username:req.body.username,  // Overvej at bruge de fulde ord frem for forkortelser, selv om det er lettere
+       username:req.body.username,
        password:req.body.password,
        gender:req.body.gender  
    };  
@@ -70,22 +72,4 @@ const startServer = () => {
     } finally { console.log(`\n Server successfully running at http://127.0.0.1:${port}/`); }
 }
 
-// Builds database & test group. Basically anything that should be loaded before the user interacts with the web application.
-// Horrible on memory but confines our project to JS only (no use of external DBs).
-const initialize = async (serverStartCallback) => {
-    console.log(SEPARATOR);
-    try {
-        let startTime = performance.now();
-        db.MovieLensUserDB = await dataHandler.buildMovieLensUserDB();
-        utility.printTestAndTime("MovieLensUserDB", db.MovieLensUserDB, startTime);
-        
-        startTime = performance.now();
-        testGroup = dataHandler.groupUsers(db.MovieLensUserDB, 5, arrayOfUserIds);
-        utility.printTestAndTime("Testgroup", testGroup, startTime);
-    } catch(error) { utility.logError(error) };
-    
-    serverStartCallback();
-    console.log(SEPARATOR);
-}
-
-initialize(startServer);
+initialize.initialize(startServer);
