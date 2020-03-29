@@ -1,23 +1,35 @@
 const dataHandler = require('./assets/scripts/data/dataHandler');
 const utility = require('./utility');
 const bodyParser = require('body-parser'); 
-const routes = require('./routes.js')
+const routes = require('./routes.js');
 const express = require('express');
 const {performance} = require('perf_hooks');
 const fs = require('fs');
 const arrayOfUserIds = [3, 5, 4, 2, 1]; // Used for testing. Users 1-5 are test-users.
 const SEPARATOR = "----------------------------------------------";
 const app = express();
+const userDbFile = './db/dbOfUsers.json';
+let writeStream = fs.createWriteStream(userDbFile);
 let testGroup;
 let port;
 let urlencodedParser = bodyParser.urlencoded({ extended: false })  
 let db = {};
 
-db.userDB =  [];
-db.userDB.push({id: 0, username: "Mr. Zero"});
-db.userDB.push({id: 1, username: "Mr. One"});
-let json = JSON.stringify(db.userDB);
-fs.writeFile('dbOfUsers.json', json, (err) => { if (err) throw err; }); // Overvej om den her skal ned i initialize()
+db.userDB = [];
+
+// Error handling (hvis JSON er tom / ugyldig) => init tomt array, ellers sæt db.userDB = JSON.parse(userDbFile)
+function test() {
+    try {
+        let userDBLoaded = fs.readFile(userDbFile);
+        if (userDBLoaded == undefined) throw "fejl forfanden";
+    }
+    catch(error) {
+        console.log("nej");
+    }
+}
+ 
+console.log(`Det her: ${test()}`);
+console.log(userDbFile);
 
 // Setting the template engine (ejs)
 app.set('view engine', 'ejs');
@@ -30,16 +42,27 @@ app.use('/', routes);
 
 // Dette sender informationerne fra formen fra http://localhost:8000/Profile til http://localhost:8000/something
 // Der er redirect efter submit, men dette logger desuden requesten til consollen samt skriver det på '/something'.
-// TODO: Der burde tilføjes funktionalitet som skriver alt dette til en json fil (vores database over brugere) og tjekker duplicates.
+// TODO: Der burde tilføjes funktionalitet som tjekker duplicates i JSON fil.
 // TODO: Desuden også validering for at se om 1. duplicates og 2. der er indtastet gyldigt input. Men 2. skal ikke ske på server-siden pt.
 app.post('/something', urlencodedParser, function (req, res) {  
-   // Prepare output in JSON format  
-   response = {  
+    // Prepare output in JSON format  
+    response = {  
        username:req.body.username,  // Overvej at bruge de fulde ord frem for forkortelser, selv om det er lettere
        password:req.body.password,
        gender:req.body.gender  
-   };  
-   console.log(response);
+    };
+    // if (){
+    //     writeStream.write(JSON.stringify(response))
+    // }
+    // else{
+    //     writeStream.write("," + JSON.stringify(response ));
+    // }
+    db.userDB.push(response);
+    let newDB = JSON.stringify(db.userDB);
+    fs.writeFile(userDbFile, newDB, function(err){
+        if (err) throw err;
+        console.log("complete");
+    });
    res.end(JSON.stringify(response)); // Her skrives til '/something' som klienten modtager
 });
 
