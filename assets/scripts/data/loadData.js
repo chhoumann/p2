@@ -13,6 +13,11 @@ const MOVIES_CSV_PATH = './dataset/ml-latest-small/movies.csv';
 const LINKS_CSV_PATH = './dataset/ml-latest-small/links.csv';
 const RATINGS_CSV_PATH = './dataset/ml-latest-small/ratings.csv';
 
+const RATING_DB_PATH = './db/ratingDB.json';
+const MOVIELENS_USER_DB_PATH = './db/movieLensUserDB.json';
+const MOVIE_DB_PATH = './db/movieDB.json';
+const TESTGROUP_PATH = './db/testGroup.json';
+
 async function getData(path) {
     let result;
     try {
@@ -30,3 +35,8 @@ async function getData(path) {
 module.exports.getMovieData = async() => { return await getData(MOVIES_CSV_PATH) };
 module.exports.getLinkData = async() => { return await getData(LINKS_CSV_PATH) };
 module.exports.getRatingData = async() => { return await getData(RATINGS_CSV_PATH) };
+module.exports.getTestGroupData = async() => { return await getData(TESTGROUP_PATH) };
+
+module.exports.getMovieDB = async() => { return await getData(MOVIE_DB_PATH) };
+module.exports.getRatingDB = async() => { return await getData(RATING_DB_PATH) };
+module.exports.getMovieLensUserDB = async() => { return await getData(MOVIELENS_USER_DB_PATH) };

@@ -1,20 +1,26 @@
-const dataHandler = require('./assets/scripts/data/dataHandler');
-const utility = require('./utility');
 const bodyParser = require('body-parser'); 
+<<<<<<< HEAD
 const routes = require('./routes.js');
 const express = require('express');
+=======
+>>>>>>> 25c479184a9fa378453dc2a8c87b330089e82433
 const {performance} = require('perf_hooks');
 const fs = require('fs');
-const arrayOfUserIds = [3, 5, 4, 2, 1]; // Used for testing. Users 1-5 are test-users.
-const SEPARATOR = "----------------------------------------------";
+const express = require('express');
+const routes = require('./routes')
+const initialize = require('./initialize');
 const app = express();
+<<<<<<< HEAD
 const userDbFile = './db/dbOfUsers.json';
 let writeStream = fs.createWriteStream(userDbFile);
 let testGroup;
 let port;
+=======
+>>>>>>> 25c479184a9fa378453dc2a8c87b330089e82433
 let urlencodedParser = bodyParser.urlencoded({ extended: false })  
-let db = {};
+let port;
 
+<<<<<<< HEAD
 db.userDB = [];
 
 // Error handling (hvis JSON er tom / ugyldig) => init tomt array, ellers sæt db.userDB = JSON.parse(userDbFile)
@@ -30,7 +36,33 @@ function test() {
  
 console.log(`Det her: ${test()}`);
 console.log(userDbFile);
+=======
+/* // * Ikke længere relevant at bruge db objektet. Desuden er dette blot en test - fjern senere.  
+let db = {};
+db.userDB =  [];
+db.userDB.push({id: 0, username: "Mr. Zero"});
+db.userDB.push({id: 1, username: "Mr. One"});
+let json = JSON.stringify(db.userDB);
+fs.writeFile('dbOfUsers.json', json, (err) => { if (err) throw err; });
+*/
+>>>>>>> 25c479184a9fa378453dc2a8c87b330089e82433
 
+let userDbFile = './db/dbOfUsers.json';
+// Error handling (hvis JSON er tom / ugyldig) => init tomt array, ellers sæt db.userDB = JSON.parse(userDbFile)
+function test() {
+    try {
+        let userDBLoaded = fs.readFile(userDbFile);
+        if (userDBLoaded == undefined) throw "fejl forfanden";
+    }
+    catch(error) {
+        console.log(error);
+    }
+}
+ 
+console.log(`Det her: ${test()}`);
+
+// console.log(JSON.stringify(userDbFile));
+// console.log(JSON.parse(userDbFile));
 // Setting the template engine (ejs)
 app.set('view engine', 'ejs');
 
@@ -45,6 +77,7 @@ app.use('/', routes);
 // TODO: Der burde tilføjes funktionalitet som tjekker duplicates i JSON fil.
 // TODO: Desuden også validering for at se om 1. duplicates og 2. der er indtastet gyldigt input. Men 2. skal ikke ske på server-siden pt.
 app.post('/something', urlencodedParser, function (req, res) {  
+<<<<<<< HEAD
     // Prepare output in JSON format  
     response = {  
        username:req.body.username,  // Overvej at bruge de fulde ord frem for forkortelser, selv om det er lettere
@@ -63,6 +96,20 @@ app.post('/something', urlencodedParser, function (req, res) {
         if (err) throw err;
         console.log("complete");
     });
+=======
+   // Prepare output in JSON format  
+   response = {  
+       username:req.body.username,
+       password:req.body.password,
+       gender:req.body.gender  
+   };  
+   db.userDB.push(response);
+   let newDB = JSON.stringify(db.userDB);
+   fs.writeFile('./db/dbOfUsers.json', newDB, function(err){
+       if (err) throw err;
+       console.log("complete");
+   });
+>>>>>>> 25c479184a9fa378453dc2a8c87b330089e82433
    res.end(JSON.stringify(response)); // Her skrives til '/something' som klienten modtager
 });
 
@@ -76,22 +123,4 @@ const startServer = () => {
     } finally { console.log(`\n Server successfully running at http://127.0.0.1:${port}/`); }
 }
 
-// Builds database & test group. Basically anything that should be loaded before the user interacts with the web application.
-// Horrible on memory but confines our project to JS only (no use of external DBs).
-const initialize = async (serverStartCallback) => {
-    console.log(SEPARATOR);
-    try {
-        let startTime = performance.now();
-        db.MovieLensUserDB = await dataHandler.buildMovieLensUserDB();
-        utility.printTestAndTime("MovieLensUserDB", db.MovieLensUserDB, startTime);
-        
-        startTime = performance.now();
-        testGroup = dataHandler.groupUsers(db.MovieLensUserDB, 5, arrayOfUserIds);
-        utility.printTestAndTime("Testgroup", testGroup, startTime);
-    } catch(error) { utility.logError(error) };
-    
-    serverStartCallback();
-    console.log(SEPARATOR);
-}
-
-initialize(startServer);
+initialize.initialize(startServer);

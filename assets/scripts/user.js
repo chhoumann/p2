@@ -6,7 +6,7 @@ class User {
         this.userID = userID;
         this.userName = "Your name";
         this.friends = [];  // Contains ID's of friends.
-        // this.moviePreferences = []; // ? Suggestion: array of objects containing movie IDs and ratings of each movie.
+        this.moviePreferences = []; // ? Suggestion: array of objects containing movie IDs and ratings of each movie.
     }
     changeUserName(newUserName) {
         this.userName = newUserName;
@@ -20,31 +20,57 @@ class User {
         return false;
     }
     addToFriendList(friendID){
-        if (isValidID(friendID) && !this.friendsWith(friendID)) {
+        if (isValidID(friendID, "user") && !this.friendsWith(friendID)) {
             this.friends.push(friendID);
             console.log("Friend with ID: " + friendID + " was added to friends list");
         }
         else
-            console.log("Error: " + friendID + " is not a valid ID. Or already a friend.");
+            console.log("Error: " + friendID + " is not a valid ID. Or is already a friend.");
+    }
+    addToMoviePreferences(movieID) {
+        if (isValidMovieID(movieID, "movie")) {  // Are not checking here for whether ID has already been added
+            this.moviePreferences.push(movieID);
+        }
     }
 }
 
 module.exports.createUser = new User(0);
 
-// The HTML validates input is a number. Here we other conditions.
-function isValidID(id) {
+// Switch on different ID's under different circumstances
+function isValidID(id, typeOfID) {
+    let isValid = false;
+    switch(typeOfID) {
+        case "user":
+            isValid = isValidFriendID(id);
+            break;
+        case "movie":
+            isValid = isValidMovieID(id);
+            break;
+    }
+    return isValid;
+};
+
+function isValidFriendID(id) {
     if (id >= 1 && id <=1000 && Number.isInteger(id)) {
         return true;
     }
-};
+}
 
+function isValidMovieID(id) {
+    if (id >= 1 && id <=1000 && Number.isInteger(id)) { // Probably check for a different number interval
+        return true;
+    }
+}
 
-
+// Messing around with methods on a user
 let myUser = new User(5);
 myUser.changeUserName("Kurt");
 myUser.addToFriendList(50);
 myUser.addToFriendList(51);
 myUser.addToFriendList(51);
 myUser.addToFriendList(5);
+myUser.addToMoviePreferences(17);
+myUser.addToMoviePreferences(54);
 console.log(myUser.userName);
 console.log(myUser.friends);
+console.log(myUser.moviePreferences);
