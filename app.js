@@ -1,7 +1,7 @@
 const routes = require('./routes.js');
-const express = require('express');
-const {performance} = require('perf_hooks');
+const utility = require('./utility');
 const initialize = require('./initialize');
+const express = require('express');
 const app = express();
 let port;
 
@@ -21,7 +21,7 @@ const startServer = () => {
         port = process.env.PORT;
         if (port == null || port == "") port = 8000;
         server = app.listen(port);
-    } finally { console.log(`\n Server successfully running at http://127.0.0.1:${port}/`); }
+    } finally { utility.serverRunningMsg(port) }
 }
 
 initialize.initialize(startServer).then(db => {
