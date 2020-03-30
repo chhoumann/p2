@@ -4,6 +4,7 @@
 const bodyParser = require('body-parser'); 
 const urlencodedParser = bodyParser.urlencoded({ extended: false })  
 const fs = require('fs');
+const utility = require('./utility')
 const dbOfUsers = './db/dbOfUsers.json';
 const initialize = require('./initialize');
 const dataHandler = require('./assets/scripts/data/dataHandler');
@@ -36,25 +37,28 @@ router.get('/createAccount', (req, res) => {
     res.render('createAccount');
 });
 
-// Dette sender informationerne fra formen fra http://localhost:8000/Profile til http://localhost:8000/something
-// Der er redirect efter submit, men dette logger desuden requesten til consollen samt skriver det på '/something'.
-// TODO: Der burde tilføjes funktionalitet som tjekker duplicates i JSON fil.
-// TODO: Desuden også validering for at se om 1. duplicates og 2. der er indtastet gyldigt input. Men 2. skal ikke ske på server-siden pt.
+// This sends the information from the form at http://localhost:8000/profile to http://localhost:8000/createUser
 router.post('/createUser', urlencodedParser, async function (req, res) {  
     // Load current UserDB to 'append' to it.
     let userDB = await initialize.buildUserDB();
 
     // Prepare user in proper format  
     const user = dataHandler.formatUser(req, userDB["users"].length);
+    
+    // Checking for duplicates
+    if (utility.usernameDuplicateChecker(userDB["users"], user.username)) {
+        // Add to DB and save to file.
+        userDB["users"].push(user);
+        fs.writeFile(dbOfUsers, JSON.stringify(userDB), err => {if (err) throw err; utility.newUserConsoleMessage(user);});
 
-    // Formatering af response
-    userDB["users"].push(JSON.stringify(user));
-
-    // Write to file / save DB
-    fs.writeFile(dbOfUsers, JSON.stringify(userDB), err => {if (err) throw err; console.log(`New user: #${user.id} - ${user.username}.`);});
-
-    // Send something back to the user
-    res.end(`<h1>Thank you for signing up, ${user.username}!</h1>`);
+        // Send something back to the user
+        res.end(`<h1>Thank you for signing up, ${user.username}!</h1>
+                 <a href="/">Click here to go to the homepage.</a>`);
+    } else {
+        res.end(`<h1>Thank you for signing up, ${user.username}!</h1>
+                 <h2>Unfortunately, your name was already taken.</h2>
+                 <a href="/profile">Click here to try again.</a>`);
+    }
 });
 
 
