@@ -34,7 +34,7 @@ async function getData(path, type) {
         return;
     }
     if (type === CSV_TYPE) return neatCsv(result);
-    if (type === JSON_TYPE) return result;
+    if (type === JSON_TYPE) return JSON.parse(result);
 };
 
 module.exports.getMovieData = async() => { return await getData(MOVIES_CSV_PATH, CSV_TYPE) };
