@@ -51,6 +51,13 @@ const buildTestGroup = async (inputDB) => {
     return testGroup;
 };
 
+module.exports.buildUserDB = async () => {
+    let startTime = performance.now();
+    let userDB = await loadData.getUserDB();
+    utility.printTestAndTime("userDB", userDB, startTime);
+    return JSON.parse(userDB);
+};
+
 const writeToFile = (path, variableToWrite) => {
     let tempJSON = JSON.stringify(variableToWrite);
     fs.writeFile(path, tempJSON, (err) => { if (err) throw err; });
@@ -72,6 +79,7 @@ const checkIfDBExists = () => {
     if (!checkIfFileExists(MOVIE_DB_PATH)) return false;
     if (!checkIfFileExists(RATING_DB_PATH)) return false;
     if (!checkIfFileExists(TESTGROUP_PATH)) return false;
+    if (!checkIfFileExists('./db/dbOfUsers.json')) return false;
     return true;
 }
 
@@ -80,31 +88,39 @@ const checkIfDBExists = () => {
 // And then it starts the sever.
 module.exports.initialize = async (serverStartCallback) => {
     console.log(SEPARATOR);
+    let db = {};
     if (checkIfDBExists() === false){
         utility.infoMessage(DATABASE_MISSING_MSG);
         try {
             // Building and writing ratingDB
-            const ratingDB = await buildRatingDB();
-            writeToFile(RATING_DB_PATH, ratingDB);
+            db.ratingDB = await buildRatingDB();
+            writeToFile(RATING_DB_PATH, db.ratingDB);
             
             // Building and writing movieLensUserDB
-            const movieLensUserDB = await buildMovieLensUserDatabase(ratingDB);
-            writeToFile(MOVIELENS_USER_DB_PATH, movieLensUserDB);
+            db.movieLensUserDB = await buildMovieLensUserDatabase(db.ratingDB);
+            writeToFile(MOVIELENS_USER_DB_PATH, db.movieLensUserDB);
             
             // Building and writing movieDB
-            const movieDB = await buildMovieDB(ratingDB);
-            writeToFile(MOVIE_DB_PATH, movieDB);
+            db.movieDB = await buildMovieDB(db.ratingDB);
+            writeToFile(MOVIE_DB_PATH, db.movieDB);
             
             // Building and writing testgroup
-            const testGroup = await buildTestGroup(movieLensUserDB);   
-            writeToFile(TESTGROUP_PATH, testGroup);
+            db.testGroup = await buildTestGroup(db.movieLensUserDB);   
+            writeToFile(TESTGROUP_PATH, db.testGroup);
+
+            // Read UserDB file
+            // db.userDB = await buildUserDB();
+            // writeToFile('./db/dbOfUsers.json', db.userDB);
+            // console.log(db.userDB);
+
             
             // console.log(pearsonCorrelation.getCorrelation(testGroup, 0, 1));
             //console.log(pearsonCorrelation.getCorrelation(testGroup, 0, 1));
 
-            groupRec.makeGroupRec(testGroup, movieDB, 3);
-        } catch(error) { utility.logError(error) };
+            // groupRec.makeGroupRec(testGroup, movieDB, 3);
+        } catch(error) { utility.logError   (error) };
     };
     serverStartCallback();
     console.log(SEPARATOR);
+    return db;
 }
