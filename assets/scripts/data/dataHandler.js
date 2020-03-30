@@ -102,8 +102,9 @@ module.exports.matchGenres = (genresWatchedByUser) => {
 
 module.exports.formatUser = (req, currentUserAmount) => {
     const username = req.body.username;
+    const password = req.body.password;
     const id = currentUserAmount + 1;
-    const user = new u.User(id, username);
+    const user = new u.User(id, username, password);
 
     return user;
 }
