@@ -1,26 +1,20 @@
 const bodyParser = require('body-parser'); 
-<<<<<<< HEAD
 const routes = require('./routes.js');
 const express = require('express');
-=======
->>>>>>> 25c479184a9fa378453dc2a8c87b330089e82433
 const {performance} = require('perf_hooks');
 const fs = require('fs');
 const express = require('express');
 const routes = require('./routes')
 const initialize = require('./initialize');
 const app = express();
-<<<<<<< HEAD
 const userDbFile = './db/dbOfUsers.json';
 let writeStream = fs.createWriteStream(userDbFile);
 let testGroup;
 let port;
-=======
->>>>>>> 25c479184a9fa378453dc2a8c87b330089e82433
+
 let urlencodedParser = bodyParser.urlencoded({ extended: false })  
 let port;
 
-<<<<<<< HEAD
 db.userDB = [];
 
 // Error handling (hvis JSON er tom / ugyldig) => init tomt array, ellers sæt db.userDB = JSON.parse(userDbFile)
@@ -36,16 +30,6 @@ function test() {
  
 console.log(`Det her: ${test()}`);
 console.log(userDbFile);
-=======
-/* // * Ikke længere relevant at bruge db objektet. Desuden er dette blot en test - fjern senere.  
-let db = {};
-db.userDB =  [];
-db.userDB.push({id: 0, username: "Mr. Zero"});
-db.userDB.push({id: 1, username: "Mr. One"});
-let json = JSON.stringify(db.userDB);
-fs.writeFile('dbOfUsers.json', json, (err) => { if (err) throw err; });
-*/
->>>>>>> 25c479184a9fa378453dc2a8c87b330089e82433
 
 let userDbFile = './db/dbOfUsers.json';
 // Error handling (hvis JSON er tom / ugyldig) => init tomt array, ellers sæt db.userDB = JSON.parse(userDbFile)
@@ -77,26 +61,7 @@ app.use('/', routes);
 // TODO: Der burde tilføjes funktionalitet som tjekker duplicates i JSON fil.
 // TODO: Desuden også validering for at se om 1. duplicates og 2. der er indtastet gyldigt input. Men 2. skal ikke ske på server-siden pt.
 app.post('/something', urlencodedParser, function (req, res) {  
-<<<<<<< HEAD
-    // Prepare output in JSON format  
-    response = {  
-       username:req.body.username,  // Overvej at bruge de fulde ord frem for forkortelser, selv om det er lettere
-       password:req.body.password,
-       gender:req.body.gender  
-    };
-    // if (){
-    //     writeStream.write(JSON.stringify(response))
-    // }
-    // else{
-    //     writeStream.write("," + JSON.stringify(response ));
-    // }
-    db.userDB.push(response);
-    let newDB = JSON.stringify(db.userDB);
-    fs.writeFile(userDbFile, newDB, function(err){
-        if (err) throw err;
-        console.log("complete");
-    });
-=======
+
    // Prepare output in JSON format  
    response = {  
        username:req.body.username,
@@ -109,7 +74,7 @@ app.post('/something', urlencodedParser, function (req, res) {
        if (err) throw err;
        console.log("complete");
    });
->>>>>>> 25c479184a9fa378453dc2a8c87b330089e82433
+
    res.end(JSON.stringify(response)); // Her skrives til '/something' som klienten modtager
 });
 
