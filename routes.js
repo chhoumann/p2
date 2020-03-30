@@ -37,7 +37,7 @@ router.get('/createAccount', (req, res) => {
     res.render('createAccount');
 });
 
-// This sends the information from the form at http://localhost:8000/profile to http://localhost:8000/createUser
+// This receives and processes the information from the form at http://localhost:8000/profile to http://localhost:8000/createUser
 router.post('/createUser', urlencodedParser, async function (req, res) {  
     // Load current UserDB to 'append' to it.
     let userDB = await initialize.buildUserDB();
