@@ -1,8 +1,8 @@
 /*
 ! We have very many pages currently, so I saw fit to move them here - for better structure.
 */
-const urlencodedParser = bodyParser.urlencoded({ extended: false })  
 const bodyParser = require('body-parser'); 
+const urlencodedParser = bodyParser.urlencoded({ extended: false })  
 const fs = require('fs');
 const dbOfUsers = './db/dbOfUsers.json';
 const initialize = require('./initialize');
