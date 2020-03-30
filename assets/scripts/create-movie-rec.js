@@ -1,6 +1,9 @@
 // Get movie recommendation for multiple users
 
 
+
+//OLD FUNCTION - DO NOT REMOVE!
+/*
 function getMovieRec(event){
     event.preventDefault();
     
@@ -30,3 +33,4 @@ function getMovieRec(event){
 
     // TODO: Get the different users movie preferences and calculate a recommendation 
 }
+*/
