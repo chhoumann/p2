@@ -3,33 +3,11 @@ const routes = require('./routes.js');
 const express = require('express');
 const {performance} = require('perf_hooks');
 const fs = require('fs');
-const express = require('express');
-const routes = require('./routes')
 const initialize = require('./initialize');
 const app = express();
-const userDbFile = './db/dbOfUsers.json';
-let writeStream = fs.createWriteStream(userDbFile);
-let testGroup;
 let port;
 
 let urlencodedParser = bodyParser.urlencoded({ extended: false })  
-let port;
-
-db.userDB = [];
-
-// Error handling (hvis JSON er tom / ugyldig) => init tomt array, ellers sæt db.userDB = JSON.parse(userDbFile)
-function test() {
-    try {
-        let userDBLoaded = fs.readFile(userDbFile);
-        if (userDBLoaded == undefined) throw "fejl forfanden";
-    }
-    catch(error) {
-        console.log("nej");
-    }
-}
- 
-console.log(`Det her: ${test()}`);
-console.log(userDbFile);
 
 let userDbFile = './db/dbOfUsers.json';
 // Error handling (hvis JSON er tom / ugyldig) => init tomt array, ellers sæt db.userDB = JSON.parse(userDbFile)
@@ -42,8 +20,9 @@ function test() {
         console.log(error);
     }
 }
- 
+
 console.log(`Det her: ${test()}`);
+console.log(userDbFile);
 
 // console.log(JSON.stringify(userDbFile));
 // console.log(JSON.parse(userDbFile));
@@ -68,7 +47,7 @@ app.post('/something', urlencodedParser, function (req, res) {
        password:req.body.password,
        gender:req.body.gender  
    };  
-   db.userDB.push(response);
+   // db.userDB.push(response);
    let newDB = JSON.stringify(db.userDB);
    fs.writeFile('./db/dbOfUsers.json', newDB, function(err){
        if (err) throw err;
