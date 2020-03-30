@@ -23,4 +23,19 @@ module.exports.getTotalGenresInDB = (movieDB) => {
     console.log(unique.length);
 }
 module.exports.reduceArray = (arrayOfArrays) => { return Array.prototype.concat.apply([], arrayOfArrays)};
-module.exports.serverRunningMsg = (port) => { log(chalk.bold.yellow(`\n Server successfully running at http://127.0.0.1:${port}/`)) }
+module.exports.serverRunningMsg = (port) => { log(chalk.bold.yellow(`\n Server successfully running at http://127.0.0.1:${port}/`)) };
+module.exports.logMemoryUsage = () => {
+    const used = process.memoryUsage();
+    for (let key in used) {
+        console.log(`${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
+    }
+}
+module.exports.newUserConsoleMessage = (user) => { log(chalk.cyan(`New user: #${user.id} - ${chalk.bold(user.username)}!`)) }
+// This (below) needs to go somewhere else.
+module.exports.usernameDuplicateChecker = (arrayOfUsers, username) => {
+    let result = true;
+    arrayOfUsers.forEach(user => {
+        if (user["username"] === username) result = false;
+    });
+    return result;
+}
