@@ -14,6 +14,7 @@ const RATING_DB_PATH = './db/ratingDB.json';
 const MOVIELENS_USER_DB_PATH = './db/movieLensUserDB.json';
 const MOVIE_DB_PATH = './db/movieDB.json';
 const TESTGROUP_PATH = './db/testGroup.json';
+const USER_DB_PATH = './db/dbOfUsers.json';
 const DATABASE_MISSING_MSG = "Database does not exist or is outdated. Running initialization.";
 
 const buildRatingDB = async () => {
@@ -55,7 +56,7 @@ module.exports.buildUserDB = async () => {
     let startTime = performance.now();
     let userDB = await loadData.getUserDB();
     utility.printTestAndTime("userDB", userDB, startTime);
-    return JSON.parse(userDB);
+    return userDB;
 };
 
 const writeToFile = (path, variableToWrite) => {
@@ -79,7 +80,7 @@ const checkIfDBExists = () => {
     if (!checkIfFileExists(MOVIE_DB_PATH)) return false;
     if (!checkIfFileExists(RATING_DB_PATH)) return false;
     if (!checkIfFileExists(TESTGROUP_PATH)) return false;
-    if (!checkIfFileExists('./db/dbOfUsers.json')) return false;
+    if (!checkIfFileExists(USER_DB_PATH)) return false;
     return true;
 }
 
@@ -89,7 +90,7 @@ const checkIfDBExists = () => {
 module.exports.initialize = async (serverStartCallback) => {
     console.log(SEPARATOR);
     let db = {};
-    if (checkIfDBExists() === false){
+    if (checkIfDBExists() === false) {
         utility.infoMessage(DATABASE_MISSING_MSG);
         try {
             // Building and writing ratingDB
@@ -107,19 +108,19 @@ module.exports.initialize = async (serverStartCallback) => {
             // Building and writing testgroup
             db.testGroup = await buildTestGroup(db.movieLensUserDB);   
             writeToFile(TESTGROUP_PATH, db.testGroup);
-
-            // Read UserDB file
-            // db.userDB = await buildUserDB();
-            // writeToFile('./db/dbOfUsers.json', db.userDB);
-            // console.log(db.userDB);
-
             
             // console.log(pearsonCorrelation.getCorrelation(testGroup, 0, 1));
-            //console.log(pearsonCorrelation.getCorrelation(testGroup, 0, 1));
-
+            // console.log(pearsonCorrelation.getCorrelation(testGroup, 0, 1));
             // groupRec.makeGroupRec(testGroup, movieDB, 3);
         } catch(error) { utility.logError   (error) };
-    };
+    }
+    else {
+        db.ratingDB = await loadData.getRatingDB();
+        db.movieLensUserDB = await loadData.getMovieLensUserDB();
+        db.movieDB = await loadData.getMovieDB();
+        db.testGroup = await loadData.getTestGroupData();
+        utility.infoMessage("Necessary files exist. Starting server...")
+    }
     serverStartCallback();
     console.log(SEPARATOR);
     return db;
