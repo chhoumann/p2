@@ -102,3 +102,11 @@ module.exports.matchGenres = (genresWatchedByUser) => {
     return genres;
 
 }
+
+module.exports.formatUser = (req) => {
+    return {  
+        username:req.body.username,
+        password:req.body.password,
+        gender:req.body.gender  
+    };
+}
