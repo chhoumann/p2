@@ -24,4 +24,10 @@ const startServer = () => {
     } finally { console.log(`\n Server successfully running at http://127.0.0.1:${port}/`); }
 }
 
-initialize.initialize(startServer);
+initialize.initialize(startServer).then(db => {
+    // Code to check current memory usage.
+    const used = process.memoryUsage();
+    for (let key in used) {
+        console.log(`${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
+    }
+});
