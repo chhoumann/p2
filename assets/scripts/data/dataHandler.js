@@ -1,4 +1,5 @@
 const loadData = require('./loadData');
+const u = require('../user');
 const utility = require('../../../utility');
 const USERS_IN_TOTAL = 610; // Amount of users in the dataset.
 const GENRE_SEPARATOR = '|';
@@ -93,20 +94,16 @@ module.exports.matchGenres = (genresWatchedByUser) => {
     'Musical': 0,   'Documentary': 0,
     'IMAX': 0,      'Western': 0,
     'Film-Noir': 0
-    }
-
-    genresWatchedByUser.forEach(genre => {
-        genres[genre]++;
-    })
+    };
+    genresWatchedByUser.forEach(genre => { genres[genre]++; });
 
     return genres;
-
 }
 
-module.exports.formatUser = (req) => {
-    return {  
-        username:req.body.username,
-        password:req.body.password,
-        gender:req.body.gender  
-    };
+module.exports.formatUser = (req, currentUserAmount) => {
+    const username = req.body.username;
+    const id = currentUserAmount + 1;
+    const user = new u.User(id, username);
+
+    return user;
 }
