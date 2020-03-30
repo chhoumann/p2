@@ -11,19 +11,21 @@
         <title>Profile creation</title>
     </head>
     <body>
-        <h1 id = "header">Profile creation</h1>
+        <h1 id="header">Profile creation</h1>
         <form id="account" action="/createUser" method="POST">  
             <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username"><br> <br>
+            <input type="text" id="username" name="username" minlength="3" maxlength="16" required><br> <br>
             <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password"> <br> 
+            <input type="password" id="password" name="password" minlength="3" maxlength="16" required> <br> 
             <input type="checkbox" onclick="showPassword()">Show Password <br> <br>
+            <!--
             <input type="radio" id="male" name="gender" value="male">
             <label for="male">Male</label><br>
             <input type="radio" id="female" name="gender" value="female">
             <label for="female">Female</label><br>
             <input type="radio" id="other" name="gender" value="other">
             <label for="other">Other</label>
+            -->
             <p></p>
             <input id="button" type="submit">
         </form>
