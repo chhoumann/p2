@@ -2,12 +2,6 @@ const {performance} = require('perf_hooks');
 const chalk = require('chalk');
 const log = console.log;
 
-// Terminal colors
-const RED_COLOR_TERMINAL = "\x1b[31m";
-const GREEN_COLOR_TERMINAL = "\x1b[32m";
-const YELLOW_COLOR_TERMINAL = "\x1b[33m";
-const RESET_COLOR_TERMINAL = "\x1b[0m";
-
 module.exports.successMessage = (item, message) => { log(chalk.green(`✔ ${item} ${message}.`)) };
 module.exports.errorMessage = (item, message) => { this.logError(`❌ ${item} ${message}.`) }; // First letter should be capitalized.
 module.exports.successLoading = (itemName) => { log(chalk.green(`✔ ${itemName} successfully loaded.`)) };
