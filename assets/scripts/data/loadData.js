@@ -22,12 +22,12 @@ const USER_DB_PATH = './db/dbOfUsers.json';
 const CSV_TYPE = 'CSV';
 const JSON_TYPE = 'JSON';
 
-async function getData(path, type) {
+async function getData(path, type, noLog = true) {
     let result;
     try {
         let startTime = performance.now();
         result = await fs.readFile(path);
-        utility.printTestAndTime(path, result, startTime);
+        if (noLog === false) utility.printTestAndTime(path, result, startTime);
     }
     catch(error) { 
         utility.logError(`${error.name} in loading ${error.path}!`);
