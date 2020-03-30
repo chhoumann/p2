@@ -2,9 +2,10 @@
 
 // The blueprint of our user.
 module.exports.User = class User {
-    constructor(id, username){
+    constructor(id, username, password){
         this.id = id;
         this.username = username;
+        this.password = password; // Currently plain text. Might want to add encryption or something...
         this.friends = [];  // Contains ID's of friends.
         this.moviePreferences = []; // ? Suggestion: array of objects containing movie IDs and ratings of each movie.
     }
