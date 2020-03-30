@@ -56,4 +56,15 @@ router.post('/createUser', urlencodedParser, async function (req, res) {
     res.end(JSON.stringify(user)); // Her skrives til '/something' som klienten modtager
 });
 
+
+// TODO: Validering af input (client- & server side?)
+// TODO: Tjek for duplicates
+// TODO: Find way to store userIDs
+router.post('/movieRec', urlencodedParser, async function (req, res) {
+    let userID = req.body.ID;
+
+    console.log(JSON.stringify(userID));
+    res.render('movie-rec');
+});
+
 module.exports = router;
