@@ -17,21 +17,21 @@ const TESTGROUP_PATH = './db/testGroup.json';
 const USER_DB_PATH = './db/dbOfUsers.json';
 const DATABASE_MISSING_MSG = "Database does not exist or is outdated. Running initialization.";
 
-const buildRatingDB = async () => {
+const buildRatingDB = async (noLog = false) => {
     let startTime = performance.now();
     let ratingsDB = await loadData.getRatingData();
-    utility.printTestAndTime("RatingDB", ratingsDB, startTime);
+    if (noLog === false) utility.printTestAndTime("RatingDB", ratingsDB, startTime);
     return ratingsDB;
 };
 
-const buildMovieLensUserDatabase = async (ratingsDB) => {
+const buildMovieLensUserDatabase = async (ratingsDB, noLog = false) => {
     let startTime = performance.now();
     let MovieLensUserDB = await dataHandler.buildMovieLensUserDB(ratingsDB);
-    utility.printTestAndTime("MovieLensUserDB", MovieLensUserDB, startTime);
+    if (noLog === false) utility.printTestAndTime("MovieLensUserDB", MovieLensUserDB, startTime);
     return MovieLensUserDB;
 };
 
-const buildMovieDB = async (ratingsDB) => {
+const buildMovieDB = async (ratingsDB, noLog = false) => {
     let startTime = performance.now();
     const movieDB = await loadData.getMovieData();
     // 9742 movies in DB. The forEach makes this take a lot longer, but is necessary for recommender system.
@@ -41,21 +41,21 @@ const buildMovieDB = async (ratingsDB) => {
         movie.averageRating = dataHandler.getAverage(movie.ratings);
         movie.genres = dataHandler.getGenresFromMovie(movie);
     });
-    utility.printTestAndTime("MovieDB, Ratings, & Average Ratings", movieDB, startTime);
+    if (noLog === false) utility.printTestAndTime("MovieDB, Ratings, & Average Ratings", movieDB, startTime);
     return movieDB;
 };
 
-const buildTestGroup = async (inputDB) => {
+const buildTestGroup = async (inputDB, noLog = false) => {
     let startTime = performance.now();
     let testGroup = await dataHandler.groupUsers(inputDB, 5, arrayOfUserIds);
-    utility.printTestAndTime("Testgroup", testGroup, startTime);
+    if (noLog === false) utility.printTestAndTime("Testgroup", testGroup, startTime);
     return testGroup;
 };
 
-module.exports.buildUserDB = async () => {
+module.exports.buildUserDB = async (noLog = true) => {
     let startTime = performance.now();
     let userDB = await loadData.getUserDB();
-    utility.printTestAndTime("userDB", userDB, startTime);
+    if (noLog === false) utility.printTestAndTime("userDB", userDB, startTime);
     return userDB;
 };
 
