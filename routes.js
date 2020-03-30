@@ -41,19 +41,20 @@ router.get('/createAccount', (req, res) => {
 // TODO: Der burde tilføjes funktionalitet som tjekker duplicates i JSON fil.
 // TODO: Desuden også validering for at se om 1. duplicates og 2. der er indtastet gyldigt input. Men 2. skal ikke ske på server-siden pt.
 router.post('/createUser', urlencodedParser, async function (req, res) {  
-   // Prepare output in JSON format  
-    let user = dataHandler.formatUser(req);
+    // Load current UserDB to 'append' to it.
+    let userDB = await initialize.buildUserDB();
+
+    // Prepare user in proper format  
+    const user = dataHandler.formatUser(req, userDB["users"].length);
 
     // Formatering af response
-    let userDB = await initialize.buildUserDB();
     userDB["users"].push(JSON.stringify(user));
-    console.log(userDB.users);
 
     // Write to file / save DB
-    fs.writeFile(dbOfUsers, JSON.stringify(userDB), err => {if (err) throw err; console.log("saved!");});
+    fs.writeFile(dbOfUsers, JSON.stringify(userDB), err => {if (err) throw err; console.log(`New user: #${user.id} - ${user.username}.`);});
 
     // Send something back to the user
-    res.end(JSON.stringify(user)); // Her skrives til '/something' som klienten modtager
+    res.end(`<h1>Thank you for signing up, ${user.username}!</h1>`);
 });
 
 

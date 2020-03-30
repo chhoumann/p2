@@ -1,10 +1,10 @@
 'use strict';
 
 // The blueprint of our user.
-class User {
-    constructor(userID){
-        this.userID = userID;
-        this.userName = "Your name";
+module.exports.User = class User {
+    constructor(id, username){
+        this.id = id;
+        this.username = username;
         this.friends = [];  // Contains ID's of friends.
         this.moviePreferences = []; // ? Suggestion: array of objects containing movie IDs and ratings of each movie.
     }
@@ -34,7 +34,7 @@ class User {
     }
 }
 
-module.exports.createUser = new User(0);
+//module.exports.createUser = new User(0);
 
 // Switch on different ID's under different circumstances
 function isValidID(id, typeOfID) {
@@ -63,7 +63,7 @@ function isValidMovieID(id) {
 }
 
 // Messing around with methods on a user
-let myUser = new User(5);
+/* let myUser = new User(5);
 myUser.changeUserName("Kurt");
 myUser.addToFriendList(50);
 myUser.addToFriendList(51);
@@ -73,4 +73,4 @@ myUser.addToMoviePreferences(17);
 myUser.addToMoviePreferences(54);
 console.log(myUser.userName);
 console.log(myUser.friends);
-console.log(myUser.moviePreferences);
+console.log(myUser.moviePreferences); */
