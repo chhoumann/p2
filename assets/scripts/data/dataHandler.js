@@ -34,7 +34,7 @@ module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB(rating
             await this.getRatingsForUser(i, ratingsData).then(res => userDB.push(res));
         }
     }
-    catch {
+    catch(error) {
         utility.logError("Could not build MovieLens UserDB.");
         return;
     }
@@ -52,7 +52,7 @@ module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id, ra
             if (rating.movieId === id) { results.push(rating)};
         }); */
     }
-    catch {
+    catch(error) {
         utility.logError(`Could not get ratings for movie with ID: ${id}`);
         return;
     }

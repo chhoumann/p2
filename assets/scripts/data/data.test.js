@@ -43,12 +43,15 @@ const USER_RATING_ID = 0;
 const USER_GAVE_RATING = 4.0;
 const GROUP_SIZE = 5;
 const TEST_GROUP_USER_IDS = [USER_TO_TEST, 2, 3, 4, 5];
-const MOVIE_ID_TO_TEST = 1;
+const MOVIE_ID_TO_TEST = "1";
 const MOVIE_HAS_X_RATINGS = 215;
 
 test('Builds MovieLens User Database', async () => {
-    let tempMovieLensUserDB = await dataHandler.buildMovieLensUserDB();
-    expect(tempMovieLensUserDB.length).toEqual(USERS_IN_DB);
+    let ratingsData = await loadData.getRatingDB();
+    await dataHandler.buildMovieLensUserDB(ratingsData)
+    .then( result => {
+        expect(result.length).toEqual(USERS_IN_DB)
+    });
 
 });
 
@@ -59,7 +62,8 @@ test('Finds all ratings for specific user', async () => {
 });
 
 test('Groups users', async () => {
-    let tempGroup = await dataHandler.groupUsers(await dataHandler.buildMovieLensUserDB(), GROUP_SIZE, TEST_GROUP_USER_IDS);
+    let ratingsData = await loadData.getRatingDB();
+    let tempGroup = dataHandler.groupUsers(await dataHandler.buildMovieLensUserDB(ratingsData), GROUP_SIZE, TEST_GROUP_USER_IDS);
     expect(tempGroup.length).toEqual(GROUP_SIZE);
 
     // Tests the user that was also tested in the previous test, therefore it is the same rating for the same movie.
@@ -67,7 +71,8 @@ test('Groups users', async () => {
 });
 
 test('Gets ratings for movie, given an id', async () => {
-    let tempRatings = await dataHandler.getRatingsForMovieID(MOVIE_ID_TO_TEST);
+    let ratingsData = await loadData.getRatingDB();
+    let tempRatings = await dataHandler.getRatingsForMovieID(MOVIE_ID_TO_TEST, ratingsData);
     expect(tempRatings.length).toEqual(MOVIE_HAS_X_RATINGS)
 });
 // -----------------------------------------
