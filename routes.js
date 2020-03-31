@@ -23,8 +23,8 @@ router.get('/connect-with-friends', (req, res) => {
   res.render('connect-with-friends');
 });
 
-router.get('/movie-rec', (req, res) => {
-    res.render('movie-rec');
+router.get('/movieRec', (req, res) => {
+    res.render('movieRec');
 
 });
 
@@ -62,14 +62,17 @@ router.post('/createUser', urlencodedParser, async function (req, res) {
 });
 
 
-// TODO: Validering af input (client- & server side?)
-// TODO: Tjek for duplicates
-// TODO: Find way to store userIDs
+/* TODO: Validering af input
+    [X] Client-side
+    []  Server-side
+   TODO: Tjek for duplicates
+*/
 router.post('/movieRec', urlencodedParser, async function (req, res) {
-    let userID = req.body.ID;
+    let userArray = req.body.ID;
 
-    console.log(JSON.stringify(userID));
-    res.render('movie-rec');
+    console.log(userArray);
+
+    res.render('movieRec');
 });
 
 module.exports = router;
