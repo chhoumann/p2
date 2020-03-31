@@ -72,46 +72,27 @@ router.post('/createUser', urlencodedParser, async function (req, res) {
     [] Apply pearsons to group 
 */
 router.post('/movieRec', urlencodedParser, async function (req, res) {
+    // !##### Everything in this scope should have its own function:
     // store userIDs in array
-    let userArray = req.body.ID;
+    const userArray = req.body.ID;
+    const userDB = await initialize.buildUserDB();
+    let usersFound = 0;
+    let userExists = false;
+    
+    userArray.forEach(groupUser => {
+        userDB["users"].forEach(dbUser => {
+            if (dbUser.id === parseInt(groupUser) && !userExists) { userExists = true; usersFound++; };
+        })
+        userExists = false;
+    });
+    
+    // check if users exists, if true create group.
+    if(usersFound === userArray.length){
+        console.log("All users exists in database!");
 
-    // open DB-file of users
-    fs.readFile(dbOfUsers, (err, data) => {
-        if(err) throw err;
-        let usersDB = JSON.parse(data);
-
-        // amount of users in database NB: does NOT work in IE < 9
-        let amountOfUsersInDB = Object.keys(usersDB.users).length;
-        let userFound = 0;
-        let userExists = false; 
-
-        for(let i = 0; i < amountOfUsersInDB; i++) {
-            for(let x = 0; x < userArray.length; x++) {
-                if(usersDB.users[i].id == userArray[x] && !userExists){
-                    // user has been found!
-                    userExists = true;
-
-                    //increment found users
-                    userFound += 1;
-                }
-            }
-
-            // reset userExists for next user check
-            userExists = false;
-        }
-        
-        // check if users exists, if true create group.
-        if(userFound == userArray.length){
-            console.log("All users exists in database!");
-
-            // create group ... 
-
-
-        } else {
-            console.log("Not all users found in databse!");
-        }
-
-    })
+        // create group ... 
+    } else { console.log("Not all users found in database!"); }
+    // !##### End scope.
 
     res.render('movieRec');
 });
