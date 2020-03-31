@@ -61,16 +61,57 @@ router.post('/createUser', urlencodedParser, async function (req, res) {
     }
 });
 
-
-/* TODO: Validering af input
-    [X] Client-side
-    []  Server-side
-   TODO: Tjek for duplicates
+// TODO: Clean up code and move to relevant files
+/*
+    [X] Client-side input validering
+    [] Server-side input validering
+    [X] Check for duplicates (client side)
+    [X] Max group of 5
+    [X] Check if users exists in database
+    [] Build group from users
+    [] Apply pearsons to group 
 */
 router.post('/movieRec', urlencodedParser, async function (req, res) {
+    // store userIDs in array
     let userArray = req.body.ID;
 
-    console.log(userArray);
+    // open DB-file of users
+    fs.readFile(dbOfUsers, (err, data) => {
+        if(err) throw err;
+        let usersDB = JSON.parse(data);
+
+        // amount of users in database NB: does NOT work in IE < 9
+        let amountOfUsersInDB = Object.keys(usersDB.users).length;
+        let userFound = 0;
+        let userExists = false; 
+
+        for(let i = 0; i < amountOfUsersInDB; i++) {
+            for(let x = 0; x < userArray.length; x++) {
+                if(usersDB.users[i].id == userArray[x] && !userExists){
+                    // user has been found!
+                    userExists = true;
+
+                    //increment found users
+                    userFound += 1;
+                }
+            }
+
+            // reset userExists for next user check
+            userExists = false;
+        }
+        
+        // check if users exists, if true create group.
+        if(userFound == userArray.length){
+            console.log("All users exists in database!");
+
+            // create group ... 
+
+
+        } else {
+            console.log("Not all users found in databse!");
+        }
+
+    })
 
     res.render('movieRec');
 });
