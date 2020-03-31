@@ -17,11 +17,16 @@ add.addEventListener("click", ()=>{
     newInput.setAttribute("id", `ID-box-${input_box_ID + 1}`);
     newInput.setAttribute("name", "ID");
 
+    
+    // Max of 5 - maybe 4 (user is 1 person)
+    if(input_box_ID < 5) {
+        newLabel.innerHTML = "<br>Enter ID <br>";
+        document.getElementById("groupMember").insertBefore(newLabel, document.getElementById("addPerson"));
+        document.getElementById("groupMember").insertBefore(newInput, document.getElementById("addPerson"));
+    } else {
+        alert("Maxium of 5 people!");
+    }
+
     //Increment variable to give new ID to input box 
     input_box_ID += 1;
-
-    newLabel.innerHTML = "<br>Enter ID <br>";
-    document.getElementById("groupMember").insertBefore(newLabel, document.getElementById("addPerson"));
-    document.getElementById("groupMember").insertBefore(newInput, document.getElementById("addPerson"));
-
 })
