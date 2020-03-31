@@ -1,7 +1,5 @@
 // check if inputs are valid
 function checkForm(){
-    //event.preventDefault();
-    
     // Get number of input fields
     let form = document.getElementById("groupMember");
     let numOfIDs = form.getElementsByTagName("input").length;
@@ -9,7 +7,6 @@ function checkForm(){
     // Variable for userIDs
     let userIDArray = [];
     let userID;
-    let foundErr;
 
     // Store userIDs in array
     for(let x = 1; x <= numOfIDs; x++){
@@ -17,13 +14,25 @@ function checkForm(){
 
         if(!isNaN(userID) && userID != ""){
             userIDArray.push(userID);
-            console.log("Succes!")
+            console.log("Added user to array")
         } else {
-            console.log("Not a number fam!");
-            foundErr = 1;
-
+            alert("Not valid input!");
             return false;
         }
         
     }
+
+    // check for duplicates
+    if(checkDuplicates(userIDArray)){
+        console.log("No duplicates");
+    } else {
+        alert("You can't add the same person more than once!");
+        return false;
+    }
+}
+
+// check for duplicates using Set()
+// Set() can only contain unique elements, so if the size differs, there is a duplicate.
+function checkDuplicates(userArray){
+    return userArray.length === new Set(userArray).size;
 }
