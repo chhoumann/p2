@@ -27,5 +27,4 @@ const startServer = () => {
 initialize.initialize(startServer).then(db => {
     // Code to check current memory usage.
     // utility.logMemoryUsage();
-    
 });

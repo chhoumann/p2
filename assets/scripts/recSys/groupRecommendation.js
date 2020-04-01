@@ -35,9 +35,9 @@ ___________________________________________
     - UTS baseret på korrelation
 
 */
-const dataHandler = require('./data/dataHandler');
-const utility = require('../../utility')
-const loadData = require('./data/loadData');
+const dataHandler = require('../data/dataHandler');
+const utility = require('../../../utility')
+const loadData = require('../data/loadData');
 const pearsonCorrelation = require('./pearsonCorrelation');
 //const groupOfUsers = require('./testGroupData.json');
 

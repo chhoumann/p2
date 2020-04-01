@@ -1,6 +1,6 @@
 // Modules
-const groupRec = require('./assets/scripts/groupRecommendation');
-const pearsonCorrelation = require('./assets/scripts/pearsonCorrelation')
+const groupRec = require('./assets/scripts/recSys/groupRecommendation');
+const pearsonCorrelation = require('./assets/scripts/recSys/pearsonCorrelation')
 const dataHandler = require('./assets/scripts/data/dataHandler');
 const loadData = require('./assets/scripts/data/loadData');
 const utility = require('./utility');

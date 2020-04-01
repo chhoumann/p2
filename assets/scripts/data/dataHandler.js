@@ -1,5 +1,5 @@
 const loadData = require('./loadData');
-const u = require('../user');
+const u = require('../user/user');
 const utility = require('../../../utility');
 const USERS_IN_TOTAL = 610; // Amount of users in the dataset.
 const GENRE_SEPARATOR = '|';
