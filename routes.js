@@ -1,6 +1,3 @@
-/*
-! We have very many pages currently, so I saw fit to move them here - for better structure.
-*/
 const groupHandler = require('./assets/scripts/social/groupHandler');
 const user = require('./assets/scripts/user/user');
 const bodyParser = require('body-parser'); 
