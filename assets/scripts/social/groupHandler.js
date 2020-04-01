@@ -27,7 +27,10 @@ module.exports.validateGroup = async (req) => {
     
     // Check if users exists, if true create group.
     if(usersFound === userArray.length){
-        console.log("All users exists in database!");
+        console.log("All users exists in database! \n Creating group...");
+
+        
+
         return true;
     } else { console.log("Not all users found in database!"); return false; }
 }
