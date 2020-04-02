@@ -1,22 +1,12 @@
 /*
 * Vores fremgangsmåde (i store træk):
-! USER-USER fremgangsmåde
-* 1. Lav genrekorrelation for enhver bruger 'i' i en gruppe 'G' mod enhver bruger 'j' i MovieLens datasættet 
-    - Der kan bruges Pearson correlation på user.genres variablen mellem de to brugere
-* 2. Lav liste S over de film som brugere 'j' med høj genrekorrelation med bruger 'i' har set for enhver bruger 'i'
-* 3. Lav liste R over de film fra S som har høje ratings (4-5)          
-* 4. Lav en samlet liste 'R_G' for gruppen ved at sammensætte 'R' for enhver bruger 'i' i gruppe 'G'
-* 5. Dan en liste 'RF_G' ved at anvende Utilitarian Strategy på 'R_G'
-* 6. Anbefal listen 'RF_g'
 ! ITEM-ITEM fremgangsmåde
-* 1. Find ud af hvilke film der ligner hinanden (har stor genrekorrelation / jo flere genrer som to film har tilfælles jo bedre) og sammel i liste
-* 2. Lav en liste 'S' over hvilke film en bruger 'i' fra gruppen 'G' har set
-    - Og eventuelt filtrer efter de højest ratede film
-* 3. Lav en liste 'R' ud fra film med stor genrekorrelation med enhver film i listen 'S' (altså film de ikke har set)
-    - Fjern alle film der har under 3 i rating og indsæt disse i ny liste L.
-* 4. Dan en samlet liste 'R_G' hvori 'R' for enhver bruger 'i' fra 'G' indgår
-* 5. Sammenlign listen L med listen R_G og fjern alle fra R_G som ligger i L.
-* 6. Udfør Utilitarian Strategy på 'R_G' så der dannes en mindre mængde film, som skal anbefales til brugerne
+* 1. Lav en liste 'S' over hvilke film en bruger 'i' fra gruppen 'G' har set
+* 1.5 Fjern alle film der har under 3 i rating og indsæt disse i ny liste L.
+* 2. Lav liste R_G med alle S for ethvert gruppemedlem i
+* 2.5 Sammenlign listen L med listen R_G og fjern alle film fra R_G som ligger i L.
+* 2. Find ud af hvilke film fra R_G har stor genrekorrelation med enhver film i MovieDB
+* 6. Udfør Utilitarian Strategy på 'R_G' så der dannes en mindre mængde film, som skal anbefales til brugerne som ny kolonne
     - UTS baseret på korrelation
 */
 const dataHandler = require('../data/dataHandler');
