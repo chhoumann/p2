@@ -58,38 +58,20 @@ module.exports.buildUserDB = async (noLog = true) => {
     if (noLog === false) utility.printTestAndTime("userDB", userDB, startTime);
     return userDB;
 };
+
 // * 1. Find ud af hvilke film der ligner hinanden (har stor genrekorrelation / jo flere genrer som to film har tilfælles jo bedre) og sammel i liste
-
 const buildGenreDB = async (movieDB) => {
-    // Hvis en film 1 har tjekket matches med en film 2, så skal film 2 ikke tjekkes for matches med 1.
-    /*
-        For enhver film skal der matches med alle andre film.
-    */
-   movieDB.forEach(movie => { movie.genreMatches = []; });
-
-    
-    for (let i = 0; i < movieDB.length; i++) {
+    movieDB.forEach(movie => { movie.genreMatches = []; });
+    let x = 0;
+    let result = [];
+    for (let i = 0; i < 100; i++) {
+        result[movieDB[i].movieId] = [];
         for (let j = i+1; j < movieDB.length; j++) {
-            let result = dataHandler.matchGenresBetweenMovies(movieDB[i], movieDB[j]);
-            movieDB[i].genreMatches.push(result);
-            movieDB[j].genreMatches.push(result);
+            result[movieDB[i].movieId].push(dataHandler.matchGenresBetweenMovies(movieDB[i], movieDB[j]));
         }
-    }
 
-    /* let movieMatches = [];
-    movieDB.forEach(movie1 => {
-        movie1.genreMatches = [];
-        movieDB.forEach(movie2 => {
-            if (movie1.movieId !== movie2.movieId) {
-                // // movie1["genreMatches"]
-                // movieMatches.push({
-                //     movieId: movie1.movieId,
-                //     matchedWith: movie2.movieId,
-                //     genres: dataHandler.matchGenresBetweenMovies(movie1, movie2)
-                });
-            }
-        });
-    }); */
+    }
+    console.log(result);
 }
 
 const writeToFile = (path, variableToWrite) => {
@@ -153,8 +135,13 @@ module.exports.initialize = async (serverStartCallback) => {
         db.movieDB = await loadData.getMovieDB();
         db.testGroup = await loadData.getTestGroupData();
         utility.infoMessage("Necessary files exist. Starting server...")
-        buildGenreDB(db.movieDB);
-        console.log(db.movieDB[0]);
+        await buildGenreDB(db.movieDB);
+        
+        /* console.log(db.movieDB[0]);
+        let sum = 0;
+        for(let i = 9742; i > 0; i--) { sum += i - 1; }
+        console.log(9742 + sum);
+        utility.logMemoryUsage(); */
         //console.log(dataHandler.matchGenresBetweenMovies(db.movieDB[0], db.movieDB[1]));
     }
     serverStartCallback();
