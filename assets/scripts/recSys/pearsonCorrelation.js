@@ -1,8 +1,3 @@
-/*
-    ! [X] Lav test gruppe
-    ! [X] Implementer Pearson
-    ! [ ] Implementer Utilitarian Strategy
-*/
 const U1 = "u1Ratings";
 const U2 = "u2Ratings";
 

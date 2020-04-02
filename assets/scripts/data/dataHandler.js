@@ -82,7 +82,7 @@ module.exports.getMoviesWatched = (user) => {
     return moviesWatched;
 }
 
-module.exports.matchGenres = (genresWatchedByUser) => {
+module.exports.matchGenresByUser = (genresWatchedByUser) => {
     let genres = {
     'Adventure': 0, 'Animation': 0,
     'Children': 0,  'Comedy': 0,
@@ -98,7 +98,30 @@ module.exports.matchGenres = (genresWatchedByUser) => {
     genresWatchedByUser.forEach(genre => { genres[genre]++; });
 
     return genres;
-}
+};
+
+module.exports.matchGenresBetweenMovies = (movie1, movie2) => {
+    let matches = 0;
+    let genres = {
+    'Adventure': 0, 'Animation': 0,
+    'Children': 0,  'Comedy': 0,
+    'Fantasy': 0,   'Romance': 0,
+    'Drama': 0,     'Action': 0,
+    'Crime': 0,     'Thriller': 0,
+    'Horror': 0,    'Mystery': 0,
+    'Sci-Fi': 0,    'War': 0,
+    'Musical': 0,   'Documentary': 0,
+    'IMAX': 0,      'Western': 0,
+    'Film-Noir': 0
+    };
+
+    movie1["genres"].forEach(genre => { if (movie2["genres"].includes(genre)) {genres[genre]++; matches++} });
+    
+    return {
+        matches: matches,
+        genreMatches: genres,
+    };
+};
 
 module.exports.formatUser = (req, currentUserAmount) => {
     const username = req.body.username;

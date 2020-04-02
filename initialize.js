@@ -58,6 +58,39 @@ module.exports.buildUserDB = async (noLog = true) => {
     if (noLog === false) utility.printTestAndTime("userDB", userDB, startTime);
     return userDB;
 };
+// * 1. Find ud af hvilke film der ligner hinanden (har stor genrekorrelation / jo flere genrer som to film har tilfælles jo bedre) og sammel i liste
+
+const buildGenreDB = async (movieDB) => {
+    // Hvis en film 1 har tjekket matches med en film 2, så skal film 2 ikke tjekkes for matches med 1.
+    /*
+        For enhver film skal der matches med alle andre film.
+    */
+   movieDB.forEach(movie => { movie.genreMatches = []; });
+
+    
+    for (let i = 0; i < movieDB.length; i++) {
+        for (let j = i+1; j < movieDB.length; j++) {
+            let result = dataHandler.matchGenresBetweenMovies(movieDB[i], movieDB[j]);
+            movieDB[i].genreMatches.push(result);
+            movieDB[j].genreMatches.push(result);
+        }
+    }
+
+    /* let movieMatches = [];
+    movieDB.forEach(movie1 => {
+        movie1.genreMatches = [];
+        movieDB.forEach(movie2 => {
+            if (movie1.movieId !== movie2.movieId) {
+                // // movie1["genreMatches"]
+                // movieMatches.push({
+                //     movieId: movie1.movieId,
+                //     matchedWith: movie2.movieId,
+                //     genres: dataHandler.matchGenresBetweenMovies(movie1, movie2)
+                });
+            }
+        });
+    }); */
+}
 
 const writeToFile = (path, variableToWrite) => {
     let tempJSON = JSON.stringify(variableToWrite);
@@ -109,10 +142,10 @@ module.exports.initialize = async (serverStartCallback) => {
             db.testGroup = await buildTestGroup(db.movieLensUserDB);   
             writeToFile(TESTGROUP_PATH, db.testGroup);
             
-            // console.log(pearsonCorrelation.getCorrelation(testGroup, 0, 1));
+            // console.log(pearsonCorrelation.getCorrelation(db.testGroup, 0, 1));
             // console.log(pearsonCorrelation.getCorrelation(testGroup, 0, 1));
             // groupRec.makeGroupRec(testGroup, movieDB, 3);
-        } catch(error) { utility.logError   (error) };
+        } catch(error) { utility.logError(error) };
     }
     else {
         db.ratingDB = await loadData.getRatingDB();
@@ -120,6 +153,9 @@ module.exports.initialize = async (serverStartCallback) => {
         db.movieDB = await loadData.getMovieDB();
         db.testGroup = await loadData.getTestGroupData();
         utility.infoMessage("Necessary files exist. Starting server...")
+        buildGenreDB(db.movieDB);
+        console.log(db.movieDB[0]);
+        //console.log(dataHandler.matchGenresBetweenMovies(db.movieDB[0], db.movieDB[1]));
     }
     serverStartCallback();
     console.log(SEPARATOR);
