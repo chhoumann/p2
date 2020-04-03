@@ -13,6 +13,8 @@ const dataHandler = require('../data/dataHandler');
 const utility = require('../../../utility')
 const pearsonCorrelation = require('./pearsonCorrelation');
 const { jStat } = require('jstat'); // using this because our pearson would only return 0
+const ATHRES = 'aboveThreshold';
+const UTHRES = 'underThreshold';
 
 // Used to filter the ratings for each member in a group.
 const filterRatings = (member, threshold = 3) => {
@@ -35,22 +37,35 @@ module.exports.makeGroupRec = async function makeGroupRecommendations(group, mov
     let R_G = [];   // Array of objects that contain arrays
                     // Group members -> member = index (0-n members) -> Above & Under ratings threshold -> Each contain array of entries above & under = 'movieId' & 'ratings' keys.
     group.forEach(member => { R_G.push(filterRatings(member)); });    
-    
+    // FinalMovies= [{movieFraMovieDB: 'sdf', accumulatedCorrelation: 5}]
     /* 2.5 Sammenlign listen L med listen R_G og fjern alle film fra R_G som ligger i L. */
     let badMovieList = [];
     // Make the list of bad movies and make it into a proper list (one array rather than array of arrays):
-    R_G.forEach(member => { badMovieList.push(member["underThreshold"]); });
+    R_G.forEach(member => { badMovieList.push(member[UTHRES]); });
     badMovieList = utility.reduceArray(badMovieList);
     // Check if any aboveThreshold list includes any of the movies in the bad-list:
-    R_G.forEach(member => member["aboveThreshold"].filter(entry => badMovieList.includes(entry)));
+    R_G.forEach(member => member[ATHRES].filter(entry => badMovieList.includes(entry)));
     /* 3. Find ud af hvilke film fra R_G har stor genrekorrelation med enhver film i MovieDB */
-    findCorrelations(R_G, movieDB);
+    const R_G_COR = findCorrelations(R_G, movieDB);
+    
+    // Member:[] -> AboveThreshold:[] -> {Correlation:[...9742] + MovieDB[for enhver...9742]}
+    // For enhver bruger: For (x: movieLensFilm) { for(y: hver abovethreshold film) { R_G_COR[bruger][y][x] SUM OG FIND GENNEMSNIT AF KORRELATION mellem alle film for enhver bruger }}
+    // Jeg rater film x 4/5, så film x's korrelationer får 80% vægt. Hvis jeg havde rated den 5/5 ville det være 100% osv.
+    // F.eks: (SUM(corVal * vægt(0 <= x <= 1))/aboveThreshold.length
+    
+    /* const getAccuVal = (R_G_COR) => {
+        let theExtraMember = [];
+        R_G_COR.forEach(member => {
+            member.filter(entry => { if (entry) })
+        })
+    } */
+    
     return;
 }
 
 function findCorrelations(R_G, movieDB){
     let correlations = [];
-    console.log(correlationByMember(R_G, movieDB, correlations, 0, R_G.length)[3]);
+    correlationByMember(R_G, movieDB, correlations, 0, R_G.length);
     return correlations;
 }
 
@@ -58,7 +73,7 @@ function correlationByMember(group, movieDB, correlations, memID, upTo){
     if (memID === upTo) return correlations;
     let eID = 0;
     correlations[memID] = [];
-    group[memID]["aboveThreshold"].forEach(entry => {
+    group[memID][ATHRES].forEach(entry => {
         // Find the movie from 'entry' in the MovieDB (uses binary search)
         const entMov = dataHandler.findMovieByID(entry.movieId, movieDB);
         correlations[memID][eID] = [];
@@ -73,5 +88,5 @@ function correlationByMovie(movie, entMov, memID, eID, correlations) {
     const corVal = jStat.corrcoeff(entMov["genres"]["genreNumArray"], movie["genres"]["genreNumArray"]);
     // If the correlation is above some set values and the average rating of the movie with the high correlation,
     // then the correlation and movie should be added to the list of movies to recommend.
-    if (corVal > 0.7 && corVal <= 1 && movie.averageRating > 3.5) correlations[memID][eID].push({corVal, movie});
+    correlations[memID][eID].push({corVal, movie});
 }
