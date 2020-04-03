@@ -60,7 +60,6 @@ module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id, ra
     return results;
 }
 
-// In regards to the project, this function is more of a 'nice-to-have'.
 // Used to get average of array of integers.
 module.exports.getAverage = function getAverage(arrayOfIntegers) {
     let sum = 0;
@@ -71,37 +70,8 @@ module.exports.getAverage = function getAverage(arrayOfIntegers) {
 }
 
 // Receives single movie entry and returns the genres in an array.
+// Used to build MovieDB for Rec. Sys.
 module.exports.getGenresFromMovie = function getGenresFromMovie(movieEntry) {
-    const genreString = movieEntry.genres;
-    return genreString.split(GENRE_SEPARATOR);
-}
-
-module.exports.getMoviesWatched = (user) => {
-    let moviesWatched = [];
-    user.forEach(entry => {moviesWatched.push(entry.movieId)});
-    return moviesWatched;
-}
-
-module.exports.matchGenresByUser = (genresWatchedByUser) => {
-    let genres = {
-    'Adventure': 0, 'Animation': 0,
-    'Children': 0,  'Comedy': 0,
-    'Fantasy': 0,   'Romance': 0,
-    'Drama': 0,     'Action': 0,
-    'Crime': 0,     'Thriller': 0,
-    'Horror': 0,    'Mystery': 0,
-    'Sci-Fi': 0,    'War': 0,
-    'Musical': 0,   'Documentary': 0,
-    'IMAX': 0,      'Western': 0,
-    'Film-Noir': 0
-    };
-    genresWatchedByUser.forEach(genre => { genres[genre]++; });
-    
-    return genres;
-};
-
-module.exports.matchGenresBetweenMovies = (movie1, movie2) => {
-    let matches = 0;
     let genres = {
         'Adventure': 0, 'Animation': 0,
         'Children': 0,  'Comedy': 0,
@@ -114,15 +84,52 @@ module.exports.matchGenresBetweenMovies = (movie1, movie2) => {
         'IMAX': 0,      'Western': 0,
         'Film-Noir': 0
     };
-
-    movie1["genres"].forEach(genre => { if (movie2["genres"].includes(genre)) {/* genres[genre]++; */ matches++} });
+    const genreString = movieEntry.genres;
+    const splitString = genreString.split(GENRE_SEPARATOR);
     
-    return {
-        matchedWith: parseInt(movie2.movieId),
-        matchesAmount: matches,
-        genreMatches: genres
-    };
+    splitString.forEach(genre => { genres[genre]++; });
+
+    let genreNumArray = Object.keys(genres).map((value) => {return genres[value]});
+    
+    return {genres, genreNumArray};
+}
+
+// Gets movies watched based on the user's ratings.
+module.exports.getMoviesWatched = (user) => {
+    let moviesWatched = [];
+    user.forEach(entry => {moviesWatched.push(entry.movieId)});
+    return moviesWatched;
+}
+
+// Binary Search
+// Modified from: https://github.com/jefelewis/algorithms-review/blob/master/search-algorithms/binary-search.js
+// Works because MovieDB is already sorted.
+const movieSearch = (movieDB, movieID) => {
+    // Define Start + End Index
+    let startIndex = 0;
+    let endIndex = movieDB.length - 1;
+  
+    // While Start Index Is Less Than Or Equal To End Index
+    while(startIndex <= endIndex) {
+      // Define Middle Index (This Will Change When Comparing )
+      let middleIndex = Math.floor((startIndex + endIndex) / 2);
+  
+      // Compare Middle Index With Target For Match
+      if(parseFloat(movieDB[middleIndex].movieId) === parseFloat(movieID)) { return middleIndex; }
+  
+      // Search Right Side Of movieDB
+      if(parseFloat(movieID) > parseFloat(movieDB[middleIndex].movieId)) { startIndex = middleIndex + 1; }
+  
+      // Search Left Side Of movieDB
+      if(parseFloat(movieID) < parseFloat(movieDB[middleIndex].movieId)) { endIndex = middleIndex - 1; }
+    }
 };
+
+// Uses binary search to find movie by its ID.
+module.exports.findMovieByID = (movieID, movieDB) => {
+    const indexOfMovie = movieSearch(movieDB, movieID);
+    return movieDB[indexOfMovie];
+}
 
 module.exports.formatUser = (req, currentUserAmount) => {
     const username = req.body.username;

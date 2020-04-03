@@ -47,7 +47,7 @@ const buildMovieDB = async (ratingsDB, noLog = false) => {
 
 const buildTestGroup = async (inputDB, noLog = false) => {
     let startTime = performance.now();
-    let testGroup = await dataHandler.groupUsers(inputDB, 5, arrayOfUserIds);
+    let testGroup = await dataHandler.groupUsers(inputDB, 4, arrayOfUserIds);
     if (noLog === false) utility.printTestAndTime("Testgroup", testGroup, startTime);
     return testGroup;
 };
@@ -58,21 +58,6 @@ module.exports.buildUserDB = async (noLog = true) => {
     if (noLog === false) utility.printTestAndTime("userDB", userDB, startTime);
     return userDB;
 };
-
-// * 1. Find ud af hvilke film der ligner hinanden (har stor genrekorrelation / jo flere genrer som to film har tilfælles jo bedre) og sammel i liste
-const buildGenreDB = async (movieDB) => {
-    movieDB.forEach(movie => { movie.genreMatches = []; });
-    let x = 0;
-    let result = [];
-    for (let i = 0; i < 100; i++) {
-        result[movieDB[i].movieId] = [];
-        for (let j = i+1; j < movieDB.length; j++) {
-            result[movieDB[i].movieId].push(dataHandler.matchGenresBetweenMovies(movieDB[i], movieDB[j]));
-        }
-
-    }
-    console.log(result);
-}
 
 const writeToFile = (path, variableToWrite) => {
     let tempJSON = JSON.stringify(variableToWrite);
@@ -126,7 +111,6 @@ module.exports.initialize = async (serverStartCallback) => {
             
             // console.log(pearsonCorrelation.getCorrelation(db.testGroup, 0, 1));
             // console.log(pearsonCorrelation.getCorrelation(testGroup, 0, 1));
-            // groupRec.makeGroupRec(testGroup, movieDB, 3);
         } catch(error) { utility.logError(error) };
     }
     else {
@@ -135,7 +119,8 @@ module.exports.initialize = async (serverStartCallback) => {
         db.movieDB = await loadData.getMovieDB();
         db.testGroup = await loadData.getTestGroupData();
         utility.infoMessage("Necessary files exist. Starting server...")
-        await buildGenreDB(db.movieDB);
+        groupRec.makeGroupRec(db.testGroup, db.movieDB, 3);
+        //console.log(db.movieDB[0]);
         
         /* console.log(db.movieDB[0]);
         let sum = 0;

@@ -24,7 +24,7 @@
     "chalk": "^3.0.0",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
-    "mathjs": "^6.6.1",
+    "jstat": "^1.9.2",
     "neat-csv": "^5.2.0",
     "nodemon": "^2.0.2",
     "typescript": "^3.8.3"
