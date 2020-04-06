@@ -15,6 +15,7 @@ const pearsonCorrelation = require('./pearsonCorrelation');
 const { jStat } = require('jstat'); // using this because our pearson would only return 0
 const ATHRES = 'aboveThreshold';
 const UTHRES = 'underThreshold';
+const AMOV = 'allMovies'
 
 // Used to filter the ratings for each member in a group.
 const filterRatings = (member, threshold = 3) => {
@@ -59,7 +60,8 @@ module.exports.makeGroupRec = async function makeGroupRecommendations(group, mov
             member.filter(entry => { if (entry) })
         })
     } */
-    
+    getFinalRec(R_G_COR);
+    getFinalRec2(R_G_COR);
     return;
 }
 
@@ -89,4 +91,75 @@ function correlationByMovie(movie, entMov, memID, eID, correlations) {
     // If the correlation is above some set values and the average rating of the movie with the high correlation,
     // then the correlation and movie should be added to the list of movies to recommend.
     correlations[memID][eID].push({corVal, movie});
+}
+
+
+// Member:[] -> AboveThreshold:[] -> {Correlation:[...9742] + MovieDB[for enhver...9742]}
+    // For enhver bruger: For (x: movieLensFilm) { for(y: hver abovethreshold film) { R_G_COR[bruger][y][x] SUM OG FIND GENNEMSNIT AF KORRELATION mellem alle film for enhver bruger }}
+    // Jeg rater film x 4/5, så film x's korrelationer får 80% vægt. Hvis jeg havde rated den 5/5 ville det være 100% osv.
+    // F.eks: (SUM(corVal * vægt(0 <= x <= 1))/aboveThreshold.length
+    // group[group.length]
+    
+    /* const getAccuVal = (R_G_COR) => {
+        let theExtraMember = [];
+        R_G_COR.forEach(member => {
+            member.filter(entry => { if (entry) })
+        })
+    } */
+function getFinalRec(group){
+    let sumCorr = []
+    // sumCorr[movieID] = [];
+
+    console.log("Memebers:" + group.length + " Ratede film for member 0: " + group[0].length + " Antal film i database: " + group[0][0].length);
+
+    // group.length -> members
+    // group[0].length -> ratede film for member 0
+    // group[0][0].length -> film i databasen
+    for (let i = 0; i < group.length; i++){
+        
+        //group[i][x].forEach(entry => {corMovie  += entry.corVal});
+        
+        // group[0][0].forEach(entry => {
+        //     group[0].forEach(eId, entry => { 
+        //         let corMovie = 0
+        //         corMovie += group[i][eId][entry].corVal}); 
+        //         console.log(corMovie);
+        //     });   
+        // } 
+
+
+        //group[group.length][0][i] += correlationvalue
+    
+}}
+
+
+function getFinalRec2(group){
+    let sumCorr = []
+    // sumCorr[movieID] = [];
+    let sumCorr1 = 0;
+    let movieDBIndex = 0, memberIndex = 0, ratedMovieIndex = 0;
+    let sumCorrVar;
+
+    console.log("Members:" + group.length + " Ratede film for member 0: " + group[0].length + " Antal film i database: " + group[0][0].length);
+    let counter = 0;
+
+    // group.length -> members
+    // group[0].length -> ratede film for member 0
+    // group[0][0].length -> film i databasen
+    for (memberIndex = 0; memberIndex < group.length; memberIndex++){
+        for (ratedMovieIndex = 0; ratedMovieIndex < group[memberIndex].length; ratedMovieIndex++) {
+            for (movieDBIndex = 0; movieDBIndex < group[memberIndex][ratedMovieIndex].length; movieDBIndex++){
+                sumCorr[movieDBIndex] += (group[memberIndex][ratedMovieIndex][movieDBIndex]).corVal;
+                counter++;
+                // console.log( (group[memberIndex][ratedMovieIndex][movieDBIndex]).corVal );
+            }
+        sumCorrVar = sumCorr[movieDBIndex];
+        sumCorr[movieDBIndex] = sumCorrVar/group[memberIndex].length;
+        console.log("Summen af korrelationerne: " + sumCorrVar);
+
+        }
+    }
+    console.log("Summen af korrelationerne: " + sumCorrVar);
+    console.log("Counter is: " + counter);
+    
 }
