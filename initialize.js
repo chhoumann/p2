@@ -8,7 +8,7 @@ const {performance} = require('perf_hooks');
 const fs = require('fs');
 
 // Constants
-const arrayOfUserIds = [3, 5, 4, 2, 1]; // Used for testing. Users 1-5 are test-users.
+const arrayOfUserIds = [45, 6, 9, 8, 10]; // Used for testing. Users 1-5 are test-users.
 const SEPARATOR = "----------------------------------------------";
 const RATING_DB_PATH = './db/ratingDB.json';
 const MOVIELENS_USER_DB_PATH = './db/movieLensUserDB.json';
@@ -37,9 +37,10 @@ const buildMovieDB = async (ratingsDB, noLog = false) => {
     // 9742 movies in DB. The forEach makes this take a lot longer, but is necessary for recommender system.
     // Perhaps there is a better & faster solution?
     await movieDB.forEach(async movie => {
+        movie.genres = dataHandler.getGenresFromMovie(movie);
+        if (movie["genres"]["genres"]["(no genres listed)"] === 1) {movie.skip = true} else {movie.skip = false};
         movie.ratings = await dataHandler.getRatingsForMovieID(movie.movieId, ratingsDB);
         movie.averageRating = dataHandler.getAverage(movie.ratings);
-        movie.genres = dataHandler.getGenresFromMovie(movie);
     });
     if (noLog === false) utility.printTestAndTime("MovieDB, Ratings, & Average Ratings", movieDB, startTime);
     return movieDB;
