@@ -82,9 +82,11 @@ module.exports.getGenresFromMovie = function getGenresFromMovie(movieEntry) {
         'Sci-Fi': 0,    'War': 0,
         'Musical': 0,   'Documentary': 0,
         'IMAX': 0,      'Western': 0,
-        'Film-Noir': 0
+        'Film-Noir': 0, '(no genres listed)': 0
     };
+    
     const genreString = movieEntry.genres;
+    // if (genreString === '(no genres listed)');
     const splitString = genreString.split(GENRE_SEPARATOR);
     
     splitString.forEach(genre => { genres[genre]++; });

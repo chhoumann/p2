@@ -60,8 +60,7 @@ module.exports.makeGroupRec = async function makeGroupRecommendations(group, mov
             member.filter(entry => { if (entry) })
         })
     } */
-    getFinalRec(R_G_COR);
-    getFinalRec2(R_G_COR);
+    getFinalRec(R_G_COR, movieDB);
     return;
 }
 
@@ -79,18 +78,19 @@ function correlationByMember(group, movieDB, correlations, memID, upTo){
         // Find the movie from 'entry' in the MovieDB (uses binary search)
         const entMov = dataHandler.findMovieByID(entry.movieId, movieDB);
         correlations[memID][eID] = [];
-        movieDB.forEach(movie => correlationByMovie(movie, entMov, memID, eID, correlations));
+        movieDB.forEach(movie => correlationByMovie(movie, entMov, memID, eID, correlations, group));
         eID++;
     })
     return correlationByMember(group, movieDB, correlations, ++memID, upTo);
 }
 
-function correlationByMovie(movie, entMov, memID, eID, correlations) {
+function correlationByMovie(movie, entMov, memID, eID, correlations, group) {
     // Get correlation between the 'entry' movie and 'movie' - PEARSON CORRELATION between two arrays.
     const corVal = jStat.corrcoeff(entMov["genres"]["genreNumArray"], movie["genres"]["genreNumArray"]);
     // If the correlation is above some set values and the average rating of the movie with the high correlation,
     // then the correlation and movie should be added to the list of movies to recommend.
-    correlations[memID][eID].push({corVal, movie});
+    const guysRatings = group[memID]["aboveThreshold"];
+    correlations[memID][eID].push({corVal, movie, guysRatings});
 }
 
 
@@ -106,60 +106,52 @@ function correlationByMovie(movie, entMov, memID, eID, correlations) {
             member.filter(entry => { if (entry) })
         })
     } */
-function getFinalRec(group){
-    let sumCorr = []
-    // sumCorr[movieID] = [];
-
-    console.log("Memebers:" + group.length + " Ratede film for member 0: " + group[0].length + " Antal film i database: " + group[0][0].length);
-
-    // group.length -> members
-    // group[0].length -> ratede film for member 0
-    // group[0][0].length -> film i databasen
-    for (let i = 0; i < group.length; i++){
-        
-        //group[i][x].forEach(entry => {corMovie  += entry.corVal});
-        
-        // group[0][0].forEach(entry => {
-        //     group[0].forEach(eId, entry => { 
-        //         let corMovie = 0
-        //         corMovie += group[i][eId][entry].corVal}); 
-        //         console.log(corMovie);
-        //     });   
-        // } 
 
 
-        //group[group.length][0][i] += correlationvalue
-    
-}}
 
-
-function getFinalRec2(group){
-    let sumCorr = []
-    // sumCorr[movieID] = [];
-    let sumCorr1 = 0;
-    let movieDBIndex = 0, memberIndex = 0, ratedMovieIndex = 0;
-    let sumCorrVar;
-
+function getFinalRec(group, movieDB){
     console.log("Members:" + group.length + " Ratede film for member 0: " + group[0].length + " Antal film i database: " + group[0][0].length);
-    let counter = 0;
-
-    // group.length -> members
-    // group[0].length -> ratede film for member 0
-    // group[0][0].length -> film i databasen
-    for (memberIndex = 0; memberIndex < group.length; memberIndex++){
-        for (ratedMovieIndex = 0; ratedMovieIndex < group[memberIndex].length; ratedMovieIndex++) {
-            for (movieDBIndex = 0; movieDBIndex < group[memberIndex][ratedMovieIndex].length; movieDBIndex++){
-                sumCorr[movieDBIndex] += (group[memberIndex][ratedMovieIndex][movieDBIndex]).corVal;
-                counter++;
-                // console.log( (group[memberIndex][ratedMovieIndex][movieDBIndex]).corVal );
-            }
-        sumCorrVar = sumCorr[movieDBIndex];
-        sumCorr[movieDBIndex] = sumCorrVar/group[memberIndex].length;
-        console.log("Summen af korrelationerne: " + sumCorrVar);
-
-        }
-    }
-    console.log("Summen af korrelationerne: " + sumCorrVar);
-    console.log("Counter is: " + counter);
+    let topArray = [];
+    let collectedLength = 0;
     
+    // Since we are using the "+=" operator, we have to do the following - otherwise we will be trying to add a number to an undefined value.
+    for(i = 0; i < movieDB.length; i++) {topArray[i] = 0};
+
+    // 4 brugere med 18, 40, 167, 27 ratingkollektioner.
+    // I enhver ratingkollektion er 9742 korrelationer, som kan tilføjes til vores 'toparray' - summen af disse.
+    // For at gøre dette skal vi køre igennem alle brugere, ratingkollektioner, og så enhver entry i disse kollektioner - og summere værdierne.
+    let one = 0;
+    let movieCorr = 0;
+    group.forEach(member => {
+        //if (one++ === 0) console.log();
+        collectedLength += member.length;
+        member.forEach(ratedMovieCorrelations => {
+            let movieIndex = 0, entryNum = 0;
+            const weight = (parseFloat(member[movieCorr][0]["guysRatings"][entryNum++].ratings) / 5);
+            //console.log(weight);
+            //const weight = findWeight(ratedMovieCorrelations[entryNum++]);
+            ratedMovieCorrelations.forEach(entry => { 
+                // Value for this skipped entry will still be 0 in 'topArray' - we will skip it later during the creation of the recommended movies list.
+                if (entry["movie"].skip === false) {                    
+                    topArray[movieIndex++] += entry.corVal * weight;
+                }
+                //console.log(entry);
+            })
+        })      
+    })
+    
+    for(i = 0; i < movieDB.length; i++) {topArray[i] = topArray[i] / collectedLength};
+    // Find top 10 (eller noget) og find index af disse
+    // Indsæt index i movieDB
+    let index = [];
+    for (i = 0; i < 10; i++) {
+        index[i] = topArray.indexOf(Math.max(...topArray));
+        console.log(`Movie: ${movieDB[index[i]].title}\n    - Average Rating: ${movieDB[index[i]].averageRating}\n    - Korrelation: ${topArray[index[i]]}`);
+        topArray.splice(index[i], 1);
+    }
+    // console.log(movieDB[index]);
+    //console.log(topArray);
+
+
+    //console.log(topArray);
 }
