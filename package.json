@@ -4,7 +4,7 @@
   "description": "P2 project for group B2-24. Topic: Recommender Systems.",
   "main": "nodeServer.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "start": "nodemon app --ignore dbOfUsers.json"
   },
   "repository": {
