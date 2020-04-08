@@ -48,7 +48,7 @@ const buildMovieDB = async (ratingsDB, noLog = false) => {
 
 const buildTestGroup = async (inputDB, noLog = false) => {
     let startTime = performance.now();
-    let testGroup = await dataHandler.groupUsers(inputDB, 2, arrayOfUserIds);
+    let testGroup = await dataHandler.groupUsers(inputDB, 5, arrayOfUserIds);
     if (noLog === false) utility.printTestAndTime("Testgroup", testGroup, startTime);
     return testGroup;
 };

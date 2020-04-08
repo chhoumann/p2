@@ -33,7 +33,7 @@ module.exports.makeGroupRec = async function makeGroupRecommendations(group, mov
     // Check if any aboveThreshold list includes any of the movies in the list of 'bad' movies:
     R_G.forEach(member => member[ATHRES].filter(entry => badMovieList.includes(entry)));
     const R_G_COR = findCorrelations(R_G, movieDB);
-    
+
     getFinalRec(R_G_COR, movieDB);
     return;
 }
@@ -57,26 +57,40 @@ function correlationByMember(group, movieDB, correlations, memID, upTo){
     if (memID === upTo) return correlations;
     let eID = 0; // entry ID
     correlations[memID] = [];
+
+    const memberRatings = group[memID]["aboveThreshold"];
+    correlations[memID]["memberRatings"] = memberRatings;
     
-    group[memID][ATHRES].forEach(entry => {
+    /*
+        Correlations: [
+            memID fra 1 - 5: {
+                memberRatings: array af objekter (movieid: 1321, ratings: 5). (Ratings er over vores threshold)
+                entries: array af et hvert memberRating objekt, hvori der er en korrelation mod alle 9742 film: [
+                    {corVal med alle film fra movieDB og den tilhørende movie fra movieDB}
+                ]
+            }
+        ]
+
+    */
+    correlations[memID]["entries"] = [];
+    memberRatings.forEach(entry => {
         // Find the movie from 'entry' in the MovieDB (uses binary search)
         const entMov = dataHandler.findMovieByID(entry.movieId, movieDB);
-        correlations[memID][eID] = [];
-        movieDB.forEach(movie => correlationByMovie(movie, entMov, memID, eID, correlations, group));
+        correlations[memID]["entries"].push([]);
+        movieDB.forEach(movie => correlationByMovie(movie, entMov, memID, eID, correlations));
         eID++;
     });
-
     return correlationByMember(group, movieDB, correlations, ++memID, upTo);
+    
 }
 
-function correlationByMovie(movie, entMov, memID, eID, correlations, group) {
+function correlationByMovie(movie, entMov, memID, eID, correlations) {
     // Get correlation between the 'entry' movie and 'movie' - PEARSON CORRELATION between two arrays.
     const corVal = jStat.corrcoeff(entMov["genres"]["genreNumArray"], movie["genres"]["genreNumArray"]);
 
     // If the correlation is above some set values and the average rating of the movie with the high correlation,
     // then the correlation and movie should be added to the list of movies to recommend.
-    const memberRatings = group[memID]["aboveThreshold"];
-    correlations[memID][eID].push({corVal, movie, memberRatings});
+    correlations[memID]["entries"][eID].push({corVal, movie});
 }
 
 function getFinalRec(group, movieDB){
@@ -85,14 +99,13 @@ function getFinalRec(group, movieDB){
     
     // Since we are using the "+=" operator, we have to do the following - otherwise we will be trying to add a number to an undefined value.
     for(i = 0; i < movieDB.length; i++) {topArray[i] = 0};
-
-    let movieCorr = 0;
     group.forEach(member => {
-        collectedLength += member.length;
-        member.forEach(ratedMovieCorrelations => {
-            let movieIndex = 0, entryNum = 0;
-            const weight = (parseFloat(member[movieCorr][0]["memberRatings"][entryNum++].ratings) / 5);
-            ratedMovieCorrelations.forEach(entry => { 
+        collectedLength += member["memberRatings"].length;
+        let entryNum = 0;
+        member["memberRatings"].forEach(ratedMovieCorrelations => {
+            let movieIndex = 0;
+            const weight = (parseFloat(ratedMovieCorrelations.ratings) / 5);
+            member["entries"][entryNum++].forEach(entry => { 
                 if (filterBelowThreshold(entry)) {
                     // Value for this skipped entry will still be 0 in 'topArray' - we will skip it later during the creation of the recommended movies list
                     if (entry["movie"].skip === false) {                    
