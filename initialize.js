@@ -75,7 +75,7 @@ const checkIfFileExists = (path) => {
 // Checks if it is necessary to build database & test group.
 // -   Basically used for anything that should be loaded or written before the user interacts with the web application.
 // And then it starts the sever.
-module.exports.initializeDatabase = async (serverStartCallback) => {
+module.exports.initializeDatabase = async () => {
     console.log(SEPARATOR);
     let db = {};
     try {
