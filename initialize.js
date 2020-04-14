@@ -1,6 +1,4 @@
 // Modules
-const groupRec = require('./assets/scripts/recSys/groupRecommendation');
-const pearsonCorrelation = require('./assets/scripts/recSys/pearsonCorrelation');
 const dataHandler = require('./assets/scripts/data/dataHandler');
 const loadData = require('./assets/scripts/data/loadData');
 const utility = require('./utility');
@@ -15,7 +13,6 @@ const MOVIELENS_USER_DB_PATH = './db/movieLensUserDB.json';
 const MOVIE_DB_PATH = './db/movieDB.json';
 const TESTGROUP_PATH = './db/testGroup.json';
 const USER_DB_PATH = './db/dbOfUsers.json';
-const DATABASE_MISSING_MSG = "Database does not exist or is outdated. Running initialization.";
 
 const buildRatingDB = async (noLog = false) => {
     let startTime = performance.now();
@@ -75,21 +72,10 @@ const checkIfFileExists = (path) => {
     } catch (err) { console.error(err); }
 };
 
-// Checks if relevant db files exist. If they don't, initialize will make them.
-// ! Revamped DB loading so this is no longer relevant.
-const checkIfDBExists = () => {
-    //if (!checkIfFileExists(MOVIELENS_USER_DB_PATH)) return false;
-    //if (!checkIfFileExists(MOVIE_DB_PATH)) return false;
-    //if (!checkIfFileExists(RATING_DB_PATH)) return false;
-    //if (!checkIfFileExists(TESTGROUP_PATH)) return false;
-    if (!checkIfFileExists(USER_DB_PATH)) return false;
-    return true;
-}
-
 // Checks if it is necessary to build database & test group.
 // -   Basically used for anything that should be loaded or written before the user interacts with the web application.
 // And then it starts the sever.
-module.exports.initialize = async (serverStartCallback) => {
+module.exports.initializeDatabase = async (serverStartCallback) => {
     console.log(SEPARATOR);
     let db = {};
     try {
@@ -124,15 +110,14 @@ module.exports.initialize = async (serverStartCallback) => {
         } else {
             db.testGroup = await loadData.getTestGroupData();
         };
+
+        if (!checkIfFileExists(USER_DB_PATH)) {
+            console.log("UserDB doesn't exist.")
+        }
         
     } catch(error) { utility.logError(error) };
 
-    serverStartCallback();
     console.log(SEPARATOR);
-
-    // !##### RUN YOUR FUNCTIONS BELOW #####!
-    // groupRec.makeGroupRec(db.testGroup, db.movieDB, 3);
-    console.log(SEPARATOR)
 
     return db;
 }
