@@ -141,3 +141,15 @@ module.exports.formatUser = (req, currentUserAmount) => {
 
     return user;
 }
+
+module.exports.checkForUserInDB = async (usernameString) => {
+    const userDB = (await loadData.getUserDB())["users"];
+    let foundStatus = false;
+    // Temp O(n) søgning...
+    userDB.forEach(user => {
+        if (user.username === usernameString) {
+            foundStatus = true;
+        }
+    })
+    return foundStatus;
+}

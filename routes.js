@@ -2,6 +2,7 @@ const groupHandler = require('./assets/scripts/social/groupHandler');
 const user = require('./assets/scripts/user/user');
 const bodyParser = require('body-parser'); 
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
+const dataHandler = require('./assets/scripts/data/dataHandler')
 const express = require('express');
 const router = express.Router();
 
@@ -48,5 +49,12 @@ router.post('/movieRec', urlencodedParser, async function (req, res) {
     // Send to group recommendation function
     res.render('movieRec');
 });
+
+router.get('/loginUsername', async (req, res) => {
+    const data = req.query;
+    const user = await dataHandler.checkForUserInDB(data.username);
+
+    res.send(user);
+})
 
 module.exports = router;
