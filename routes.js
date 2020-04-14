@@ -47,7 +47,11 @@ router.post('/createUser', urlencodedParser, async function (req, res) {
     }
 });
 
-router.post('/movieRec', urlencodedParser, async function (req, res) {
+router.post('/getMovieRec', urlencodedParser, async function (req, res) {
+    // Tanken er at formen i movieRec skal lave en request hertil.
+    // Der valideres så input og sendes til group rec. sys. functionen som
+    // returnerer nogle film, som så sendes tilbage med 'res.send(FILM)'.
+    
     const validation = await groupHandler.validateGroup(req);
     // Send to group recommendation function
     res.render('movieRec');
