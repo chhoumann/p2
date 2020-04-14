@@ -108,13 +108,14 @@ function getFinalRec(group, movieDB){
             member["entries"][entryNum++].forEach(entry => { 
                 if (filterBelowThreshold(entry)) {
                     // Value for this skipped entry will still be 0 in 'topArray' - we will skip it later during the creation of the recommended movies list
-                    if (entry["movie"].skip === false) {                    
-                        topArray[movieIndex++] += entry.corVal * weight;
+                    if (entry["movie"].skip === false) {                 
+                        topArray[movieIndex++] += entry.corVal  * weight;
                     }
                 }
-            })
-        })      
-    })
+            }); 
+        });      
+    });
+
     for(i = 0; i < movieDB.length; i++) {topArray[i] = topArray[i] / collectedLength};
     
     let resultArray = createResultArray(topArray);
