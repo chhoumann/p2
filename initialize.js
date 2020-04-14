@@ -131,7 +131,7 @@ module.exports.initialize = async (serverStartCallback) => {
     console.log(SEPARATOR);
 
     // !##### RUN YOUR FUNCTIONS BELOW #####!
-    groupRec.makeGroupRec(db.testGroup, db.movieDB, 3);
+    // groupRec.makeGroupRec(db.testGroup, db.movieDB, 3);
     console.log(SEPARATOR)
 
     return db;
