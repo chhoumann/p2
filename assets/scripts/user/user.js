@@ -33,9 +33,9 @@ module.exports.User = class User {
         else
             console.log("Error: " + friendID + " is not a valid ID. Or is already a friend.");
     }
-    addToMoviePreferences(movieID) {
+    addToMoviePreferences(movieID, userRating) {
         if (isValidMovieID(movieID, "movie")) {  // Are not checking here for whether ID has already been added
-            this.moviePreferences.push(movieID);
+            this.moviePreferences.push({id: movieID, rating: userRating});
         }
     }
 }

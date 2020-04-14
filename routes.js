@@ -10,6 +10,14 @@ router.get('/', (req, res) => {
     res.render('test');
 });
 
+router.get('/createProfile', (req, res) => {
+    res.render('createProfile');
+});
+
+router.get('/rateMovies', (req, res) => {
+    res.render('rateMovies');
+});
+
 router.get('/profile', (req, res) => {
     res.render('profile');
 });
