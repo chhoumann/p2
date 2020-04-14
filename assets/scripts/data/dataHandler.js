@@ -60,13 +60,13 @@ module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id, ra
     return results;
 }
 
-// Used to get average of array of integers.
-module.exports.getAverage = function getAverage(arrayOfIntegers) {
+// Used to get average of ratings for a movie.
+module.exports.getAverage = function getAverage(ratingsForMovie) {
     let sum = 0;
-    for (let i = 0; i < arrayOfIntegers.length; i++) {
-        sum += parseInt(arrayOfIntegers[i].rating);
+    for (const entry of ratingsForMovie) {
+        sum += parseFloat(entry.rating)
     }
-    return sum / arrayOfIntegers.length;
+    return sum / ratingsForMovie.length;
 }
 
 // Receives single movie entry and returns the genres in an array.
