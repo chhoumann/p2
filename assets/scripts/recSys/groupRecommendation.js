@@ -99,6 +99,7 @@ function getFinalRec(group, movieDB){
     
     // Since we are using the "+=" operator, we have to do the following - otherwise we will be trying to add a number to an undefined value.
     for(i = 0; i < movieDB.length; i++) {topArray[i] = 0};
+    
     group.forEach(member => {
         collectedLength += member["memberRatings"].length;
         let entryNum = 0;
@@ -116,17 +117,15 @@ function getFinalRec(group, movieDB){
         });      
     });
 
-    for(i = 0; i < movieDB.length; i++) {topArray[i] = topArray[i] / collectedLength};
+    topArray = topArray.map((correlation) => { return (correlation / collectedLength); });
     
     let resultArray = createResultArray(topArray);
     // pushes an object containing correlation and movieID to the final array
     let corrValSorted = [];
-    for(let x = 0; x < resultArray.length; x++) {
-        corrValSorted.push({
-            cor: topArray[resultArray[x]],
-            id: resultArray[x]
-        });
-    }
+
+    resultArray.forEach(id => {
+        corrValSorted.push({ id, cor: topArray[id] })
+    });
     
     // Sorts the array with the highest correlation first
     corrValSorted.sort((a,b) => (a.cor > b.cor) ? -1 : 1);
