@@ -23,11 +23,6 @@ router.get('/movieRec', (req, res) => {
 
 });
 
-router.get('/updateProfile', (req, res) => {
-    res.render('updateProfile');
-
-});
-
 // This receives and processes the information from the form at http://localhost:8000/profile to http://localhost:8000/createUser
 router.post('/createUser', urlencodedParser, async function (req, res) {  
     // Load current UserDB to 'append' to it.
