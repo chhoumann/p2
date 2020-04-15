@@ -37,6 +37,7 @@ const BuildMoviesForRating = async () => {
     }
 
     writeToFile(USER_MOVIES_FOR_RATING, top100Movies);
+    utility.successMessage('User Movies for ratings', 'now built')
 } 
 
 const buildRatingDB = async (noLog = false) => {
@@ -139,8 +140,10 @@ module.exports.initializeDatabase = async () => {
         if (!checkIfFileExists(USER_DB_PATH)) {
             console.log("UserDB doesn't exist.")
         }
-
-        BuildMoviesForRating();
+        if (!checkIfFileExists(USER_MOVIES_FOR_RATING)) {
+            BuildMoviesForRating();
+            utility.infoMessage('Building...')
+        }
         
     } catch(error) { utility.logError(error) };
 
