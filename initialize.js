@@ -13,6 +13,31 @@ const MOVIELENS_USER_DB_PATH = './db/movieLensUserDB.json';
 const MOVIE_DB_PATH = './db/movieDB.json';
 const TESTGROUP_PATH = './db/testGroup.json';
 const USER_DB_PATH = './db/dbOfUsers.json';
+const USER_MOVIES_FOR_RATING = './db/userMoviesForRating.json';
+
+// Builds a top 100 movies list to be rated by the users on the client
+const BuildMoviesForRating = async () => {
+    let index = [];
+    let top100Movies = [];
+    const movieDB = await loadData.getMovieDB();
+    let i = 0;
+
+    movieDB.forEach(movie => {
+
+        if (movie["ratings"].length > 5 && movie.averageRating > 3.5) {
+            index.unshift({title: movie.title, id: movie.movieId, avgRating: movie.averageRating});
+        }
+    });
+
+    // If the array is sorted the top 100 movies are primarily very old 
+    // index.sort((a,b) => (a.avgRating > b.avgRating) ? -1 : 1);
+
+    for(i = 0; i < 100; i++){
+        top100Movies[i] = index[i];
+    }
+
+    writeToFile(USER_MOVIES_FOR_RATING, top100Movies);
+} 
 
 const buildRatingDB = async (noLog = false) => {
     let startTime = performance.now();
@@ -114,6 +139,8 @@ module.exports.initializeDatabase = async () => {
         if (!checkIfFileExists(USER_DB_PATH)) {
             console.log("UserDB doesn't exist.")
         }
+
+        BuildMoviesForRating();
         
     } catch(error) { utility.logError(error) };
 

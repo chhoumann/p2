@@ -1,17 +1,24 @@
-const loadData = require('./loadData');
-const movieDB = await loadData.getMovieDB();
-
-// Tjek om brugeren er logget ind
 let user = localStorage.getItem("username");
+let movieData;
 
-console.log(movieDB.ratings);
+axios.get('/movieRatings').then(function(response){
+    console.log(response.data);
+    printData(response.data);
+});
 
-// Finde en random film, som har en rating over 3
-// for(let x = 0; x < movieDB.ratings.length; x++){
-//     console.log(movieDB)
-// }
+function printData(data) {
 
- 
+    let movieLabel = document.createElement("LABEL");
+    movieLabel.setAttribute("type", "text");
+    movieLabel.innerHTML = `Movie: ${data[randomNumber(100)].title}<br>`
+
+    document.getElementById("account").insertBefore(movieLabel, document.getElementById("movie1-1"));
+
+}
+
+function randomNumber(number){
+    return Math.floor(Math.random() * number);
+}
 
 // Pushet præferencer til user
 
