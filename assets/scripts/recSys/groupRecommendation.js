@@ -70,7 +70,6 @@ function correlationByMember(group, movieDB, correlations, memID, upTo){
                 ]
             }
         ]
-
     */
     correlations[memID]["entries"] = [];
     memberRatings.forEach(entry => {
@@ -112,24 +111,23 @@ function getFinalRec(group, movieDB){
                     if (entry["movie"].skip === false) {                 
                         topArray[movieIndex++] += entry.corVal  * weight;
                     }
-                }
+                } else {movieIndex++}
             }); 
         });      
     });
 
     topArray = topArray.map((correlation) => { return (correlation / collectedLength); });
-    
+
     let resultArray = createResultArray(topArray);
     // pushes an object containing correlation and movieID to the final array
-    let corrValSorted = [];
 
+    let corrValSorted = [];
     resultArray.forEach(id => {
         corrValSorted.push({ id, cor: topArray[id] })
     });
     
     // Sorts the array with the highest correlation first
     corrValSorted.sort((a,b) => (a.cor > b.cor) ? -1 : 1);
-    
     printTopRecommendations(resultArray, corrValSorted, movieDB);
 }
 
@@ -143,19 +141,19 @@ function filterBelowThreshold(entry) {
 // The following is used to create an array with the top-correlations
 function createResultArray(topArray){
     let index = [];
-    let i = 0
+    let i = 0;
+    const bTop = topArray.slice();
     
     // Adds the index of the top-correlation to index[] and removes it from the topArray
     for (i = 0; i < 10; i++) {
-        index[i] = topArray.indexOf(Math.max(...topArray));
-        topArray.splice(index[i], 1);
+        index[i] = bTop.indexOf(Math.max(...bTop));
+        bTop.splice(index[i], 1, 0);
     }
     
     // index might contain duplicates and therefore we make it to a set to remove duplicates, and then turn it back into the result array
     let uniqueMovies = new Set(index);
     let resultArray = [];
     uniqueMovies.forEach(index => resultArray.push(index));
-    
     return resultArray;
 }
 
