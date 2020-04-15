@@ -18,7 +18,6 @@ const UTHRES = 'underThreshold';
 const AMOV = 'allMovies'
 const RATING_THRESHOLD = 3
 
-
 module.exports.makeGroupRec = async function makeGroupRecommendations(group, movieDB, numberOfItemsToBeRecommended) {
     let R_G = [];
     let badMovieList = [];
@@ -128,7 +127,8 @@ function getFinalRec(group, movieDB){
     
     // Sorts the array with the highest correlation first
     corrValSorted.sort((a,b) => (a.cor > b.cor) ? -1 : 1);
-    printTopRecommendations(resultArray, corrValSorted, movieDB);
+    //printTopRecommendations(resultArray, corrValSorted, movieDB);
+    return getTopRecommendations(resultArray, corrValSorted, movieDB);
 }
 
 
@@ -166,4 +166,19 @@ function printTopRecommendations(resultArray, corrValSorted, movieDB) {
                     `   - Average Rating: ${movieDB[index].averageRating.toPrecision(3)}\n`,
                     `   - Korrelation: ${cor.toPrecision(3)}`);
     }
+}
+
+function getTopRecommendations(resultArray, corrValSorted, movieDB) {
+    // Gets the top recommended movies for the group
+    let recommendationsArray = [];
+    for (i = 0; i < resultArray.length; i++) {
+        const index = corrValSorted[i]["id"];
+        const cor = corrValSorted[i]["cor"];
+        recommendationsArray.push({
+            index,
+            correlation: cor,
+            movieObj: movieDB[index]
+        })
+    }
+    return recommendationsArray;
 }
