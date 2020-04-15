@@ -76,4 +76,19 @@ router.get('/loginUsername', async (req, res) => {
     res.send(user);
 })
 
+router.get('/addFriend', async (req, res) => {
+    const data = req.query;
+    const validateUsername = await dataHandler.checkForUserInDB(data.addName)
+    // check if the two aren't already friends...
+    // also needs to write to file...
+    res.send({valid: validateUsername});
+})
+
+router.get('/fetchFriends', async (req, res) => {
+    const username = req.query.user;
+    const found = await dataHandler.getFriendsList(username);
+    
+    res.send(found);
+})
+
 module.exports = router;

@@ -153,3 +153,12 @@ module.exports.checkForUserInDB = async (usernameString) => {
     })
     return foundStatus;
 }
+
+module.exports.getFriendsList = async (user) => {
+    const userDB = (await loadData.getUserDB())["users"];
+    const foundUser = userDB.find(person => {
+        return person.username === user;
+    });
+    if (foundUser === -1) return false;
+    return foundUser.friends;
+}

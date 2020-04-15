@@ -1,20 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="scripts/social/friendHandler.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    
+    <!-- <script src="scripts/social/friendHandler.js" defer></script> -->
     <!-- <link href="style/stylesheet.css" type="text/css" rel="stylesheet"> -->
     <meta http-equiv="Content-Type" const="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connect with friends</title>
 </head>
 <body>
-    <h1 id="header">Connect with friends</h1>
-    <p>Add your friends to your friends list so you can watch a movie together!</p>
-    <form onsubmit="addToFriendList()">
-        <label for="fname">ID of friend:</label><br>
-        <input type="number" id="fname" name="fname" value=""><br>
-        <input type="submit" value="Add friend!">
-      </form> 
-    <p>Lorem Ipsum</p>
+    <div id="app" style="margin-left: 1rem; margin-top: 1rem;">
+        <h1 v-if="!loggedIn" class="title is-large">Please log in first.</h1>
+        <div v-if="loggedIn">
+            <h1 class="title is-large">Hi {{ username }}</h1>
+            <p class="content is-medium">Add your friends to your friends list so you can watch a movie together!</p>
+
+            <form>
+                <input class="text" type="text" id="friendNameInput" value="" placeholder="Friend ID">
+                <input type="button" value="Add friend!" class="button is-success" id="addFriendBtn">
+            </form>
+    
+            <div style="margin-top: 2rem;">
+                <p v-if="errorSelf" style="color: red;">You can't add yourself as a friend. :(</p>
+                <p v-if="errorDupe" style="color: red;">You are already friends :)</p>
+                <h1 class="title is-medium">Your friends</h1>
+                <div v-for="friend in friendsList">
+                    {{ friend.name }}
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+<script>
+    const fetchFriendsList = async (user) => {
+        const response = await axios.get('/fetchFriends', {params: {user}});
+        const friendsList = response.data;
+        return friendsList;
+    };
+    const usernameLS = localStorage.getItem('username')
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            title: 'Connect with friends',
+            loggedIn: (localStorage.getItem('loggedIn') === 'true'),
+            username: usernameLS,
+            friendsList: [],
+            errorSelf: false,
+            errorDupe: false,
+        }
+    })
+    const updateFriends = async () => { app.friendsList = await fetchFriendsList(usernameLS)};    
+    updateFriends();
+
+    const friendNameInput = document.querySelector('#friendNameInput');
+    const addFriendBtn = document.querySelector('#addFriendBtn');
+    addFriendBtn.addEventListener('click', async () => {
+        const requestBy = localStorage.getItem('username');
+        const addName = friendNameInput.value;
+
+        // check if user is adding himself
+        if (requestBy === addName) {
+            app.errorSelf = true;
+            return;
+        } else { app.errorSelf = false };
+
+        // check for dupes
+        const FL = await fetchFriendsList(requestBy);
+        const findDupe = FL.find(user => { return user.name === addName })
+        if (findDupe) {
+            app.errorDupe = true;
+            return;
+        } else { app.errorDupe = false }
+        
+        const response = await axios.get('/addFriend', {params: {
+            requestBy, addName
+        }});
+        
+        console.log(response["data"].valid) // test
+
+        if (response["data"].valid) {
+            app.friendsList.push({name: addName})
+        }
+    })
+</script>
 </html>
