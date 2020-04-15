@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="./scripts/social/formHandler.js" defer></script>
+    <title>Movie recommendation</title>
+</head>
+<body>
+    <div>
+        <fieldset>
+            <h1>Add your friends to the group: </h1>
+            <form id="groupMember" onsubmit="return checkForm()" action="/movieRec" method="POST">
+                <label>Enter ID</label><br>
+                <input type="text" id="ID-box-1" name="ID"><br><br>
+
+                <label>Enter ID</label><br>
+                <input type="text" id="ID-box-2" name="ID">
+
+                <button type="button" id="addPerson">  ➕  </button><br>
+            </form>
+            <button type="submit" id="submitForm" value="submit" form="groupMember">See recommendation</button><br>
+            
+        </fieldset>
+    </div>
+</body>
+</html>

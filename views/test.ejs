@@ -3,12 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/scripts/user/login.js" defer></script>
     <title>Test doc</title>
 </head>
 <body>
-    <button type="submit" id="connect" onClick="location.href='/connect-with-friends'">connect with friends</button>
-    <button type="submit" id="rec" onClick="location.href='/movie-rec'" >Get movie recommendation</button>
+    <button type="submit" id="connect" onClick="location.href='/connectWithFriends'">connect with friends</button>
+    <button type="submit" id="rec" onClick="location.href='/movieRec'" >Get movie recommendation</button>
     <button type="submit" id = "update_p" onClick="location.href='/Profile'" > Update Profile </button>
+    
+    <div id="loginSystem">
+        <div id="login">
+            <input style="display:block; margin-top: 1rem;" type="text" id="usernameField" placeholder="Enter your username">
+            <input type="button" value="Login" id="loginButton">
+        </div>
+        <div id="logout" style="display: none">
+            <input type="button" value="Logout" id="logoutButton">
+        </div>
+    </div>
 </body>
 </html>
 

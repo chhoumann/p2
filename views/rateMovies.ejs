@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>RateMovies</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src='./scripts/user/rateMovies.js' defer></script>
+</head>
+<body>
+    <h1 id="header">Rate Movies</h1>
+    <!-- Username, movie, rating eller kender ikke/har ikke set !-->
+    <!-- Tjek om brugernavnet eksisterer i DB
+         Finde top 20 ratede film, og vælge en tilfældig
+         Brugeren skal rate filmen / eller ikke set         
+         localStorage.getItem("username")                        -->
+
+    <form id="account" action="/rateMovies" method="POST">  
+        
+        <input type ="radio" id="movie1-1" name="Rate" value="1">
+        <label for="1">1</label>
+        <input type ="radio" id="movie1-2" name="Rate" value="2">
+        <label for="2">2</label>
+        <input type ="radio" id="movie1-3" name="Rate" value="3">
+        <label for="3">3</label>
+        <input type ="radio" id="movie1-4" name="Rate" value="4">
+        <label for="4">4</label>
+        <input type ="radio" id="movie1-5" name="Rate" value="5">
+        <label for="5">5</label>
+        <input type ="radio" id="movie1-unknown" name="Rate" value="unknown"> 
+        <label for="unknown">Unknown</label> <br> <br>
+
+        <input id="button" type="submit">
+    </form>
+
+</html>

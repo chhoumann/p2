@@ -1,9 +1,10 @@
-const dataHandler = require('./assets/scripts/dataHandler');
+const routes = require('./routes.js');
+const utility = require('./utility');
+const initialize = require('./initialize');
 const express = require('express');
 const app = express();
-const arrayOfUserIds = [3, 5, 4, 2, 1]; // Used for testing. Users 1-5 are test-users.
-let testGroup;
-let db = {};
+const groupRec = require('./assets/scripts/recSys/groupRecommendation');
+let port;
 
 // Setting the template engine (ejs)
 app.set('view engine', 'ejs');
@@ -12,35 +13,24 @@ app.set('view engine', 'ejs');
 app.use(express.static('assets'));
 
 // Routes
-app.get('/', (req, res) => {
-    res.render('test');
+app.use('/', routes);
 
-});
-app.get('/profile', (req, res) => {
-    res.render('profile');
-  });
-
-app.get('/connect-with-friends', (req, res) => {
-  res.render('connect-with-friends');
-});
-
-app.get('/movie-rec', (req, res) => {
-    res.render('movie-rec');
-
-});
-
-// Builds database.
-// Horrible on memory but confines our project to JS only (no use of external DBs).
-const startup = async () => { 
-    db.userDB = await dataHandler.buildMovieLensUserDB();
-    testGroup = dataHandler.groupUsers(db.userDB, 5, arrayOfUserIds);
-    // console.log(testGroup);
-}
-startup();
-
-let port = process.env.PORT;
-if (port == null || port == "") {
-    port = 8000;
+// Used to start the server and print 
+const startServer = () => {
+    try {
+        // Heroku support.
+        port = process.env.PORT;
+        if (port == null || port == "") port = 8000;
+        server = app.listen(port);
+    } finally { utility.serverRunningMsg(port) }
 }
 
-server = app.listen(port);
+startServer();
+
+initialize.initializeDatabase().then(db => {
+    // Run it here if something needs to run after having initialized the DB.
+
+    // Code to check current memory usage.
+    // utility.logMemoryUsage();
+    groupRec.makeGroupRec(db.testGroup, db.movieDB, 3);
+});

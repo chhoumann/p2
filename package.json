@@ -4,8 +4,8 @@
   "description": "P2 project for group B2-24. Topic: Recommender Systems.",
   "main": "nodeServer.js",
   "scripts": {
-    "test": "jest",
-    "start": "nodemon app"
+    "test": "jest --coverage",
+    "start": "nodemon app --ignore dbOfUsers.json"
   },
   "repository": {
     "type": "git",
@@ -21,8 +21,10 @@
   },
   "homepage": "https://github.com/chhoumann/p2#readme",
   "dependencies": {
+    "chalk": "^3.0.0",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
+    "jstat": "^1.9.2",
     "neat-csv": "^5.2.0",
     "nodemon": "^2.0.2",
     "typescript": "^3.8.3"
