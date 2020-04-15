@@ -5,6 +5,7 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const dataHandler = require('./assets/scripts/data/dataHandler')
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
 
 router.get('/', (req, res) => {
     res.render('test');
@@ -14,8 +15,19 @@ router.get('/createProfile', (req, res) => {
     res.render('createProfile');
 });
 
+router.get('/movieRatings', (req, res) => {
+    let movies;
+
+    fs.readFile('./db/userMoviesForRating.json', function(err, data) {
+        if(err) console.log(err);
+        movies = JSON.parse(data);
+        res.send(movies);
+    });
+});
+
+
 router.get('/rateMovies', (req, res) => {
-    res.render('rateMovies');
+    res.render('rateMovies');   
 });
 
 router.get('/profile', (req, res) => {
