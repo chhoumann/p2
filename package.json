@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/chhoumann/p2#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "chalk": "^3.0.0",
     "ejs": "^3.0.1",
     "express": "^4.17.1",

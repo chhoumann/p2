@@ -3,10 +3,10 @@ let movieData;
 
 axios.get('/movieRatings').then(function(response){
     console.log(response.data);
-    printData(response.data);
+    printMovie(response.data);
 });
 
-function printData(data) {
+function printMovie(data) {
 
     let movieLabel = document.createElement("LABEL");
     movieLabel.setAttribute("type", "text");
