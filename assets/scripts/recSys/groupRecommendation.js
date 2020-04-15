@@ -18,7 +18,6 @@ const UTHRES = 'underThreshold';
 const AMOV = 'allMovies'
 const RATING_THRESHOLD = 3
 
-
 module.exports.makeGroupRec = async function makeGroupRecommendations(group, movieDB, numberOfItemsToBeRecommended) {
     let R_G = [];
     let badMovieList = [];
@@ -70,7 +69,6 @@ function correlationByMember(group, movieDB, correlations, memID, upTo){
                 ]
             }
         ]
-
     */
     correlations[memID]["entries"] = [];
     memberRatings.forEach(entry => {
@@ -112,25 +110,25 @@ function getFinalRec(group, movieDB){
                     if (entry["movie"].skip === false) {                 
                         topArray[movieIndex++] += entry.corVal  * weight;
                     }
-                }
+                } else {movieIndex++}
             }); 
         });      
     });
 
     topArray = topArray.map((correlation) => { return (correlation / collectedLength); });
-    
+
     let resultArray = createResultArray(topArray);
     // pushes an object containing correlation and movieID to the final array
-    let corrValSorted = [];
 
+    let corrValSorted = [];
     resultArray.forEach(id => {
         corrValSorted.push({ id, cor: topArray[id] })
     });
     
     // Sorts the array with the highest correlation first
     corrValSorted.sort((a,b) => (a.cor > b.cor) ? -1 : 1);
-    
-    printTopRecommendations(resultArray, corrValSorted, movieDB);
+    //printTopRecommendations(resultArray, corrValSorted, movieDB);
+    return getTopRecommendations(resultArray, corrValSorted, movieDB);
 }
 
 
@@ -143,19 +141,19 @@ function filterBelowThreshold(entry) {
 // The following is used to create an array with the top-correlations
 function createResultArray(topArray){
     let index = [];
-    let i = 0
+    let i = 0;
+    const bTop = topArray.slice();
     
     // Adds the index of the top-correlation to index[] and removes it from the topArray
     for (i = 0; i < 10; i++) {
-        index[i] = topArray.indexOf(Math.max(...topArray));
-        topArray.splice(index[i], 1);
+        index[i] = bTop.indexOf(Math.max(...bTop));
+        bTop.splice(index[i], 1, 0);
     }
     
     // index might contain duplicates and therefore we make it to a set to remove duplicates, and then turn it back into the result array
     let uniqueMovies = new Set(index);
     let resultArray = [];
     uniqueMovies.forEach(index => resultArray.push(index));
-    
     return resultArray;
 }
 
@@ -168,4 +166,19 @@ function printTopRecommendations(resultArray, corrValSorted, movieDB) {
                     `   - Average Rating: ${movieDB[index].averageRating.toPrecision(3)}\n`,
                     `   - Korrelation: ${cor.toPrecision(3)}`);
     }
+}
+
+function getTopRecommendations(resultArray, corrValSorted, movieDB) {
+    // Gets the top recommended movies for the group
+    let recommendationsArray = [];
+    for (i = 0; i < resultArray.length; i++) {
+        const index = corrValSorted[i]["id"];
+        const cor = corrValSorted[i]["cor"];
+        recommendationsArray.push({
+            index,
+            correlation: cor,
+            movieObj: movieDB[index]
+        })
+    }
+    return recommendationsArray;
 }
