@@ -32,5 +32,5 @@ initialize.initializeDatabase().then(db => {
 
     // Code to check current memory usage.
     // utility.logMemoryUsage();
-    groupRec.makeGroupRec(db.testGroup, db.movieDB, 3);
+    // groupRec.makeGroupRec(db.testGroup, db.movieDB, 3);
 });

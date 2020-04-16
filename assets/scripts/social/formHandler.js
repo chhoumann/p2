@@ -14,7 +14,7 @@ add.addEventListener("click", ()=>{
 
     
     // Max of 5 - maybe 4 (user is 1 person)
-    if(input_box_ID < 5) {
+    if(input_box_ID < 4) {
         newLabel.innerHTML = "<br>Enter ID <br>";
         document.getElementById("groupMember").insertBefore(newLabel, document.getElementById("addPerson"));
         document.getElementById("groupMember").insertBefore(newInput, document.getElementById("addPerson"));

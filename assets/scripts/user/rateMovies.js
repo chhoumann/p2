@@ -46,34 +46,33 @@ function changePoster(response) {
         return false;
     };
     const posterURL = response["data"]["results"][0]["poster_path"];
+    if (posterURL === null || posterURL === "" || posterURL === "") return false;
 
     const docImg = document.getElementById("posterDisplay");
     docImg.src = `http://image.tmdb.org/t/p/w342${posterURL}`;
     return true;
 }
 
+// Radio buttons.
 const getRatingForMovie = () => {
-    const r1 = document.getElementById('movie1-1');
-    const r2 = document.getElementById('movie1-2');
-    const r3 = document.getElementById('movie1-3');
-    const r4 = document.getElementById('movie1-4');
-    const r5 = document.getElementById('movie1-5');
-    const unk = document.getElementById('movie1-unknown');
-
-    if (r1.checked) return 1;
-    if (r2.checked) return 2;
-    if (r3.checked) return 3;
-    if (r4.checked) return 4;
-    if (r5.checked) return 5;
-    if (unk.checked) return 0;
+    if (document.getElementById('movie1-1').checked) return 1;
+    if (document.getElementById('movie1-2').checked) return 2;
+    if (document.getElementById('movie1-3').checked) return 3;
+    if (document.getElementById('movie1-4').checked) return 4;
+    if (document.getElementById('movie1-5').checked) return 5;
+    if (document.getElementById('movie1-unknown').checked) return 0;
 }
 
 function submitRatingHandler(movie) {
-    axios.get('/submitRating', {params: {
-        username: localStorage.getItem('username'),
-        movieDB_ID: parseInt(movie.id),
-        rating: getRatingForMovie()
-    }});
+    if (getRatingForMovie() === 0) {
+        console.log("Movie unknown to user - ignoring.")
+    } else {
+        axios.get('/submitRating', {params: {
+            username: localStorage.getItem('username'),
+            movieDB_ID: parseInt(movie.id),
+            rating: getRatingForMovie()
+        }});
+    }
     buildPage();
 }
 
@@ -81,10 +80,12 @@ function makeSubmitButton(movie) {
     let submitRatingButton = document.getElementById('submitRating');
     // To remove existing event listeners.
     submitRatingButton.replaceWith(submitRatingButton.cloneNode(true));
-
     submitRatingButton = document.getElementById('submitRating');
+
     submitRatingButton.addEventListener('click', submitRatingHandler.bind(null, movie))
 }
+
+// Check if user is logged in
 async function buildPage() {
     let movieData;
     if (isLoggedIn()) {
@@ -94,18 +95,21 @@ async function buildPage() {
         const movie = getRandomMovie(movieData);
         printMovie(movie);
         const response = await fetchMovie(movie);
+
         if (!changePoster(response)) buildPage();
         makeSubmitButton(movie);
     }
 };
 
-// Check if user is logged in
 buildPage();
 
 /*
 TODOS
-* Hvis film er unknown skal der ikke pushes
-* Der skal ikke pushes / vises film som allerede er rated
-* Fix 404 bug for posters (se board)
-* Gør koden læsbar
+* [X] Hvis film er unknown skal der ikke pushes
+* []  Der skal ikke pushes / vises film som allerede er rated
+    - Få brugeres 'moviePreferences' array (indlæs fra userDB)
+    - Print til siden (for at vise bedømte film og deres ratings - evt inkluder titlen på filmen i moviePreferences så den kan tilgås)
+    - Lav .find() funktion til at tjekke om den film som der skal vises på siden allerede er bedømt
+* [X]  Fix 404 bug for posters (se board)
+* []  Gør koden læsbar
 */
