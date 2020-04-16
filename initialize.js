@@ -31,10 +31,7 @@ const BuildMoviesForRating = async () => {
 
     // If the array is sorted the top 100 movies are primarily very old 
     // index.sort((a,b) => (a.avgRating > b.avgRating) ? -1 : 1);
-
-    for(i = 0; i < 100; i++){
-        top100Movies[i] = index[i];
-    }
+    top100Movies = index.slice(0, 100);
 
     this.writeToFile(USER_MOVIES_FOR_RATING, top100Movies);
     utility.successMessage('User Movies for ratings', 'now built')
