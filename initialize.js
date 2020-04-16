@@ -36,7 +36,7 @@ const BuildMoviesForRating = async () => {
         top100Movies[i] = index[i];
     }
 
-    writeToFile(USER_MOVIES_FOR_RATING, top100Movies);
+    this.writeToFile(USER_MOVIES_FOR_RATING, top100Movies);
     utility.successMessage('User Movies for ratings', 'now built')
 } 
 
@@ -83,7 +83,8 @@ module.exports.buildUserDB = async (noLog = true) => {
     return userDB;
 };
 
-const writeToFile = (path, variableToWrite) => {
+// ? Maybe move this to dataHandler?
+module.exports.writeToFile = (path, variableToWrite) => {
     let tempJSON = JSON.stringify(variableToWrite);
     fs.writeFile(path, tempJSON, (err) => { if (err) throw err; });
 };
@@ -108,7 +109,7 @@ module.exports.initializeDatabase = async () => {
         // Building and writing ratingDB
         if (!checkIfFileExists(RATING_DB_PATH)) {
             db.ratingDB = await buildRatingDB();
-            writeToFile(RATING_DB_PATH, db.ratingDB);
+            this.writeToFile(RATING_DB_PATH, db.ratingDB);
         } else {
             db.ratingDB = await loadData.getRatingDB();
         };
@@ -116,7 +117,7 @@ module.exports.initializeDatabase = async () => {
         // Building and writing movieLensUserDB
         if (!checkIfFileExists(MOVIELENS_USER_DB_PATH)) {
             db.movieLensUserDB = await buildMovieLensUserDatabase(db.ratingDB)
-            writeToFile(MOVIELENS_USER_DB_PATH, db.movieLensUserDB);
+            this.writeToFile(MOVIELENS_USER_DB_PATH, db.movieLensUserDB);
         } else {
             db.movieLensUserDB = await loadData.getMovieLensUserDB();
         };
@@ -124,7 +125,7 @@ module.exports.initializeDatabase = async () => {
         // Building and writing movieDB
         if (!checkIfFileExists(MOVIE_DB_PATH)) {
             db.movieDB = await buildMovieDB(db.ratingDB);
-            writeToFile(MOVIE_DB_PATH, db.movieDB);
+            this.writeToFile(MOVIE_DB_PATH, db.movieDB);
         } else {
             db.movieDB = await loadData.getMovieDB();
         };
@@ -132,7 +133,7 @@ module.exports.initializeDatabase = async () => {
         // Building and writing testgroup
         if (!checkIfFileExists(TESTGROUP_PATH)) {
             db.testGroup = await buildTestGroup(db.movieLensUserDB);   
-            writeToFile(TESTGROUP_PATH, db.testGroup);
+            this.writeToFile(TESTGROUP_PATH, db.testGroup);
         } else {
             db.testGroup = await loadData.getTestGroupData();
         };
