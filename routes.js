@@ -28,10 +28,16 @@ router.get('/movieRatings', (req, res) => {
 
 router.get('/submitRating', async (req, res) => {
     const data = req.query;
-    const resp = await dataHandler.addRatingToUser(data.username, data.movieDB_ID, data.rating);
+    const resp = await dataHandler.addRatingToUser(data.username, data.movieDB_ID, data.rating, data.title);
 
     res.send({valid: resp});
     res.end();
+})
+
+router.get('/fetchRatedMoviesForUser', async (req, res) => {
+    const data = req.query;
+    const ratedMovies = await dataHandler.getRatingsUserDB(data.username);
+    res.send(ratedMovies);
 })
 
 

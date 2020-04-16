@@ -181,12 +181,17 @@ module.exports.addFriend = async (requestBy, addName) => {
     updateUserDBFile(retObj.userDB);
 }
 
-module.exports.addRatingToUser = async (username, movieDB_ID, rating) => {
+module.exports.addRatingToUser = async (username, movieDB_ID, rating, title) => {
     const retObj = await findUserInUserDB(username);
     retObj.foundUser["moviePreferences"].push({
-        movieID: parseInt(movieDB_ID), rating: parseInt(rating)
+        movieID: parseInt(movieDB_ID), rating: parseInt(rating), title
     })
     updateUserDBFile(retObj.userDB);
-    console.log(`${username} logged ${rating} to movie #${movieDB_ID}`);
+    console.log(`${username} logged ${rating} to movie #${movieDB_ID} | ${title}`);
     return true;
+}
+
+module.exports.getRatingsUserDB = async (username) => {
+    const retObj = await findUserInUserDB(username);
+    return retObj["foundUser"]["moviePreferences"];
 }
