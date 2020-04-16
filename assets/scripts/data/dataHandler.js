@@ -1,4 +1,5 @@
 const loadData = require('./loadData');
+const initialize = require('../../../initialize')
 const u = require('../user/user');
 const utility = require('../../../utility');
 const USERS_IN_TOTAL = 610; // Amount of users in the dataset.
@@ -154,11 +155,28 @@ module.exports.checkForUserInDB = async (usernameString) => {
     return foundStatus;
 }
 
-module.exports.getFriendsList = async (user) => {
-    const userDB = (await loadData.getUserDB())["users"];
-    const foundUser = userDB.find(person => {
+const findUserInUserDB = async (user) => {
+    const userDB = (await loadData.getUserDB());
+    const foundUser = userDB["users"].find(person => {
         return person.username === user;
     });
-    if (foundUser === -1) return false;
-    return foundUser.friends;
+    let retObj = {userDB, foundUser}
+    return retObj;
+}
+
+const updateUserDBFile = async (newUserDB) => {
+    const USER_DB_PATH = './db/dbOfUsers.json';
+    initialize.writeToFile(USER_DB_PATH, newUserDB)
+}
+
+module.exports.getFriendsList = async (user) => {
+    const retObj = await findUserInUserDB(user);    
+    if (retObj.foundUser === -1) return false;
+    return retObj.foundUser["friends"];
+}
+
+module.exports.addFriend = async (requestBy, addName) => {
+    const retObj = await findUserInUserDB(requestBy);
+    retObj.foundUser["friends"].push({name: addName})
+    updateUserDBFile(retObj.userDB);
 }

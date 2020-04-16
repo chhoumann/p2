@@ -1,36 +1,89 @@
-'use strict';
-
-// Logic to find a user in userDB and and add to friend list
-// Logic to accept a friend request(?)
-
-
-let User = require('./user');
-let ourUser = User.createUser;
-
-// A function for alerting the friend was added
-function addToFriendList(friendID) {
-    if (isValidID(friendID)){
-        // alert("Friend with ID: " + friendID + " was added to your friends list");
-        console.log("Friend with ID: " + friendID + " was added to your friends list");
-        ourUser.friends.push(friendID);
+const isLoggedIn = () => { return (localStorage.getItem('loggedIn') === 'true'); }
+let app = new Vue({
+    el: '#app',
+    data: {
+        title: 'Connect with friends',
+        loggedIn: isLoggedIn(),
+        username: "",
+        friendsList: [],
+        errorSelf: false,
+        errorDupe: false,
+        errorInput: false,
+        errorNoUserWithName: false,
     }
-    else {
-        // alert("Error - not a valid ID");
-        console.log("Error: " + friendID + " is not a valid ID");
-    }
+});
+
+function fetchAndSetUsername() {
+    const username = localStorage.getItem('username');
+    if ( app.username !== username ) app.username = username;
+    return username;
 }
 
-// The HTML validates input is a number. Here we check range and if integer
-function isValidID(id) { if (id >= 1 && id <=1000 && Number.isInteger(id)) return true; };
+// Fetch the friend list of logged-in user.
+async function fetchFriendsList(user) {
+    const response = await axios.get('/fetchFriends', {params: {user}});
+    const friendsList = response.data;
+    return friendsList;
+};
 
+// Uses Vue functionality to update list of friends on page.
+const updateFriendsListOnPage = async () => { app.friendsList = await fetchFriendsList(fetchAndSetUsername())};
 
-addToFriendList(50);
-addToFriendList(14);
-addToFriendList(5.6);
-console.log("Our user's username: " + ourUser.userName);
-console.log("Our user's user ID: " + ourUser.userID);
-console.log("Your friends: " + ourUser.friends);
+// Handle if user is adding itself
+const selfAddErrorHandler = (requestBy, addName) => {
+    app.errorDupe = false; // <- Bug fix: if you add dupe and then yourself it shows two error messages. Thanks || operator.
+    if (requestBy === addName) {
+        app.errorSelf = true;
+        return true;
+    } else { app.errorSelf = false };
+};
 
+// Handle if user is adding someone who is already a friend
+const dupeAddErrorHandler = async (requestBy, addName) => {
+    const FL = await fetchFriendsList(requestBy);
+    const findDupe = FL.find(user => { return user.name === addName })
+    if (findDupe) {
+        app.errorDupe = true;
+        return true;
+    } else { app.errorDupe = false }
+};
 
+const friendNameInputErrorHandler = () => {
+    if (friendNameInput.value === "" ) {
+        app.errorInput = true;
+        return true;
+    } else { app.errorInput = false };
+}
 
+const handleErrors = async (requestBy, addName) => {
+    let errorOccurred = false;
+    if (friendNameInputErrorHandler()) errorOccurred = true;
+    if (selfAddErrorHandler(requestBy, addName)) errorOccurred = true;
+    if (await dupeAddErrorHandler(requestBy, addName)) errorOccurred = true;
+    return errorOccurred;
+}
 
+async function addFriend() {
+    const requestBy = fetchAndSetUsername();
+    const addName = friendNameInput.value;
+
+    // Error handling
+    if (await handleErrors(requestBy, addName)) return;
+
+    // Send to server
+    const response = await axios.get('/addFriend', {params: { requestBy, addName }});
+    
+    console.log(response["data"].valid) // test
+
+    // Depending on the response, it'll append the friend added to the friends list on the page.
+    if (response["data"].valid) {
+        app.friendsList.push({name: addName})
+    } else { app.errorNoUserWithName = true }
+}
+
+if (isLoggedIn()) {
+    updateFriendsListOnPage();
+    const friendNameInput = document.querySelector('#friendNameInput');
+    const addFriendBtn = document.querySelector('#addFriendBtn');
+    addFriendBtn.addEventListener('click', addFriend);
+}

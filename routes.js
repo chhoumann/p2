@@ -78,9 +78,10 @@ router.get('/loginUsername', async (req, res) => {
 
 router.get('/addFriend', async (req, res) => {
     const data = req.query;
-    const validateUsername = await dataHandler.checkForUserInDB(data.addName)
-    // check if the two aren't already friends...
-    // also needs to write to file...
+    // Validation - does the user exist?
+    const validateUsername = await dataHandler.checkForUserInDB(data.addName);
+    // If yes, add as friend and update DB file
+    if (validateUsername) await dataHandler.addFriend(data.requestBy, data.addName);
     res.send({valid: validateUsername});
 })
 
