@@ -6,6 +6,7 @@ const dataHandler = require('./assets/scripts/data/dataHandler')
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
+let reqNum = 0;
 
 router.get('/', (req, res) => {
     res.render('test');
@@ -24,6 +25,14 @@ router.get('/movieRatings', (req, res) => {
         res.send(movies);
     });
 });
+
+router.get('/submitRating', async (req, res) => {
+    const data = req.query;
+    const resp = await dataHandler.addRatingToUser(data.username, data.movieDB_ID, data.rating);
+
+    res.send({valid: resp});
+    res.end();
+})
 
 
 router.get('/rateMovies', (req, res) => {

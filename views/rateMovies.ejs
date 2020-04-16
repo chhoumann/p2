@@ -5,11 +5,10 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>RateMovies</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src='./scripts/user/rateMovies.js' defer></script>
 </head>
-<body>
+
     <h1 id="header">Rate Movies</h1>
     <!-- Username, movie, rating eller kender ikke/har ikke set !-->
     <!-- Tjek om brugernavnet eksisterer i DB
@@ -17,8 +16,9 @@
          Brugeren skal rate filmen / eller ikke set         
          localStorage.getItem("username")                        -->
 
-    <form id="account" action="/rateMovies" method="POST">  
-        
+    <img src='' id="posterDisplay">
+    <div id="account">  
+        <h3 id="movieName"></h3>
         <input type ="radio" id="movie1-1" name="Rate" value="1">
         <label for="1">1</label>
         <input type ="radio" id="movie1-2" name="Rate" value="2">
@@ -32,7 +32,7 @@
         <input type ="radio" id="movie1-unknown" name="Rate" value="unknown"> 
         <label for="unknown">Unknown</label> <br> <br>
 
-        <input id="button" type="submit">
-    </form>
+        <input id="submitRating" type="button" value="Rate!">
+    </div>
 
 </html>
