@@ -57,12 +57,36 @@ const buildMovieDB = async (ratingsDB, noLog = false) => {
     // 9742 movies in DB. The forEach makes this take a lot longer, but is necessary for recommender system.
     // Perhaps there is a better & faster solution?
     await movieDB.forEach(async movie => {
+
+        // The code below adds the year for each movie
+        // TODO: MOVE CODE TO RELEVANT PLACE (Christian pls help)
+        // TODO: Make it prettier =) 
+
+        // Split each character in the title into individual elements
+        let splitMovieTitle = movie["title"].split((""));
+
+        // Finds last index of ')', which is always the year of the movie
+        let index = splitMovieTitle.lastIndexOf(')');
+        let year = [];
+
+        // Adds the 4 elements to the year array. Every year is always 4 characters long.
+        year.push(splitMovieTitle[index - 4] +splitMovieTitle[index - 3] + splitMovieTitle[index - 2] + splitMovieTitle[index - 1]);
+
+        // If the string contained a year we add it to the movieDB
+        if(index) {
+            year = Number(year);
+            if(!isNaN(year)){
+                movie.year = year;
+            }
+        }
+
         movie.genres = dataHandler.getGenresFromMovie(movie);
         if (movie["genres"]["genres"]["(no genres listed)"] === 1) {movie.skip = true} else {movie.skip = false};
         movie.ratings = await dataHandler.getRatingsForMovieID(movie.movieId, ratingsDB);
         movie.averageRating = dataHandler.getAverage(movie.ratings);
     });
     if (noLog === false) utility.printTestAndTime("MovieDB, Ratings, & Average Ratings", movieDB, startTime);
+    console.log(movieDB);
     return movieDB;
 };
 
