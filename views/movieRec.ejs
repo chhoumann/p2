@@ -37,13 +37,13 @@
         <div class="columns is-centered" style="margin-left: 10rem; margin-right: 10rem; margin-bottom: 10rem;">
             <div class="column is-quarter">
                 <h1 class="title" style="text-align: center;">Select friends</h1>
-                <ul class="list">
+                <ul class="list" style="cursor: pointer;">
                     <li class="list-item is-medium" v-on:click="addToGroup(friend)" v-for="friend in friendsList">😎 {{ friend.name }} ➕ </li>
                 </ul>
             </div>
             <div class="column is-quarter">
                 <h1 class="title" style="text-align: center;">Added</h1>
-                <ul class="list">
+                <ul class="list" style="cursor: pointer;">
                     <li class="list-item is-medium" v-on:click="removeFromGroup(friend)" v-for="friend in selectedList">😍 {{ friend.name}} ❌ </li>
                 </ul>
             </div>
