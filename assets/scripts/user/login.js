@@ -32,24 +32,42 @@ let app = new Vue({
                 localStorage.setItem("loggedIn", true);
                 localStorage.setItem("username", username);
                 app.username = username;
-                buildPage();
+                this.buildPage(); // build page for new user
             } else {
-                alert(`Login unsuccessful. Try again.`);
+                sweetAlert('Error', `Login unsuccessful. Try again.`, 'error');
                 localStorage.setItem("loggedIn", false);
             }
             this.toggleLoggedInState();
         },
-        submitLogin: function() {
+        submitLogin: async function() {
             const usernameField = document.querySelector("#usernameField");
             const submittedUsername = usernameField.value;
-            axios.get('/loginUsername', {params: {
+            const res = await axios.get('/loginUsername', {params: {
                 username: submittedUsername
-            }}).then(res => this.usernameCheckResponseHandler(res.data, submittedUsername));
+            }})
+            this.usernameCheckResponseHandler(res.data, submittedUsername);
             
             // Clear the input field
             this.clearUsernameField();
         },
         buildPage: () => {buildPage()},
+        createNewUser: async function() {
+            // TODO: Error if less than 3 but more than 12 characters.
+            const username = document.querySelector("#usernameField").value;
+
+            if (username.length < 3 || username.length > 12) {
+                sweetAlert('Error', 'Could not create a user with entered username. Please make sure that it has between 3 - 12 characters.', 'info');
+            } else {
+                const response = await axios.get('/createUser', {params: { username }});
+                if (response["data"].userCreated === true) {
+                    sweetAlert('Success!', `Your user '${username}' has been created! Logging you in.`, 'success');
+                    this.submitLogin();
+                } else {
+                    sweetAlert('Error', 'User could not be created.', 'error');
+                }
+            }
+            
+        },
     }
 })
 
@@ -126,26 +144,26 @@ async function getRatingsForUser() {
 // Check if user is logged in
 async function buildPage() {
     let movieData;
-    if (app.loggedIn) {
-        // Get movieData if it isn't already loaded
-        if (movieData === undefined) {
-            movieData = await getMovieData();
-        }
-        // Get a random movie and show it on the page
-        const movie = getRandomMovie(movieData);
-        printMovie(movie);
-        // Show the poster for the movie
-        const response = await fetchMovie(movie);
-        if (!changePoster(response)) buildPage();
-        
-        makeSubmitButton(movie);
 
-        // Build the list of items that the user has rated already
-        app.ratedMovies = await getRatingsForUser();
+    // Get movieData if it isn't already loaded
+    if (movieData === undefined) {
+        movieData = await getMovieData();
     }
+    // Get a random movie and show it on the page
+    const movie = getRandomMovie(movieData);
+    printMovie(movie);
+    // Show the poster for the movie
+    const response = await fetchMovie(movie);
+    if (!changePoster(response)) buildPage();
+    
+    makeSubmitButton(movie);
+
+    // Build the list of items that the user has rated already
+    app.ratedMovies = await getRatingsForUser();
+    
 };
 
-buildPage();
+if (app.loggedIn) buildPage();
 
 /*
 TODOS
