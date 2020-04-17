@@ -23,21 +23,33 @@ router.get('/movieRatings', (req, res) => {
         if(err) console.log(err);
         movies = JSON.parse(data);
         res.send(movies);
+        res.end();
     });
 });
+
+router.get('/getFriends', (req, res) => {
+    let userData;
+
+    fs.readFile('./db/dbOfUsers.json', function(err, data) {
+        if(err) console.log(err);
+        userData = JSON.parse(data);
+        res.send(userData);
+    });
+});
+
 
 router.get('/submitRating', async (req, res) => {
     const data = req.query;
     const resp = await dataHandler.addRatingToUser(data.username, data.movieDB_ID, data.rating, data.title);
 
     res.send({valid: resp});
-    res.end();
 })
 
 router.get('/fetchRatedMoviesForUser', async (req, res) => {
     const data = req.query;
     const ratedMovies = await dataHandler.getRatingsUserDB(data.username);
     res.send(ratedMovies);
+    res.end()
 })
 
 
@@ -80,7 +92,7 @@ router.get('/loginUsername', async (req, res) => {
     const user = await dataHandler.checkForUserInDB(data.username);
 
     res.send(user);
-})
+});
 
 router.get('/addFriend', async (req, res) => {
     const data = req.query;
@@ -89,13 +101,13 @@ router.get('/addFriend', async (req, res) => {
     // If yes, add as friend and update DB file
     if (validateUsername) await dataHandler.addFriend(data.requestBy, data.addName);
     res.send({valid: validateUsername});
-})
+});
 
 router.get('/fetchFriends', async (req, res) => {
     const username = req.query.user;
     const found = await dataHandler.getFriendsList(username);
     
     res.send(found);
-})
+});
 
 module.exports = router;

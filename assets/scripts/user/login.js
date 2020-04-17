@@ -21,9 +21,6 @@ let app = new Vue({
             this.username = "";
             this.toggleLoggedInState();
         },
-        redirCreateAccout: function() {
-            window.location.href = "/createProfile"
-        },
         clearUsernameField: function() { document.querySelector("#usernameField").value = "" },
         isLoggedIn: function() { return (localStorage.getItem('loggedIn') === 'true')},
         toggleLoggedInState: function() { app.loggedIn = this.isLoggedIn() },
@@ -52,7 +49,6 @@ let app = new Vue({
         },
         buildPage: () => {buildPage()},
         createNewUser: async function() {
-            // TODO: Error if less than 3 but more than 12 characters.
             const username = document.querySelector("#usernameField").value;
 
             if (username.length < 3 || username.length > 12) {

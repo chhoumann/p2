@@ -1,12 +1,9 @@
-//import { localsName } from "ejs"; (hvad er det her??)
-
 let app = new Vue({
     el: '#app',
     data: {
         loggedIn: (localStorage.getItem('loggedIn') === 'true'),
         username: localStorage.getItem('username'),
         friendsList: [],
-        selectedList: [],
     },
     methods: {
         login: function () {
@@ -63,20 +60,6 @@ let app = new Vue({
                 }
             }
         },
-        addToGroup: function(buddy) {
-            if(app.selectedList.length < 5) {
-                if (!app.selectedList.includes(buddy)) {
-                    app.selectedList.push(buddy);
-                    const idx = app.friendsList.indexOf(buddy);
-                    app.friendsList.splice(idx, 1);
-                } else { sweetAlert('Error', `You can't add ${buddy.name} to your group more than once.`, 'error') }
-            }
-        },
-        removeFromGroup: function(buddy) {
-            const idx = app.selectedList.indexOf(buddy);
-            app.selectedList.splice(idx, 1);
-            app.friendsList.push(buddy);
-        }
     }
 })
 
@@ -120,4 +103,18 @@ async function findFriendsInUserDB(){
 
 function createDropDownList(){
     friends = findFriendsInUserDB;
+
+
 }
+
+// function createDropDownList(){
+//     let i;
+//     for (let i = 0, i < response.length)
+// }
+
+// myfunc(){
+//     group.push(userdb.id)
+// }
+// myfuncDetele(){
+//     group.splice(indexof(group["userdb"]["id"]), 1);
+// }
