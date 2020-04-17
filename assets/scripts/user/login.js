@@ -75,8 +75,18 @@ const getMovieData = async () => { return (await axios.get("/movieRatings"))["da
 function printMovie(movie) { app.movieTitle = `Movie: ${movie.title}` } 
 function randomNumber(number) { return Math.floor(Math.random() * number); }
 function getRandomMovie(movieData) { return movieData[randomNumber(100)]; }
-const getURLString = (api_key, searchQuery) => { return `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${searchQuery}&page=1`; };
-const fetchMovie = async (movie) => { return await axios.get(getURLString("eced0a249b99903b17b0cf910c02c201", formatMovieTitle(movie))); };
+//const getURLString = (api_key, searchQuery) => { return `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${searchQuery}&page=1`; };
+const getURLString = (api_key, movieId) => { return `https://api.themoviedb.org/3/movie/${movieId}?api_key=${api_key}`; };
+const fetchMovie = async (movie) => {
+    let apiRes;
+    try {
+        apiRes = await axios.get(getURLString("eced0a249b99903b17b0cf910c02c201", movie.tmdbId));
+    } catch(error) {
+        console.log(`Movie '${movie.title}' gave error code ${error.response.status}.`);
+        return false;
+    }
+    return apiRes;
+};
 
 // Removes (year) from each movie title so it can be searched
 const formatMovieTitle = (movie) => {
@@ -90,11 +100,11 @@ const formatMovieTitle = (movie) => {
 }
 
 function changePoster(response) {
-    if (response["data"]["results"].length === 0) {
+    if (!response) {
         console.log("No movie found");
         return false;
     };
-    const posterURL = response["data"]["results"][0]["poster_path"];
+    const posterURL = response["data"]["poster_path"];
     if (posterURL === null || posterURL === "" || posterURL === "") return false;
 
     app.currentMoviePoster = `http://image.tmdb.org/t/p/w342${posterURL}`;
@@ -108,12 +118,11 @@ const getRatingForMovie = () => {
     if (document.getElementById('movie1-3').checked) return 3;
     if (document.getElementById('movie1-4').checked) return 4;
     if (document.getElementById('movie1-5').checked) return 5;
-    /* if (document.getElementById('movie1-unknown').checked) return 0; */
 }
 
 function submitRatingHandler(movie) {
     if (getRatingForMovie() === 0) {
-        console.log("Movie unknown to user - ignoring.")
+        console.log("Movie unknown to user - ignoring.");
     } else {
         axios.get('/submitRating', {params: {
             username: localStorage.getItem('username'),
