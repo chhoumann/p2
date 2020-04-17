@@ -23,9 +23,8 @@ const BuildMoviesForRating = async () => {
     let i = 0;
 
     movieDB.forEach(movie => {
-
         if (movie["ratings"].length > 5 && movie.averageRating > 3.5) {
-            index.unshift({title: movie.title, id: movie.movieId, avgRating: movie.averageRating});
+            index.unshift({title: movie.title, id: movie.movieId, avgRating: movie.averageRating, tmdbId: movie.tmdbId});
         }
     });
 
@@ -54,6 +53,7 @@ const buildMovieLensUserDatabase = async (ratingsDB, noLog = false) => {
 const buildMovieDB = async (ratingsDB, noLog = false) => {
     let startTime = performance.now();
     const movieDB = await loadData.getMovieData();
+    const links = await loadData.getLinkData();
     // 9742 movies in DB. The forEach makes this take a lot longer, but is necessary for recommender system.
     // Perhaps there is a better & faster solution?
     await movieDB.forEach(async movie => {
@@ -70,7 +70,7 @@ const buildMovieDB = async (ratingsDB, noLog = false) => {
         let year = [];
 
         // Adds the 4 elements to the year array. Every year is always 4 characters long.
-        year.push(splitMovieTitle[index - 4] +splitMovieTitle[index - 3] + splitMovieTitle[index - 2] + splitMovieTitle[index - 1]);
+        year.push(splitMovieTitle[index - 4] + splitMovieTitle[index - 3] + splitMovieTitle[index - 2] + splitMovieTitle[index - 1]);
 
         // If the string contained a year we add it to the movieDB
         if(index) {
@@ -79,7 +79,8 @@ const buildMovieDB = async (ratingsDB, noLog = false) => {
                 movie.year = year;
             }
         }
-
+        const movieLink = links.find(link => link.movieId === movie.movieId);
+        movie.tmdbId = movieLink.tmdbId;
         movie.genres = dataHandler.getGenresFromMovie(movie);
         if (movie["genres"]["genres"]["(no genres listed)"] === 1) {movie.skip = true} else {movie.skip = false};
         movie.ratings = await dataHandler.getRatingsForMovieID(movie.movieId, ratingsDB);
