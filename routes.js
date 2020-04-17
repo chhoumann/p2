@@ -59,19 +59,10 @@ router.get('/movieRec', (req, res) => {
 });
 
 // This receives and processes the information from the form at http://localhost:8000/profile to http://localhost:8000/createUser
-router.post('/createUser', urlencodedParser, async function (req, res) {  
+router.get('/createUser', urlencodedParser, async function (req, res) {  
     // Load current UserDB to 'append' to it.
     const validation = await user.createUser(req);
-
-    if (validation.userCreated === true) {
-        // Send something back to the user
-        res.end(`<h1>Thank you for signing up, ${validation.user.username}!</h1>
-                 <a href="/">Click here to go to the homepage.</a>`);
-    } else {
-        res.end(`<h1>Thank you for signing up, ${validation.user.username}!</h1>
-                 <h2>Unfortunately, your name was already taken.</h2>
-                 <a href="/profile">Click here to try again.</a>`);
-    }
+    res.send(validation);
 });
 
 router.post('/getMovieRec', urlencodedParser, async function (req, res) {
