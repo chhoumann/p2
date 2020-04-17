@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://unpkg.com/vue-swal"></script>
     <script src="/scripts/user/login.js" defer></script>
     <title>Test doc</title>
 </head>
@@ -24,10 +25,11 @@
                 <div class="navbar-end" style="margin-top: 0.4rem; margin-right: 0.5rem">
                     <input v-if="!loggedIn" class="input navbar-item" type="text" id="usernameField" placeholder="Enter your username" style="margin-right:0.5rem; width: 50%;">
                     <input v-if="!loggedIn" v-on:click="login" class="button is-primary navbar-item" type="button" value="Login">
-                    <input v-if="!loggedIn" v-on:click="redirCreateAccout" type="button" class="button is-primary navbar-item" value="Create Account" style="margin-left: 0.4rem;">
+                    <input v-if="!loggedIn" v-on:click="createNewUser" type="button" class="button is-primary navbar-item" value="Create Account" style="margin-left: 0.4rem;">
                     <p v-if="loggedIn" class="navbar-item" style="margin-top: -0.3rem;"><b>{{ username }}</b></p>
                     <input v-if="loggedIn" v-on:click="logout" class="button is-primary navbar-item" type="button" value="Logout">
                 </div>
+                
             </div>
         </nav>
 
