@@ -135,10 +135,9 @@ module.exports.findMovieByID = (movieID, movieDB) => {
 }
 
 module.exports.formatUser = (req, currentUserAmount) => {
-    const username = req.body.username;
-    const password = req.body.password;
+    const username = req.query.username;
     const id = currentUserAmount + 1;
-    const user = new u.User(id, username, password);
+    const user = new u.User(id, username);
 
     return user;
 }
