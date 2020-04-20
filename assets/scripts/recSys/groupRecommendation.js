@@ -10,6 +10,7 @@
     - UTS baseret på korrelation
 */
 const dataHandler = require('../data/dataHandler');
+const loadData = require('../data/loadData')
 const utility = require('../../../utility')
 const pearsonCorrelation = require('./pearsonCorrelation');
 const { jStat } = require('jstat'); // using this because our pearson would only return 0
@@ -18,12 +19,13 @@ const UTHRES = 'underThreshold';
 const AMOV = 'allMovies'
 const RATING_THRESHOLD = 3
 
-module.exports.makeGroupRec = async function makeGroupRecommendations(group, movieDB, numberOfItemsToBeRecommended) {
+module.exports.makeGroupRec = async function makeGroupRecommendations(group) {
     let R_G = [];
     let badMovieList = [];
-    
+    const movieDB = await loadData.getMovieDB();
+
     // Pushes filtered ratings for each member to collected array of users.
-    group.forEach(member => { R_G.push(filterRatings(member)); });    
+    group.forEach(member => { R_G.push(filterRatings(member)); });
     
     // Adds every movie that the user rated that is under the set threshold to a list of 'bad movies'
     R_G.forEach(member => { badMovieList.push(member[UTHRES]); });
@@ -31,16 +33,15 @@ module.exports.makeGroupRec = async function makeGroupRecommendations(group, mov
     
     // Check if any aboveThreshold list includes any of the movies in the list of 'bad' movies:
     R_G.forEach(member => member[ATHRES].filter(entry => badMovieList.includes(entry)));
-    const R_G_COR = findCorrelations(R_G, movieDB);
+    const R_G_COR = findCorrelations(R_G, movieDB); // <- shame
 
-    getFinalRec(R_G_COR, movieDB);
-    return;
+    return getFinalRec(R_G_COR, movieDB);
 }
 // Used to filter the ratings for each member in a group.
 const filterRatings = (member, threshold = RATING_THRESHOLD) => {
     let aboveThreshold = [], underThreshold = [];
     member.forEach(entry => {
-        if (parseFloat(entry.ratings) >= threshold) aboveThreshold.push(entry)
+        if (parseFloat(entry.rating) >= threshold) aboveThreshold.push(entry)
         else underThreshold.push(entry);
     })
     return {aboveThreshold, underThreshold};
@@ -70,14 +71,17 @@ function correlationByMember(group, movieDB, correlations, memID, upTo){
             }
         ]
     */
+   
     correlations[memID]["entries"] = [];
     memberRatings.forEach(entry => {
         // Find the movie from 'entry' in the MovieDB (uses binary search)
-        const entMov = dataHandler.findMovieByID(entry.movieId, movieDB);
+        const entMov = dataHandler.findMovieByID(entry.movieID, movieDB);
         correlations[memID]["entries"].push([]);
         movieDB.forEach(movie => correlationByMovie(movie, entMov, memID, eID, correlations));
         eID++;
     });
+    
+    
     return correlationByMember(group, movieDB, correlations, ++memID, upTo);
     
 }
@@ -103,7 +107,7 @@ function getFinalRec(group, movieDB){
         let entryNum = 0;
         member["memberRatings"].forEach(ratedMovieCorrelations => {
             let movieIndex = 0;
-            const weight = (parseFloat(ratedMovieCorrelations.ratings) / 5);
+            const weight = (parseFloat(ratedMovieCorrelations.rating) / 5);
             member["entries"][entryNum++].forEach(entry => { 
                 if (filterBelowThreshold(entry)) {
                     // Value for this skipped entry will still be 0 in 'topArray' - we will skip it later during the creation of the recommended movies list

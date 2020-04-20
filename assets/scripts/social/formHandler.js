@@ -1,5 +1,3 @@
-//import { localsName } from "ejs"; (hvad er det her??)
-
 let app = new Vue({
     el: '#app',
     data: {
@@ -7,6 +5,8 @@ let app = new Vue({
         username: localStorage.getItem('username'),
         friendsList: [],
         selectedList: [],
+        recommendations: [],
+        posterSource: '',
     },
     methods: {
         login: function () {
@@ -64,21 +64,41 @@ let app = new Vue({
             }
         },
         addToGroup: function(buddy) {
-            if(app.selectedList.length < 5) {
+            if(app.selectedList.length < 4) {
                 if (!app.selectedList.includes(buddy)) {
                     app.selectedList.push(buddy);
                     const idx = app.friendsList.indexOf(buddy);
                     app.friendsList.splice(idx, 1);
                 } else { sweetAlert('Error', `You can't add ${buddy.name} to your group more than once.`, 'error') }
+            } else {
+                sweetAlert('Error', `You can't add more than 4 members to the group.`, 'error')
             }
         },
         removeFromGroup: function(buddy) {
             const idx = app.selectedList.indexOf(buddy);
             app.selectedList.splice(idx, 1);
             app.friendsList.push(buddy);
+        },
+        getMovieRec: async function() {
+            // Clone selected list and append self
+            const group = app.selectedList.map((member) => member.name);
+            group.push(app.username);
+            // Send to server
+            const finalGroup = await axios.get('/getRecommendations', {params: { group }});
+            const {data} = finalGroup
+            console.log(data);
+            this.recommendations = data;
+        },
+        getPoster: async function(rec) {
+            const thing = `https://api.themoviedb.org/3/movie/${rec.movieObj.tmdbId}?api_key=eced0a249b99903b17b0cf910c02c201`
+            const {data: {poster_path}} = await axios.get(thing);
+            console.log(poster_path);
+            this.posterSource = `http://image.tmdb.org/t/p/w342${poster_path}`; 
+            return `http://image.tmdb.org/t/p/w342${poster_path}`;
         }
     }
-})
+});
+
 
 function fetchAndSetUsername() {
     const username = localStorage.getItem('username');
@@ -101,13 +121,12 @@ if(app.loggedIn) { updateFriendsListOnPage(); }
 
 async function getFriendList() {
     const response = await axios.get('/fetchFriends', {params: { user: localStorage.getItem('username') }});
-    // console.log(response["data"]);
     app.friendsList = response["data"];
 }
 getFriendList();
 
 async function findFriendsInUserDB(){
-    const friends = await getUserDB()
+    const friends = await getUserDB();
     const username = localStorage.getItem('username');
     
     if (localStorage.getItem('loggedIn') == 'true'){

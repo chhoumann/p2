@@ -2,7 +2,8 @@ const groupHandler = require('./assets/scripts/social/groupHandler');
 const user = require('./assets/scripts/user/user');
 const bodyParser = require('body-parser'); 
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
-const dataHandler = require('./assets/scripts/data/dataHandler')
+const dataHandler = require('./assets/scripts/data/dataHandler');
+const groupRec = require('./assets/scripts/recSys/groupRecommendation');
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
@@ -108,6 +109,17 @@ router.get('/fetchFriends', async (req, res) => {
     const found = await dataHandler.getFriendsList(username);
     
     res.send(found);
+});
+
+router.get('/getRecommendations', async (req, res) => {
+    const { group } = req.query;
+    console.log(`${group[group.length - 1]} asked for movie recommendations.`)
+    // Send group to datahandler to fetch users' ratings
+    const groupRatings = await dataHandler.getGroupRatings(group);
+    // Send ratings to group rec. sys to fetch recommendations
+    const recommendations = await groupRec.makeGroupRec(groupRatings);
+    // Send recommendations to user
+    res.send(recommendations);
 });
 
 module.exports = router;

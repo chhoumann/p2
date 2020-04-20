@@ -5,6 +5,17 @@ const utility = require('../../../utility');
 const USERS_IN_TOTAL = 610; // Amount of users in the dataset.
 const GENRE_SEPARATOR = '|';
 
+// Makes a group from selected friends by the user
+module.exports.getGroupRatings = async function getGroupRatings(group) {
+    const userDB = await loadData.getUserDB();
+    const groupRatings = group.map(member => {
+        const {moviePreferences} = userDB["users"].find((user => (user["username"].localeCompare(member)) == 0));
+        return moviePreferences;
+    })
+    return groupRatings;
+}
+
+
 // Group Functionality. Default size of group is 5 users.
 module.exports.groupUsers = function groupUsers(fromArrayOfUsers, groupSize = 5, arrayOfUserIds) {
     let tempGroup = [];
