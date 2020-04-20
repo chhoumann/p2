@@ -23,7 +23,7 @@ const formatMovieTitle = (movie) => {
     movieTitle.splice(idx, 6);
     // Join the remaining parts
     const colMovTitle = movieTitle.join("");
-    return colMovTitle;
+    return colMovTitle; // FIXME: What does col stand for??
 }
 
 function changePoster(response) {
@@ -38,7 +38,7 @@ function changePoster(response) {
     return true;
 }
 
-// Radio buttons.
+// Radio buttons for the user selection of rating
 const getRatingForMovie = () => {
     if (document.getElementById('movie1-1').checked) return 1;
     if (document.getElementById('movie1-2').checked) return 2;

@@ -1,3 +1,4 @@
+// Constants
 const loadData = require('./loadData');
 const initialize = require('../../../initialize')
 const u = require('../user/user');
@@ -17,6 +18,7 @@ module.exports.getGroupRatings = async function getGroupRatings(group) {
 
 
 // Group Functionality. Default size of group is 5 users.
+// Group Functionality. Default size of group is 5 users, so an optional parameter.
 module.exports.groupUsers = function groupUsers(fromArrayOfUsers, groupSize = 5, arrayOfUserIds) {
     let tempGroup = [];
     for(let i = 0; i < groupSize; i++) {
@@ -39,7 +41,7 @@ module.exports.getRatingsForUser = async function getRatingsForUser(userID, rati
     return results;
 }
 
-// Builds database of users. Index 0 is empty. Starts from 1 and goes to 610. See why below.
+// Builds database of users. Index 0 is empty. Starts from 1 and goes to 610. See why below. FIXME: Fordi det skal stemme med brugerID?
 module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB(ratingsData) {
     let userDB = [];
     try {
@@ -76,7 +78,7 @@ module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id, ra
 module.exports.getAverage = function getAverage(ratingsForMovie) {
     let sum = 0;
     for (const entry of ratingsForMovie) {
-        sum += parseFloat(entry.rating)
+        sum += parseFloat(entry.rating);
     }
     return sum / ratingsForMovie.length;
 }
@@ -84,6 +86,7 @@ module.exports.getAverage = function getAverage(ratingsForMovie) {
 // Receives single movie entry and returns the genres in an array.
 // Used to build MovieDB for Rec. Sys.
 module.exports.getGenresFromMovie = function getGenresFromMovie(movieEntry) {
+    // All the genres that exist in the movieDB
     let genres = {
         'Adventure': 0, 'Animation': 0,
         'Children': 0,  'Comedy': 0,
@@ -98,9 +101,10 @@ module.exports.getGenresFromMovie = function getGenresFromMovie(movieEntry) {
     };
     
     const genreString = movieEntry.genres;
-    // if (genreString === '(no genres listed)');
+
+    // In the CSV file movies are written in the form e.g.: Comedy|Crime|Thriller
     const splitString = genreString.split(GENRE_SEPARATOR);
-    
+    // Each of the elements obtained through the splitting
     splitString.forEach(genre => { genres[genre]++; });
 
     let genreNumArray = Object.keys(genres).map((value) => {return genres[value]});
@@ -119,22 +123,22 @@ module.exports.getMoviesWatched = (user) => {
 // Modified from: https://github.com/jefelewis/algorithms-review/blob/master/search-algorithms/binary-search.js
 // Works because MovieDB is already sorted.
 const movieSearch = (movieDB, movieID) => {
-    // Define Start + End Index
+    // Define start + end Index
     let startIndex = 0;
     let endIndex = movieDB.length - 1;
   
-    // While Start Index Is Less Than Or Equal To End Index
+    // While start index is less than or equal to end index
     while(startIndex <= endIndex) {
-      // Define Middle Index (This Will Change When Comparing )
+      // Define middle index (this will change when comparing )
       let middleIndex = Math.floor((startIndex + endIndex) / 2);
   
-      // Compare Middle Index With Target For Match
+      // Compare middle index with target for match
       if(parseFloat(movieDB[middleIndex].movieId) === parseFloat(movieID)) { return middleIndex; }
   
-      // Search Right Side Of movieDB
+      // Search right side of movieDB
       if(parseFloat(movieID) > parseFloat(movieDB[middleIndex].movieId)) { startIndex = middleIndex + 1; }
   
-      // Search Left Side Of movieDB
+      // Search left side of movieDB
       if(parseFloat(movieID) < parseFloat(movieDB[middleIndex].movieId)) { endIndex = middleIndex - 1; }
     }
 };
@@ -174,17 +178,21 @@ const findUserInUserDB = async (user) => {
     return retObj;
 }
 
+// If something user related is changed (added friend/rating) the userDB file is rewritten
 const updateUserDBFile = async (newUserDB) => {
     const USER_DB_PATH = './db/dbOfUsers.json';
     initialize.writeToFile(USER_DB_PATH, newUserDB)
 }
 
+// Given a user object the friend list of this user is returned
+// FIXME: What does the foundUser property mean??
 module.exports.getFriendsList = async (user) => {
     const retObj = await findUserInUserDB(user);    
     if (retObj.foundUser === -1) return false;
     return retObj.foundUser["friends"];
 }
 
+// 'requestBy' represents the user that makes the friend addition of user 'addName'
 module.exports.addFriend = async (requestBy, addName) => {
     const retObj = await findUserInUserDB(requestBy);
     retObj.foundUser["friends"].push({name: addName})

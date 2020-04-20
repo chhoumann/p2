@@ -11,7 +11,7 @@ module.exports.User = class User {
         this.id = id;
         this.username = username;
         this.friends = [];  
-        this.moviePreferences = []; // ? Suggestion: array of objects containing movie IDs and ratings of each movie.
+        this.moviePreferences = [];
     }
 }
 
