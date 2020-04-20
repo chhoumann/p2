@@ -16,20 +16,22 @@ const USER_DB_PATH = './db/dbOfUsers.json';
 const USER_MOVIES_FOR_RATING = './db/userMoviesForRating.json';
 
 // Builds a top 100 movies list to be rated by the users on the client
-const BuildMoviesForRating = async () => {
+const buildMoviesForRating = async () => {
     let index = [];
     let top100Movies = [];
     const movieDB = await loadData.getMovieDB();
-    let i = 0;
 
     movieDB.forEach(movie => {
         if (movie["ratings"].length > 5 && movie.averageRating > 3.5) {
+            // Using unshift (adding to beginning of array) means getting the newest movies from the movieDB
             index.unshift({title: movie.title, id: movie.movieId, avgRating: movie.averageRating, tmdbId: movie.tmdbId});
         }
     });
 
     // If the array is sorted the top 100 movies are primarily very old 
     // index.sort((a,b) => (a.avgRating > b.avgRating) ? -1 : 1);
+    
+    // The first 100 elements in the index array are assigned the top100Movies
     top100Movies = index.slice(0, 100);
 
     this.writeToFile(USER_MOVIES_FOR_RATING, top100Movies);
@@ -72,7 +74,7 @@ const buildMovieDB = async (ratingsDB, noLog = false) => {
         // Adds the 4 elements to the year array. Every year is always 4 characters long.
         year.push(splitMovieTitle[index - 4] + splitMovieTitle[index - 3] + splitMovieTitle[index - 2] + splitMovieTitle[index - 1]);
 
-        // If the string contained a year we add it to the movieDB
+        // If the string contained a year we add this property to the movie in the movieDB
         if(index) {
             year = Number(year);
             if(!isNaN(year)){
@@ -98,19 +100,20 @@ const buildTestGroup = async (inputDB, noLog = false) => {
     return testGroup;
 };
 
-module.exports.buildUserDB = async (noLog = true) => {
+module.exports.buildUserDB = async (noLog = true) => { // noLog parameter just to toggle print to console or not
     let startTime = performance.now();
     let userDB = await loadData.getUserDB();
     if (noLog === false) utility.printTestAndTime("userDB", userDB, startTime);
     return userDB;
 };
 
-// ? Maybe move this to dataHandler?
+// FIXME: ? Maybe move this to dataHandler?
 module.exports.writeToFile = (path, variableToWrite) => {
     let tempJSON = JSON.stringify(variableToWrite);
     fs.writeFile(path, tempJSON, (err) => { if (err) throw err; });
 };
 
+// Given a file path as string, return whether it is valid by referencing file system
 const checkIfFileExists = (path) => {
     try {
         if (fs.existsSync(path)) {
@@ -122,7 +125,7 @@ const checkIfFileExists = (path) => {
 };
 
 // Checks if it is necessary to build database & test group.
-// -   Basically used for anything that should be loaded or written before the user interacts with the web application.
+// - Basically used for anything that should be loaded or written before the user interacts with the web application.
 // And then it starts the sever.
 module.exports.initializeDatabase = async () => {
     console.log(SEPARATOR);
@@ -164,7 +167,7 @@ module.exports.initializeDatabase = async () => {
             console.log("UserDB doesn't exist.")
         }
         if (!checkIfFileExists(USER_MOVIES_FOR_RATING)) {
-            BuildMoviesForRating();
+            buildMoviesForRating();
             utility.infoMessage('Building...')
         }
         
