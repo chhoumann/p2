@@ -7,6 +7,7 @@ let app = new Vue({
         selectedList: [],
         recommendations: [],
         posterSource: '',
+        movieCounter: 1,
     },
     methods: {
         login: function () {
@@ -80,25 +81,51 @@ let app = new Vue({
             app.friendsList.push(buddy);
         },
         getMovieRec: async function() {
+            this.allowChanges = true;
             // Clone selected list and append self
             const group = app.selectedList.map((member) => member.name);
             group.push(app.username);
             // Send to server
             const finalGroup = await axios.get('/getRecommendations', {params: { group }});
-            const {data} = finalGroup
-            console.log(data);
+            const {data} = finalGroup;
+            // Append the posters to the page
+            data.forEach(rec => this.getPoster(rec));
+
             this.recommendations = data;
         },
         getPoster: async function(rec) {
-            const thing = `https://api.themoviedb.org/3/movie/${rec.movieObj.tmdbId}?api_key=eced0a249b99903b17b0cf910c02c201`
-            const {data: {poster_path}} = await axios.get(thing);
-            console.log(poster_path);
-            this.posterSource = `http://image.tmdb.org/t/p/w342${poster_path}`; 
-            return `http://image.tmdb.org/t/p/w342${poster_path}`;
+            // Used to get the poster api via PRIVATE api key
+            const tmdbAPIURL = `https://api.themoviedb.org/3/movie/${rec.movieObj.tmdbId}?api_key=eced0a249b99903b17b0cf910c02c201`
+            const {data: {poster_path}} = await axios.get(tmdbAPIURL);
+            // Poster temp is set to a link with a variable posterpath
+            const poster_temp = `http://image.tmdb.org/t/p/w342${poster_path}`;
+
+            // Create the element
+            const div = document.querySelector("#poster-div");
+            let header = document.createElement("h3");
+            header.innerHTML = `${this.movieCounter}. ${rec.movieObj.title}`;
+            header.setAttribute('class', 'title');
+            header.style = "color: light-gray";
+            let poster = document.createElement("img");
+            poster.style = "margin-bottom: 2rem"
+            poster.src = poster_temp;
+            // Insert the posterelement
+            div.appendChild(header, div);
+            div.appendChild(poster, div);
+
+            this.movieCounter++;
+            if (this.movieCounter > 10) this.movieCounter = 1;
         }
     }
 });
 
+// Clear the poster-div of elements when the getMoviesButton is clicked.
+const getMoviesButton = document.getElementById("getMoviesButton");
+getMoviesButton.addEventListener('click', () => {
+    let div = document.querySelector("#poster-div");
+    div.innerHTML = '<br>';
+    if (div.textContent) div.textContent = '';
+})
 
 function fetchAndSetUsername() {
     const username = localStorage.getItem('username');
@@ -124,19 +151,3 @@ async function getFriendList() {
     app.friendsList = response["data"];
 }
 getFriendList();
-
-async function findFriendsInUserDB(){
-    const friends = await getUserDB();
-    const username = localStorage.getItem('username');
-    
-    if (localStorage.getItem('loggedIn') == 'true'){
-        for (let i = 0; i < userDB.length; i++) {}
-    }
-    
-
-    return friends;
-}
-
-function createDropDownList(){
-    friends = findFriendsInUserDB;
-}
