@@ -86,8 +86,9 @@ let app = new Vue({
             const group = app.selectedList.map((member) => member.name);
             group.push(app.username);
             // Send to server
-            const finalGroup = await axios.get('/getRecommendations', {params: { group }});
-            const {data} = finalGroup;
+            const recommendationsForGroup = await axios.get('/getRecommendations', {params: { group }});
+            const {data} = recommendationsForGroup;
+            console.log(data);
             // Append the posters to the page
             data.forEach(rec => this.getPoster(rec));
 
@@ -101,7 +102,7 @@ let app = new Vue({
             const poster_temp = `http://image.tmdb.org/t/p/w342${poster_path}`;
 
             // Create the element
-            const div = document.querySelector("#poster-div");
+            let div = document.querySelector('#poster-div')
             let header = document.createElement("h3");
             header.innerHTML = `${this.movieCounter}. ${rec.movieObj.title}`;
             header.setAttribute('class', 'title');

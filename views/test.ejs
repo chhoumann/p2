@@ -62,6 +62,7 @@
                     </div>
                     <div style="margin-top: 2rem;">
                         <h1 class="title" style="margin-bottom: 0rem;">Your rated movies:</h1>
+                        <input type="button" class="button" value="yeet" @click="deleteAllRatings" readonly style="background-color: red; color: white">
                         <ul>
                             <li v-for="movie in ratedMovies"> {{movie.title}} - {{movie.rating}}/5</li>
                         </ul>

@@ -64,14 +64,17 @@ let app = new Vue({
             }
             
         },
+        deleteAllRatings: async function() {
+            const valid = await axios.get('/deleteAllRatings', {params: { username: localStorage.getItem('username') }});
+            this.buildPage();
+        }
     }
 })
 
 const getMovieData = async () => { return (await axios.get("/movieRatings"))["data"]; };
 function printMovie(movie) { app.movieTitle = `Movie: ${movie.title}` } 
 function randomNumber(number) { return Math.floor(Math.random() * number); }
-function getRandomMovie(movieData) { return movieData[randomNumber(100)]; }
-//const getURLString = (api_key, searchQuery) => { return `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${searchQuery}&page=1`; };
+function getRandomMovie(movieData) { return movieData[randomNumber(movieData.length)]; }
 const getURLString = (api_key, movieId) => { return `https://api.themoviedb.org/3/movie/${movieId}?api_key=${api_key}`; };
 const fetchMovie = async (movie) => {
     let apiRes;
@@ -114,9 +117,14 @@ const getRatingForMovie = () => {
     if (document.getElementById('movie1-3').checked) return 3;
     if (document.getElementById('movie1-4').checked) return 4;
     if (document.getElementById('movie1-5').checked) return 5;
+    return false;
 }
 
 function submitRatingHandler(movie) {
+    if (getRatingForMovie() === false) {
+        sweetAlert('Error', 'Please give a rating to the movie before submitting.', 'error');
+        return;
+    }
     if (getRatingForMovie() === 0) {
         console.log("Movie unknown to user - ignoring.");
     } else {
@@ -154,18 +162,22 @@ async function buildPage() {
     if (movieData === undefined) {
         movieData = await getMovieData();
     }
+
+    // Build the list of items that the user has rated already
+    app.ratedMovies = await getRatingsForUser();
+
     // Get a random movie and show it on the page
     const movie = getRandomMovie(movieData);
-    printMovie(movie);
+
+    // Skip anything existing in ratedMovies
+    const found = app.ratedMovies.find(ratedMovie => { ratedMovie.movieID == movie.id })
+    if (found) buildPage();
     // Show the poster for the movie
     const response = await fetchMovie(movie);
     if (!changePoster(response)) buildPage();
     
+    printMovie(movie);
     makeSubmitButton(movie);
-
-    // Build the list of items that the user has rated already
-    app.ratedMovies = await getRatingsForUser();
-    
 };
 
 if (app.loggedIn) buildPage();
