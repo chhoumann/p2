@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    
+    <script src="https://unpkg.com/vue-swal"></script>
     <script src="scripts/social/friendHandler.js" defer></script>
     <!-- <link href="style/stylesheet.css" type="text/css" rel="stylesheet"> -->
     <meta http-equiv="Content-Type" const="text/html;charset=UTF-8" />
@@ -39,14 +39,11 @@
                     <h1 class="title is-large">Hi {{ username }}</h1>
                     <p class="content is-medium">Add your friends to your friends list so you can watch a movie together!</p>
         
-                    <form>
+                    <form @submit.prevent>
                         <input class="input" type="text" id="friendNameInput" placeholder="Friend Name" style="width: 15rem;">
-                        <input type="button" value="Add friend!" class="button is-success" id="addFriendBtn">
+                        <input type="button" value="Add friend!" class="button is-success" @click="addFriend">
                         <div>
-                            <p v-if="errorSelf" style="color: red;">You can't add yourself as a friend.</p>
-                            <p v-if="errorDupe" style="color: red;">You are already friends.</p>
-                            <p v-if="errorInput" style="color: red;">No friend name entered.</p>
-                            <p v-if="errorNoUserWithName" style="color: red;">No user with that name exists.</p>
+                            <p style="color: red;">{{error}}</p>
                         </div>
                     </form>
             
