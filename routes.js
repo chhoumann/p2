@@ -46,6 +46,13 @@ router.get('/submitRating', async (req, res) => {
     res.send({valid: resp});
 })
 
+router.get('/deleteAllRatings', async (req, res) => {
+    const data = req.query;
+    const resp = await dataHandler.deleteAllRatingsForUser(data.username);
+
+    res.send({valid: resp});
+})
+
 router.get('/fetchRatedMoviesForUser', async (req, res) => {
     const data = req.query;
     const ratedMovies = await dataHandler.getRatingsUserDB(data.username);

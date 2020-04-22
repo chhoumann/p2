@@ -38,29 +38,22 @@
             <div class="column is-quarter">
                 <h1 class="title" style="text-align: center;">Select friends</h1>
                 <ul class="list" style="cursor: pointer;">
-                    <li class="list-item is-medium" v-on:click="addToGroup(friend)" v-for="friend in friendsList">😎 {{ friend.name }} ➕ </li>
+                    <li class="list-item is-medium" v-on:click="addToGroup(friend)" v-for="friend in friendsList">😎 {{ friend.name }}<p style="float:right;">➕</p></li>
                 </ul>
             </div>
             <div class="column is-quarter">
                 <h1 class="title" style="text-align: center;">Added  {{selectedList.length }} / 4</h1>
                 <ul class="list" style="cursor: pointer;">
-                    <li class="list-item is-medium" v-on:click="removeFromGroup(friend)" v-for="friend in selectedList">😍 {{ friend.name}} ❌ </li>
+                    <li class="list-item is-medium" v-on:click="removeFromGroup(friend)" v-for="friend in selectedList">😍 {{ friend.name}}<p style="float:right;">❌</p></li>
                 </ul>
             </div>
         </div>
         <div class="columns is-centered">
-            <input class="button is-large is-success" value="Get us some movies!" readonly @click="getMovieRec"> 
+            <input class="button is-large is-success" id="getMoviesButton" value="Get us some movies!" readonly @click="getMovieRec"> 
         </div>
+        
         <div style="text-align: center;">
-            <!-- <div v-for="rec in recommendations" v-bind:source="getPoster(rec)">
-                <img v-bind:src="source">
-                <h3 class="subtitle">{{rec.movieObj.title}}</h3>
-            </div> -->
-            <div v-for="rec in recommendations">
-                <!-- <img :src="getPoster(rec)"> -->
-                <h3 class="subtitle">{{rec.movieObj.title}}</h3>
-            </div>
+            <div id="poster-div"></div>
         </div>
-    </div>
 </body>
 </html>

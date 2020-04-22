@@ -11,7 +11,7 @@ let app = new Vue({
 const getMovieData = async () => { return (await axios.get("/movieRatings"))["data"]; };
 function printMovie(movie) { app.movieTitle = `Movie: ${movie.title}` } 
 function randomNumber(number) { return Math.floor(Math.random() * number); }
-function getRandomMovie(movieData) { return movieData[randomNumber(100)]; }
+function getRandomMovie(movieData) { return movieData[randomNumber(movieData.length)]; }
 const getURLString = (api_key, searchQuery) => { return `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${searchQuery}&page=1`; };
 const fetchMovie = async (movie) => { return await axios.get(getURLString("eced0a249b99903b17b0cf910c02c201", formatMovieTitle(movie))); };
 

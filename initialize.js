@@ -32,7 +32,7 @@ const buildMoviesForRating = async () => {
     // index.sort((a,b) => (a.avgRating > b.avgRating) ? -1 : 1);
     
     // The first 100 elements in the index array are assigned the top100Movies
-    top100Movies = index.slice(0, 100);
+    top100Movies = index.slice();
 
     this.writeToFile(USER_MOVIES_FOR_RATING, top100Movies);
     utility.successMessage('User Movies for ratings', 'now built')

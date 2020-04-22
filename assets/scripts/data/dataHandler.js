@@ -209,6 +209,14 @@ module.exports.addRatingToUser = async (username, movieDB_ID, rating, title) => 
     return true;
 }
 
+module.exports.deleteAllRatingsForUser = async (username) => {
+    const retObj = await findUserInUserDB(username);
+    retObj.foundUser["moviePreferences"] = [];
+    updateUserDBFile(retObj.userDB);
+    console.log(`${username} deleted their rated movies`);
+    return true;
+}
+
 module.exports.getRatingsUserDB = async (username) => {
     const retObj = await findUserInUserDB(username);
     return retObj["foundUser"]["moviePreferences"];
