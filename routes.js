@@ -37,6 +37,7 @@ router.get('/getFriends', (req, res) => {
 
 router.get('/submitRating', async (req, res) => {
     const data = req.query;
+    console.log(data);
     const resp = await dataHandler.addRatingToUser(data.username, data.movieDB_ID, data.rating, data.title);
 
     res.send({valid: resp});

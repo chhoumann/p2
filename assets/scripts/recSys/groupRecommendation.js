@@ -119,7 +119,7 @@ function getFinalRec(group, movieDB){
     });
 
     topArray = topArray.map((correlation) => { return (correlation / collectedLength); });
-
+    module.exports.topArray = topArray;
     let resultArray = createResultArray(topArray);
     // pushes an object containing correlation and movieID to the final array
 
