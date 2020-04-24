@@ -131,6 +131,8 @@ module.exports.initializeDatabase = async () => {
     console.log(SEPARATOR);
     let db = {};
     try {
+        test();
+
         // Building and writing ratingDB
         if (!checkIfFileExists(RATING_DB_PATH)) {
             db.ratingDB = await buildRatingDB();

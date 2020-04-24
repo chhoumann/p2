@@ -10,11 +10,7 @@ const fs = require('fs');
 let reqNum = 0;
 
 router.get('/', (req, res) => {
-    res.render('test');
-});
-
-router.get('/createProfile', (req, res) => {
-    res.render('createProfile');
+    res.render('index');
 });
 
 router.get('/movieRatings', (req, res) => {
@@ -60,15 +56,6 @@ router.get('/fetchRatedMoviesForUser', async (req, res) => {
     res.end()
 })
 
-
-router.get('/rateMovies', (req, res) => {
-    res.render('rateMovies');   
-});
-
-router.get('/profile', (req, res) => {
-    res.render('profile');
-});
-
 router.get('/connectWithFriends', (req, res) => {
   res.render('connectWithFriends');
 });
@@ -83,16 +70,6 @@ router.get('/createUser', urlencodedParser, async function (req, res) {
     // Load current UserDB to 'append' to it.
     const validation = await user.createUser(req);
     res.send(validation);
-});
-
-router.post('/getMovieRec', urlencodedParser, async function (req, res) {
-    // Tanken er at formen i movieRec skal lave en request hertil.
-    // Der valideres så input og sendes til group rec. sys. functionen som
-    // returnerer nogle film, som så sendes tilbage med 'res.send(FILM)'.
-    
-    const validation = await groupHandler.validateGroup(req);
-    // Send to group recommendation function
-    res.render('movieRec');
 });
 
 router.get('/loginUsername', async (req, res) => {
