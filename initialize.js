@@ -89,7 +89,7 @@ const buildMovieDB = async (ratingsDB, noLog = false) => {
         movie.averageRating = dataHandler.getAverage(movie.ratings);
     });
     if (noLog === false) utility.printTestAndTime("MovieDB, Ratings, & Average Ratings", movieDB, startTime);
-    console.log(movieDB);
+    // console.log(movieDB);
     return movieDB;
 };
 
@@ -131,8 +131,6 @@ module.exports.initializeDatabase = async () => {
     console.log(SEPARATOR);
     let db = {};
     try {
-        test();
-
         // Building and writing ratingDB
         if (!checkIfFileExists(RATING_DB_PATH)) {
             db.ratingDB = await buildRatingDB();

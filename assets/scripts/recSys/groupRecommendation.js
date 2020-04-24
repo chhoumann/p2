@@ -12,7 +12,6 @@
 const dataHandler = require('../data/dataHandler');
 const loadData = require('../data/loadData');
 const utility = require('../../../utility');
-const pearsonCorrelation = require('./pearsonCorrelation');
 const { jStat } = require('jstat'); // using this because our pearson would only return 0
 const ATHRES = 'aboveThreshold';
 const UTHRES = 'underThreshold';
