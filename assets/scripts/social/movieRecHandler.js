@@ -80,7 +80,11 @@ let app = new Vue({
             app.selectedList.splice(idx, 1);
             app.friendsList.push(buddy);
         },
-        getMovieRec: async function() {
+        getMovieRec: async function(obj) {
+            obj.toElement.disabled = true;
+            setTimeout(() => {
+                obj.toElement.disabled = false;
+            }, 1000);
             this.allowChanges = true;
             // Clone selected list and append self
             const group = app.selectedList.map((member) => member.name);
