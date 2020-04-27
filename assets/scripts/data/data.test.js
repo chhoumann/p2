@@ -41,8 +41,6 @@ const USER_TO_TEST = 1;
 const USER_TO_TEST_HAS_X_RATINGS = 232;
 const USER_RATING_ID = 0;
 const USER_GAVE_RATING = 4.0;
-const GROUP_SIZE = 5;
-const TEST_GROUP_USER_IDS = [USER_TO_TEST, 2, 3, 4, 5];
 const MOVIE_ID_TO_TEST = "1";
 const MOVIE_HAS_X_RATINGS = 215;
 
