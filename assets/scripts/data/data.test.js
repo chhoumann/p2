@@ -61,15 +61,6 @@ test('Finds all ratings for specific user', async () => {
     expect(parseFloat(userData[USER_RATING_ID].ratings)).toEqual(USER_GAVE_RATING);
 });
 
-test('Groups users', async () => {
-    let ratingsData = await loadData.getRatingDB();
-    let tempGroup = dataHandler.groupUsers(await dataHandler.buildMovieLensUserDB(ratingsData), GROUP_SIZE, TEST_GROUP_USER_IDS);
-    expect(tempGroup.length).toEqual(GROUP_SIZE);
-
-    // Tests the user that was also tested in the previous test, therefore it is the same rating for the same movie.
-    expect(parseFloat(tempGroup[0][USER_RATING_ID].ratings)).toEqual(USER_GAVE_RATING);
-});
-
 test('Gets ratings for movie, given an id', async () => {
     let ratingsData = await loadData.getRatingDB();
     let tempRatings = await dataHandler.getRatingsForMovieID(MOVIE_ID_TO_TEST, ratingsData);
