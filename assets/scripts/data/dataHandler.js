@@ -185,7 +185,6 @@ const updateUserDBFile = async (newUserDB) => {
 }
 
 // Given a user object the friend list of this user is returned
-// FIXME: What does the foundUser property mean??
 module.exports.getFriendsList = async (user) => {
     const retObj = await findUserInUserDB(user);    
     if (retObj.foundUser === -1) return false;
