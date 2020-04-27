@@ -17,8 +17,8 @@ module.exports.getGroupRatings = async function getGroupRatings(group) {
 }
 
 
-// Group Functionality. Default size of group is 5 users.
-// Group Functionality. Default size of group is 5 users, so an optional parameter.
+// This was used to group users for a test group based on users in the MovieLens dataset.
+// However, now we use the function 'getGroupRatings' to get the users from out user database.
 module.exports.groupUsers = function groupUsers(fromArrayOfUsers, groupSize = 5, arrayOfUserIds) {
     let tempGroup = [];
     for(let i = 0; i < groupSize; i++) {
