@@ -50,7 +50,6 @@ test('Builds MovieLens User Database', async () => {
     .then( result => {
         expect(result.length).toEqual(USERS_IN_DB)
     });
-
 });
 
 test('Finds all ratings for specific user', async () => {
