@@ -183,7 +183,6 @@ function getImdbLink(response) {
         console.log("No movie found");
         return false;
     };
-    console.log(response);
     const imdbID = response["data"]["imdb_id"];
     app.imdbLink = `https://www.imdb.com/title/${imdbID}/`;
     return true;
