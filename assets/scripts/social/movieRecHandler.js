@@ -86,17 +86,28 @@ let app = new Vue({
                 obj.toElement.disabled = false;
             }, 1000);
             this.allowChanges = true;
+
             // Clone selected list and append self
             const group = app.selectedList.map((member) => member.name);
             group.push(app.username);
-            // Send to server
-            const recommendationsForGroup = await axios.get('/getRecommendations', {params: { group }});
-            const {data} = recommendationsForGroup;
-            console.log(data);
-            // Append the posters to the page
-            data.forEach(rec => this.getPoster(rec));
 
-            this.recommendations = data;
+            // Send to server and get recommendations, and total number of ratings for the group
+            const recommendationsForGroup = await axios.get('/getRecommendations', {params: { group }});
+            console.log(recommendationsForGroup);
+            const {data: {rec}} = recommendationsForGroup;
+            const {data: {ratings}} = recommendationsForGroup;
+            
+            // If there are 0 ratings alert the user, and dont print any recommendations
+            // If there is is less than 5 total ratings, alert the user
+            if(ratings === 0) sweetAlert('Error', `There are no ratings in your group. Please rate some movies to get a recommendation!`, 'error');
+            else if(ratings < 5) sweetAlert('Info', `There is only a total of ${ratings} ratings in the group. We recommend to rate at least 5 movies pr. person, to get better recommendations`, 'info');
+
+            console.log(rec);
+
+            // Append the posters to the page, only if there is enough ratings!
+            if(ratings > 0) rec.forEach(rec => this.getPoster(rec));
+
+            this.recommendations = rec;
         },
         getPoster: async function(rec) {
             // Used to get the poster api via PRIVATE api key
