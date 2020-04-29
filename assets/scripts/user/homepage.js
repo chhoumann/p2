@@ -4,6 +4,8 @@ let app = new Vue({
         loggedIn: (localStorage.getItem('loggedIn') === 'true'),
         username: localStorage.getItem('username'),
         movieTitle: "",
+        imdbLink: "",
+        movieDescription: "",
         ratedMovies: [],
         currentMoviePoster: "",
         searchTerm: "",
@@ -76,8 +78,9 @@ let app = new Vue({
             this.buildPage();
         },
         searchForMovie: function() {
+            if (this.searchTerm === "") this.moviesFoundInSearch = [];
             const found = this.movieData.filter(movie => {
-                return movie["title"].includes(this.searchTerm);
+                return movie["title"].toLowerCase().includes((this.searchTerm).toLowerCase());
             })
             if (found.length <= 5) {
                 this.moviesFoundInSearch = found;
@@ -92,7 +95,7 @@ let app = new Vue({
 })
 
 const getMovieData = async () => { return (await axios.get("/movieRatings"))["data"]; };
-function printMovie(movie) { app.movieTitle = `Movie: ${movie.title}` } 
+function printMovie(movie) {app.movieTitle = `Movie: ${movie.title}`} 
 function randomNumber(number) { return Math.floor(Math.random() * number); }
 function getRandomMovie(movieData) { return movieData[randomNumber(movieData.length)]; }
 const getURLString = (api_key, movieId) => { return `https://api.themoviedb.org/3/movie/${movieId}?api_key=${api_key}`; };
@@ -175,6 +178,27 @@ async function getRatingsForUser() {
     return response["data"];
 }
 
+function getImdbLink(response) {
+    if (!response) {
+        console.log("No movie found");
+        return false;
+    };
+    console.log(response);
+    const imdbID = response["data"]["imdb_id"];
+    app.imdbLink = `https://www.imdb.com/title/${imdbID}/`;
+    return true;
+}
+
+function getMovieDescription(response) {
+    if (!response) {
+        console.log("No movie found");
+        return false;
+    };
+    const movieDescription = response["data"]["overview"];
+    app.movieDescription = movieDescription;
+    return true;
+}
+
 // Check if user is logged in
 async function buildPage(movieInput = false) {
     let button = document.getElementById('submitRating');
@@ -202,6 +226,10 @@ async function buildPage(movieInput = false) {
     // Show the poster for the movie
     const response = await fetchMovie(movie);
     if (!changePoster(response)) buildPage();
+    getImdbLink(response);
+    document.getElementById("imdbLink").href = app.imdbLink;
+    getMovieDescription(response);
+    document.getElementById("movieDescription").innerHTML = app.movieDescription;
     button.disabled = false;
     
     printMovie(movie);
