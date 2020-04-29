@@ -82,9 +82,6 @@ let app = new Vue({
         },
         getMovieRec: async function(obj) {
             obj.toElement.disabled = true;
-            setTimeout(() => {
-                obj.toElement.disabled = false;
-            }, 1000);
             this.allowChanges = true;
             // Clone selected list and append self
             const group = app.selectedList.map((member) => member.name);
@@ -97,6 +94,7 @@ let app = new Vue({
             data.forEach(rec => this.getPoster(rec));
 
             this.recommendations = data;
+            obj.toElement.disabled = false;
         },
         getPoster: async function(rec) {
             // Used to get the poster api via PRIVATE api key
