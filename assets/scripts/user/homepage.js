@@ -76,6 +76,7 @@ let app = new Vue({
             this.buildPage();
         },
         searchForMovie: function() {
+            if (this.searchTerm === "") this.moviesFoundInSearch = [];
             const found = this.movieData.filter(movie => {
                 return movie["title"].toLowerCase().includes((this.searchTerm).toLowerCase());
             })
