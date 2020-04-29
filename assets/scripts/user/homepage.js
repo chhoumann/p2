@@ -77,7 +77,7 @@ let app = new Vue({
         },
         searchForMovie: function() {
             const found = this.movieData.filter(movie => {
-                return movie["title"].includes(this.searchTerm);
+                return movie["title"].toLowerCase().includes((this.searchTerm).toLowerCase());
             })
             if (found.length <= 5) {
                 this.moviesFoundInSearch = found;
