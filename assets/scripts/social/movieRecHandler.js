@@ -92,7 +92,6 @@ let app = new Vue({
             const recommendationsForGroup = await axios.get('/getRecommendations', {params: { group }});
             console.log(recommendationsForGroup);
             const {data} = recommendationsForGroup;
-            //const {data} = recommendationsForGroup;
             
             // If there are 0 ratings alert the user, and dont print any recommendations
             // If there is is less than 5 total ratings, alert the user
