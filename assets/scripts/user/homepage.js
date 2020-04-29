@@ -208,8 +208,6 @@ async function buildPage(movieInput = false) {
         app.movieData = await getMovieData();
     }
     
-    // Build the list of items that the user has rated already
-    app.ratedMovies = await getRatingsForUser();
     
     // Makes it possible to give buildPage a preselected movie instead
     // of a random one each time.
@@ -232,7 +230,7 @@ async function buildPage(movieInput = false) {
         }
         checkConditions(0);
     }
-
+    
     // Skip anything existing in ratedMovies
     const found = app.ratedMovies.find(ratedMovie => { ratedMovie.movieID == movie.id })
     if (found) buildPage();
@@ -243,6 +241,9 @@ async function buildPage(movieInput = false) {
     document.getElementById("imdbLink").href = app.imdbLink;
     getMovieDescription(response);
     document.getElementById("movieDescription").innerHTML = app.movieDescription;
+    
+    // Build the list of items that the user has rated already
+    app.ratedMovies = await getRatingsForUser();
     
     printMovie(movie);
     makeSubmitButton(movie);
