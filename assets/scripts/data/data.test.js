@@ -63,4 +63,27 @@ test('Gets ratings for movie, given an id', async () => {
     let tempRatings = await dataHandler.getRatingsForMovieID(MOVIE_ID_TO_TEST, ratingsData);
     expect(tempRatings.length).toEqual(MOVIE_HAS_X_RATINGS)
 });
+
+test('Finds movie by ID 1', async () => {
+    const movieDB = await loadData.getMovieDB();
+    const {title} = dataHandler.findMovieByID(MOVIE_ID_TO_TEST, movieDB)
+    
+    expect(title).toBe('Toy Story (1995)');
+});
+
+test('User "Christian" exists in UserDB', async () => {
+    const foundStatus = await dataHandler.checkForUserInDB('Christian');
+    expect(foundStatus).toBe(true);
+});
+
+test('Gets friend list for user "Christian"', async () => {
+    const friendList = await dataHandler.getFriendsList('Christian');
+    expect(friendList).toBeTruthy(); // If there is anything in the friendList, it would be truthy.
+});
+
+test('Able to get ratings for user "Christian"', async () => {
+    const ratings = await dataHandler.getRatingsUserDB('Christian');
+    expect(Array.isArray(ratings)).toBeTruthy(); // If there are any ratings, or the user has been found, the ratings will be in an array.
+});
+
 // -----------------------------------------
