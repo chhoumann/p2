@@ -101,10 +101,16 @@ router.get('/getRecommendations', async (req, res) => {
     console.log(`${group[group.length - 1]} asked for movie recommendations.`)
     // Send group to datahandler to fetch users' ratings
     const groupRatings = await dataHandler.getGroupRatings(group);
+
+    // Get number of total ratings of the group
+    let numOfRatings = 0;
+    groupRatings.forEach(ID => ID.forEach(rating => numOfRatings++));
+
     // Send ratings to group rec. sys to fetch recommendations
     const recommendations = await groupRec.makeGroupRec(groupRatings);
-    // Send recommendations to user
-    res.send(recommendations);
+
+    // Send recommendations to user and number of total ratings in the group
+    res.send({rec: recommendations, ratings: numOfRatings});
 });
 
 module.exports = router;

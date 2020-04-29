@@ -140,9 +140,11 @@ const getRatingForMovie = () => {
     return false;
 }
 
-function submitRatingHandler(movie) {
+function submitRatingHandler(movie, button) {
+    button.disabled = true;
     if (getRatingForMovie() === false) {
         sweetAlert('Error', 'Please give a rating to the movie before submitting.', 'error');
+        button.disabled = false;
         return;
     }
     if (getRatingForMovie() === 0) {
@@ -163,8 +165,7 @@ function makeSubmitButton(movie) {
     // To remove existing event listeners.
     submitRatingButton.replaceWith(submitRatingButton.cloneNode(true));
     submitRatingButton = document.getElementById('submitRating');
-
-    submitRatingButton.addEventListener('click', submitRatingHandler.bind(null, movie))
+    submitRatingButton.addEventListener('click', submitRatingHandler.bind(null, movie, submitRatingButton))
 }
 
 async function getRatingsForUser() {
@@ -176,11 +177,12 @@ async function getRatingsForUser() {
 
 // Check if user is logged in
 async function buildPage(movieInput = false) {
+    let button = document.getElementById('submitRating');
     // Get movieData if it isn't already loaded
     if (app.movieData.length === 0) {
         app.movieData = await getMovieData();
     }
-
+    
     // Build the list of items that the user has rated already
     app.ratedMovies = await getRatingsForUser();
     
@@ -200,6 +202,7 @@ async function buildPage(movieInput = false) {
     // Show the poster for the movie
     const response = await fetchMovie(movie);
     if (!changePoster(response)) buildPage();
+    button.disabled = false;
     
     printMovie(movie);
     makeSubmitButton(movie);
