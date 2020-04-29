@@ -155,12 +155,13 @@ async function fetchFriendsList(user) {
 
 // Uses Vue functionality to update list of friends on page.
 const updateFriendsListOnPage = async () => { app.friendsList = await fetchFriendsList(fetchAndSetUsername())};
-
-if(app.loggedIn) { updateFriendsListOnPage(); }
-
-
 async function getFriendList() {
     const response = await axios.get('/fetchFriends', {params: { user: localStorage.getItem('username') }});
     app.friendsList = response["data"];
 }
-getFriendList();
+
+if(app.loggedIn) {
+    updateFriendsListOnPage();
+    getFriendList();
+}
+

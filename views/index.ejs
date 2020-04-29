@@ -13,6 +13,7 @@
 </head>
 <body>
     <div id="app">
+        <!-- NAVBAR -->
         <nav class="navbar is-warning" role="navigation" aria-label="main navigation" style="margin-bottom: 3rem">
             <div class="navbar-brand">
                 <h1 class="title" style="margin-top: 0.4rem; margin-left: 0.5rem;"><a href>P2. RecSys</a></h1>
@@ -20,8 +21,8 @@
             <div class="navbar-menu">
                 <div class="navbar-start" style="margin-left: 0.5rem;">
                     <a href="/" class="navbar-item">Home</a>
-                    <a href="/movieRec" class="navbar-item">Get Movie Recommendation</a>
-                    <a href="/connectWithFriends" class="navbar-item">Add friends</a>
+                    <a v-if="loggedIn" href="/movieRec" class="navbar-item">Get Movie Recommendation</a>
+                    <a v-if="loggedIn" href="/connectWithFriends" class="navbar-item">Add friends</a>
                 </div>
                 <div class="navbar-end" style="margin-top: 0.4rem; margin-right: 0.5rem">
                     <input v-if="!loggedIn" class="input navbar-item" type="text" id="usernameField" placeholder="Enter your username" style="margin-right:0.5rem; width: 50%;">
@@ -33,79 +34,107 @@
                 
             </div>
         </nav>
-
-        <div class="columns is-centered">
-            <div class="column is-narrow" style="text-align: center;">
-                <h1 class="title">Welcome {{ username }}</h1>
-                <div v-if="loggedIn">
-                    <input class="input" type="text" 
-                    placeholder="Enter a movie name to search" 
-                    id="movieSearchBox"
-                    v-model="searchTerm"
-                    v-on:input="searchForMovie"
-                    >
-                    <div class="columns">
-                        <div class="column">
-                            <label>From year</label>
-                            <input
-                            type="number"
-                            class="input"
-                            v-model="from"
-                            >
-                        </div>
-                        <div class="column">
-                            <label>to year</label>
-                            <input
-                            type="number"
-                            class="input"
-                            v-model="to"
-                            >
-
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div v-for="foundMovie in moviesFoundInSearch">
-                        <button class="button" @click="buildPageWithMovie(foundMovie)">{{ foundMovie.title }}</button>
-                    </div>
-                </div>
-                <p class="content is-medium" v-if="!loggedIn">Log in or create an account to get started.</p>
-            </div>
+        <div v-if="!loggedIn" style="text-align: center;">
+            <h1 class="title is-1">Welcome</h1>
+            <h1 class="title is-3">Please create an account or sign in to continue.</h1>
         </div>
-        <div class="columns is-centered" v-if="loggedIn">
-            <div class="column is-narrow">
-                <div style="text-align: center;">
-                    <img v-bind:src="currentMoviePoster">
-                    <div id="account">  
-                        <a id="imdbLink"><h3 style="color: rgb(22, 105, 230);" class="subtitle" id="movieName" style="margin-bottom: 0.3rem;">{{ movieTitle }}</h3></a>
-                        <p id="movieDescription" style="width: 500px;"> <i>Hello</i> </p>
-                        <div class="control" style="text-align: center; transform: scale(1.3); margin-bottom: 0.5rem;">
-                            <input type ="radio" id="movie1-1" name="Rate" value="1">
-                            <label for="1">1</label>
-                            <input type ="radio" id="movie1-2" name="Rate" value="2">
-                            <label for="2">2</label>
-                            <input type ="radio" id="movie1-3" name="Rate" value="3">
-                            <label for="3">3</label>
-                            <input type ="radio" id="movie1-4" name="Rate" value="4">
-                            <label for="4">4</label>
-                            <input type ="radio" id="movie1-5" name="Rate" value="5">
-                            <label for="5">5</label>
-                        </div>
-                        <input id="submitRating" type="button" value="Rate!" class="button is-success">
-                        <input v-on:click="buildPage" id="unknown" type="button" value="Unknown" class="button is-warning">
-                    </div>
-                    <div style="margin-top: 2rem;">
-                        <h1 class="title" style="margin-bottom: 0rem;">Your rated movies:</h1>
-                        <input type="button" class="button" value="yeet" @click="deleteAllRatings" readonly style="background-color: red; color: white">
-                        <ul>
-                            <li v-for="movie in ratedMovies"> <button @click="removeRating"> {{movie.title}} - {{movie.rating}}/5  ❌ </button> </li>
-                        </ul>
-                    </div>
-                
+        <div class="columns" v-if="loggedIn">
+            <!-- LEFT COLUMN: USERS RATED MOVIES -->
+            <div class="column is-3 is-offset-1" align="center">
+                <h1 class="title is-2" align="center" style="margin-bottom: 1rem;">Your rated movies</h1>
+                <div class="columns"
+                v-for="movie in ratedMovies"
+                style="margin-bottom: 0;"
+                >
+                <!-- MOVIE NAMES -->
+                <div class="column is-four-fifths" align="center">
+                    <p style="font-weight: bold;">{{movie.title}}</p>
+                </div>
+                <!-- MOVIE RATING -->
+                <div class="column">
+                    {{movie.rating}}/5
+                </div>
+                <!-- DELETE MOVIE BUTTONS -->
+                <div class="column">
+                    <a 
+                    class="text"
+                    @click="removeRating"
+                    >❌</a>
                 </div>
             </div>
-        </div>
-    </div>   
+                <input type="button" class="button" value="Delete all ratings" @click="deleteAllRatings" readonly style="background-color: red; color: white;" align="center">
+            </div>
+            <!-- MIDDLE COLUMN: RATING MOVIES -->
+            <div class="column is-4" align="center">
+                <div class="column is-narrow">
+                    <div style="text-align: center;">
+                        <img v-bind:src="currentMoviePoster">
+                        <div id="account">  
+                            <div class="control" style="text-align: center; transform: scale(1.3); margin-bottom: 0.5rem;">
+                                <input type ="radio" id="movie1-1" name="Rate" value="1">
+                                <label for="1">1</label>
+                                <input type ="radio" id="movie1-2" name="Rate" value="2">
+                                <label for="2">2</label>
+                                <input type ="radio" id="movie1-3" name="Rate" value="3">
+                                <label for="3">3</label>
+                                <input type ="radio" id="movie1-4" name="Rate" value="4">
+                                <label for="4">4</label>
+                                <input type ="radio" id="movie1-5" name="Rate" value="5">
+                                <label for="5">5</label>
+                            </div>
+                            <input id="submitRating" type="button" value="Rate!" class="button is-success">
+                            <input v-on:click="buildPage" id="unknown" type="button" value="Unknown" class="button is-warning">
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <!-- RIGHT COLUMN: SEARCH, FILTER & MOVIE INFO -->
+            <div class="column is-3" style="text-align: center;">
+                <a id="imdbLink">
+                    <h1 style="color: rgb(22, 105, 230);" 
+                    class="title is-1" id="movieName" 
+                    style="margin-bottom: 0.3rem;">{{ movieTitle }}</h1></a>
+                <h2 class="subtitle is-2">Description</h2>
+                <p class="content" id="movieDescription"></p>
+
+                <h1 class="subtitle is-3" style="margin-bottom: 0.1rem;">Filter & Search</h1>
+                <div class="column is-narrow" >
+                    <div v-if="loggedIn">
+                        <div class="columns">
+                            <div class="column">
+                                <label>From year</label>
+                                <input
+                                type="number"
+                                class="input"
+                                v-model="from"
+                                >
+                            </div>
+                            <div class="column">
+                                <label>to year</label>
+                                <input
+                                type="number"
+                                class="input"
+                                v-model="to"
+                                >
+                            </div>
+                        </div>
+                        <input class="input" type="text" 
+                        placeholder="Enter a movie name to search" 
+                        id="movieSearchBox"
+                        v-model="searchTerm"
+                        v-on:input="searchForMovie"
+                        >
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <div v-for="foundMovie in moviesFoundInSearch">
+                            <button class="button is-text" @click="buildPageWithMovie(foundMovie)">{{ foundMovie.title }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
     
 </body>
 </html>
