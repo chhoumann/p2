@@ -11,6 +11,8 @@ let app = new Vue({
         searchTerm: "",
         movieData: [],
         moviesFoundInSearch: [],
+        from: 0,
+        to: new Date().getFullYear(),
     },
     methods: {
         login: function () {
@@ -168,6 +170,7 @@ function makeSubmitButton(movie) {
     // To remove existing event listeners.
     submitRatingButton.replaceWith(submitRatingButton.cloneNode(true));
     submitRatingButton = document.getElementById('submitRating');
+    submitRatingButton.disabled = false;
     submitRatingButton.addEventListener('click', submitRatingHandler.bind(null, movie, submitRatingButton))
 }
 
@@ -201,7 +204,6 @@ function getMovieDescription(response) {
 
 // Check if user is logged in
 async function buildPage(movieInput = false) {
-    let button = document.getElementById('submitRating');
     // Get movieData if it isn't already loaded
     if (app.movieData.length === 0) {
         app.movieData = await getMovieData();
@@ -216,8 +218,20 @@ async function buildPage(movieInput = false) {
     if (movieInput) {
         movie = movieInput;
     } else {
-        // Get a random movie and show it on the page
+        const MAX_ITERATIONS_BEFORE_STOP = 150;
         movie = getRandomMovie(app.movieData);
+        // Get a random movie and show it on the page
+        const checkConditions = (iterations) => {
+            if (iterations >= MAX_ITERATIONS_BEFORE_STOP) {
+                sweetAlert("Error", "Couldn't find any movies in that range. Try again.\nPerhaps try to search for the title.", "error");
+                return;
+            };
+            if (!(movie.year <= parseInt(app.to) && movie.year >= parseInt(app.from))) {
+                movie = getRandomMovie(app.movieData);
+                checkConditions(++iterations);
+            }
+        }
+        checkConditions(0);
     }
 
     // Skip anything existing in ratedMovies
@@ -230,7 +244,6 @@ async function buildPage(movieInput = false) {
     document.getElementById("imdbLink").href = app.imdbLink;
     getMovieDescription(response);
     document.getElementById("movieDescription").innerHTML = app.movieDescription;
-    button.disabled = false;
     
     printMovie(movie);
     makeSubmitButton(movie);

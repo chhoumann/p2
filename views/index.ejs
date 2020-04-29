@@ -37,12 +37,33 @@
         <div class="columns is-centered">
             <div class="column is-narrow" style="text-align: center;">
                 <h1 class="title">Welcome {{ username }}</h1>
-                <input class="input" type="text" 
-                placeholder="Enter a movie name to search" 
-                id="movieSearchBox"
-                v-model="searchTerm"
-                v-on:input="searchForMovie"
-                >
+                <div v-if="loggedIn">
+                    <input class="input" type="text" 
+                    placeholder="Enter a movie name to search" 
+                    id="movieSearchBox"
+                    v-model="searchTerm"
+                    v-on:input="searchForMovie"
+                    >
+                    <div class="columns">
+                        <div class="column">
+                            <label>From year</label>
+                            <input
+                            type="number"
+                            class="input"
+                            v-model="from"
+                            >
+                        </div>
+                        <div class="column">
+                            <label>to year</label>
+                            <input
+                            type="number"
+                            class="input"
+                            v-model="to"
+                            >
+
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <div v-for="foundMovie in moviesFoundInSearch">
                         <button class="button" @click="buildPageWithMovie(foundMovie)">{{ foundMovie.title }}</button>

@@ -24,7 +24,7 @@ const buildMoviesForRating = async () => {
     movieDB.forEach(movie => {
         if (movie["ratings"].length > 5 && movie.averageRating > 3.5) {
             // Using unshift (adding to beginning of array) means getting the newest movies from the movieDB
-            index.unshift({title: movie.title, id: movie.movieId, avgRating: movie.averageRating, tmdbId: movie.tmdbId});
+            index.unshift({title: movie.title, id: movie.movieId, avgRating: movie.averageRating, tmdbId: movie.tmdbId, year: movie.year});
         }
     });
 
