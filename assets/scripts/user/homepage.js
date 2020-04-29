@@ -4,6 +4,7 @@ let app = new Vue({
         loggedIn: (localStorage.getItem('loggedIn') === 'true'),
         username: localStorage.getItem('username'),
         movieTitle: "",
+        imdbLink: "",
         ratedMovies: [],
         currentMoviePoster: "",
     },
@@ -72,7 +73,7 @@ let app = new Vue({
 })
 
 const getMovieData = async () => { return (await axios.get("/movieRatings"))["data"]; };
-function printMovie(movie) { app.movieTitle = `Movie: ${movie.title}` } 
+function printMovie(movie) {app.movieTitle = `Movie: ${movie.title}`} 
 function randomNumber(number) { return Math.floor(Math.random() * number); }
 function getRandomMovie(movieData) { return movieData[randomNumber(movieData.length)]; }
 const getURLString = (api_key, movieId) => { return `https://api.themoviedb.org/3/movie/${movieId}?api_key=${api_key}`; };
@@ -154,6 +155,16 @@ async function getRatingsForUser() {
     return response["data"];
 }
 
+function getImdbLink(response) {
+    if (!response) {
+        console.log("No movie found");
+        return false;
+    };
+    const imdbID = response["data"]["imdb_id"];
+    app.imdbLink = `https://www.imdb.com/title/${imdbID}/`;
+    return true;
+}
+
 // Check if user is logged in
 async function buildPage() {
     let movieData;
@@ -175,6 +186,8 @@ async function buildPage() {
     // Show the poster for the movie
     const response = await fetchMovie(movie);
     if (!changePoster(response)) buildPage();
+    getImdbLink(response);
+    document.getElementById("imdbLink").href = app.imdbLink;
     
     printMovie(movie);
     makeSubmitButton(movie);
