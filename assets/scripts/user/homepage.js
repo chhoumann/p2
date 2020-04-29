@@ -161,7 +161,6 @@ function submitRatingHandler(movie, button) {
             title: movie.title,
             rating: getRatingForMovie(),
         }});
-        buildPage();
     }
     buildPage();
 }
