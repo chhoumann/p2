@@ -67,6 +67,10 @@ let app = new Vue({
         deleteAllRatings: async function() {
             const valid = await axios.get('/deleteAllRatings', {params: { username: localStorage.getItem('username') }});
             this.buildPage();
+        },
+        removeRating: async function() {
+            const valid = await axios.get('/removeRating', {params: { username: localStorage.getItem('username') }});
+            this.buildPage();
         }
     }
 })
@@ -120,9 +124,11 @@ const getRatingForMovie = () => {
     return false;
 }
 
-function submitRatingHandler(movie) {
+function submitRatingHandler(movie, button) {
+    button.disabled = true;
     if (getRatingForMovie() === false) {
         sweetAlert('Error', 'Please give a rating to the movie before submitting.', 'error');
+        button.disabled = false;
         return;
     }
     if (getRatingForMovie() === 0) {
@@ -143,8 +149,7 @@ function makeSubmitButton(movie) {
     // To remove existing event listeners.
     submitRatingButton.replaceWith(submitRatingButton.cloneNode(true));
     submitRatingButton = document.getElementById('submitRating');
-
-    submitRatingButton.addEventListener('click', submitRatingHandler.bind(null, movie))
+    submitRatingButton.addEventListener('click', submitRatingHandler.bind(null, movie, submitRatingButton))
 }
 
 async function getRatingsForUser() {
@@ -156,25 +161,26 @@ async function getRatingsForUser() {
 
 // Check if user is logged in
 async function buildPage() {
+    let button = document.getElementById('submitRating');
     let movieData;
-
     // Get movieData if it isn't already loaded
     if (movieData === undefined) {
         movieData = await getMovieData();
     }
-
+    
     // Build the list of items that the user has rated already
     app.ratedMovies = await getRatingsForUser();
-
+    
     // Get a random movie and show it on the page
     const movie = getRandomMovie(movieData);
-
+    
     // Skip anything existing in ratedMovies
     const found = app.ratedMovies.find(ratedMovie => { ratedMovie.movieID == movie.id })
     if (found) buildPage();
     // Show the poster for the movie
     const response = await fetchMovie(movie);
     if (!changePoster(response)) buildPage();
+    button.disabled = false;
     
     printMovie(movie);
     makeSubmitButton(movie);
