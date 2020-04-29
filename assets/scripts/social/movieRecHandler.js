@@ -104,7 +104,8 @@ let app = new Vue({
             // Append the posters to the page, only if there is enough ratings!
             if(ratings > 0) rec.forEach(rec => this.getPoster(rec));
 
-            this.recommendations = data;
+            this.recommendations = rec;
+            console.log(obj);
             obj.toElement.disabled = false;
         },
         getPoster: async function(rec) {
