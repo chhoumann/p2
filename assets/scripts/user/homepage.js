@@ -8,6 +8,9 @@ let app = new Vue({
         movieDescription: "",
         ratedMovies: [],
         currentMoviePoster: "",
+        searchTerm: "",
+        movieData: [],
+        moviesFoundInSearch: [],
     },
     methods: {
         login: function () {
@@ -73,6 +76,19 @@ let app = new Vue({
         removeRating: async function() {
             const valid = await axios.get('/removeRating', {params: { username: localStorage.getItem('username') }});
             this.buildPage();
+        },
+        searchForMovie: function() {
+            const found = this.movieData.filter(movie => {
+                return movie["title"].toLowerCase().includes((this.searchTerm).toLowerCase());
+            })
+            if (found.length <= 5) {
+                this.moviesFoundInSearch = found;
+            }
+        },
+        buildPageWithMovie: async function(foundMovie) {
+            buildPage(foundMovie);
+            this.searchTerm = "";
+            this.moviesFoundInSearch = [];
         }
     }
 })
@@ -183,20 +199,26 @@ function getMovieDescription(response) {
 }
 
 // Check if user is logged in
-async function buildPage() {
+async function buildPage(movieInput = false) {
     let button = document.getElementById('submitRating');
-    let movieData;
     // Get movieData if it isn't already loaded
-    if (movieData === undefined) {
-        movieData = await getMovieData();
+    if (app.movieData.length === 0) {
+        app.movieData = await getMovieData();
     }
     
     // Build the list of items that the user has rated already
     app.ratedMovies = await getRatingsForUser();
     
-    // Get a random movie and show it on the page
-    const movie = getRandomMovie(movieData);
-    
+    // Makes it possible to give buildPage a preselected movie instead
+    // of a random one each time.
+    let movie;
+    if (movieInput) {
+        movie = movieInput;
+    } else {
+        // Get a random movie and show it on the page
+        movie = getRandomMovie(app.movieData);
+    }
+
     // Skip anything existing in ratedMovies
     const found = app.ratedMovies.find(ratedMovie => { ratedMovie.movieID == movie.id })
     if (found) buildPage();

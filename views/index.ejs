@@ -37,6 +37,17 @@
         <div class="columns is-centered">
             <div class="column is-narrow" style="text-align: center;">
                 <h1 class="title">Welcome {{ username }}</h1>
+                <input class="input" type="text" 
+                placeholder="Enter a movie name to search" 
+                id="movieSearchBox"
+                v-model="searchTerm"
+                v-on:input="searchForMovie"
+                >
+                <div>
+                    <div v-for="foundMovie in moviesFoundInSearch">
+                        <button class="button" @click="buildPageWithMovie(foundMovie)">{{ foundMovie.title }}</button>
+                    </div>
+                </div>
                 <p class="content is-medium" v-if="!loggedIn">Log in or create an account to get started.</p>
             </div>
         </div>
