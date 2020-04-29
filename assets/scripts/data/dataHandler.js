@@ -112,6 +112,7 @@ module.exports.getGenresFromMovie = function getGenresFromMovie(movieEntry) {
     return {genres, genreNumArray};
 }
 
+// FIXME: Fejler måske? Tjek om vi stadig skal bruge den
 // Gets movies watched based on the user's ratings.
 module.exports.getMoviesWatched = (user) => {
     let moviesWatched = [];
@@ -157,6 +158,7 @@ module.exports.formatUser = (req, currentUserAmount) => {
     return user;
 }
 
+// FIXME: Kan vi gøre søgningen bedre?
 module.exports.checkForUserInDB = async (usernameString) => {
     const userDB = (await loadData.getUserDB())["users"];
     let foundStatus = false;
@@ -174,6 +176,7 @@ const findUserInUserDB = async (user) => {
     const foundUser = userDB["users"].find(person => {
         return person.username === user;
     });
+    if (foundUser === undefined) return false;
     let retObj = {userDB, foundUser}
     return retObj;
 }
@@ -218,5 +221,6 @@ module.exports.deleteAllRatingsForUser = async (username) => {
 
 module.exports.getRatingsUserDB = async (username) => {
     const retObj = await findUserInUserDB(username);
-    return retObj["foundUser"]["moviePreferences"];
+    if (retObj !== false) return retObj["foundUser"]["moviePreferences"];
+    return false;
 }

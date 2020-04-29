@@ -67,6 +67,10 @@ let app = new Vue({
         deleteAllRatings: async function() {
             const valid = await axios.get('/deleteAllRatings', {params: { username: localStorage.getItem('username') }});
             this.buildPage();
+        },
+        removeRating: async function() {
+            const valid = await axios.get('/removeRating', {params: { username: localStorage.getItem('username') }});
+            this.buildPage();
         }
     }
 })
