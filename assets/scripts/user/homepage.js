@@ -5,6 +5,7 @@ let app = new Vue({
         username: localStorage.getItem('username'),
         movieTitle: "",
         imdbLink: "",
+        movieDescription: "",
         ratedMovies: [],
         currentMoviePoster: "",
     },
@@ -160,8 +161,19 @@ function getImdbLink(response) {
         console.log("No movie found");
         return false;
     };
+    console.log(response);
     const imdbID = response["data"]["imdb_id"];
     app.imdbLink = `https://www.imdb.com/title/${imdbID}/`;
+    return true;
+}
+
+function getMovieDescription(response) {
+    if (!response) {
+        console.log("No movie found");
+        return false;
+    };
+    const movieDescription = response["data"]["overview"];
+    app.movieDescription = movieDescription;
     return true;
 }
 
@@ -188,6 +200,8 @@ async function buildPage() {
     if (!changePoster(response)) buildPage();
     getImdbLink(response);
     document.getElementById("imdbLink").href = app.imdbLink;
+    getMovieDescription(response);
+    document.getElementById("movieDescription").innerHTML = app.movieDescription;
     
     printMovie(movie);
     makeSubmitButton(movie);
