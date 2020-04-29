@@ -91,21 +91,19 @@ let app = new Vue({
             // Send to server and get recommendations, and total number of ratings for the group
             const recommendationsForGroup = await axios.get('/getRecommendations', {params: { group }});
             console.log(recommendationsForGroup);
-            const {data: {rec}} = recommendationsForGroup;
-            const {data: {ratings}} = recommendationsForGroup;
+            const {data} = recommendationsForGroup;
             
             // If there are 0 ratings alert the user, and dont print any recommendations
             // If there is is less than 5 total ratings, alert the user
-            if(ratings === 0) sweetAlert('Error', `There are no ratings in your group. Please rate some movies to get a recommendation!`, 'error');
-            else if(ratings < 5) sweetAlert('Info', `There is only a total of ${ratings} ratings in the group. We recommend to rate at least 5 movies pr. person, to get better recommendations`, 'info');
+            if(data.ratings === 0) sweetAlert('Error', `There are no ratings in your group. Please rate some movies to get a recommendation!`, 'error');
+            else if(data.ratings < 5) sweetAlert('Info', `There is only a total of ${data.ratings} ratings in the group. We recommend to rate at least 5 movies pr. person, to get better recommendations`, 'info');
 
-            console.log(rec);
+            console.log(data.rec);
 
             // Append the posters to the page, only if there is enough ratings!
-            if(ratings > 0) rec.forEach(rec => this.getPoster(rec));
+            if(data.ratings > 0) data.rec.forEach(rec => this.getPoster(rec));
 
-            this.recommendations = rec;
-            console.log(obj);
+            this.recommendations = data.rec;
             obj.toElement.disabled = false;
         },
         getPoster: async function(rec) {
