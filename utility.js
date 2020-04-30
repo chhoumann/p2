@@ -39,3 +39,18 @@ module.exports.usernameDuplicateChecker = (arrayOfUsers, username) => {
     });
     return result;
 }
+module.exports.getYearFromMovieString = (title) => {
+    const splitMovieTitle = title.split("");
+    const indexOfParenthesis = splitMovieTitle.lastIndexOf(')');
+
+    // Adds the 4 elements to the year array. Every year is always 4 characters long.
+    let year = splitMovieTitle.splice(-4 + indexOfParenthesis, 4).join("");
+
+    // If the string contained a year we add this property to the movie in the movieDB
+    if(indexOfParenthesis) {
+        year = Number(year);
+        if(!isNaN(year)){
+            return year;
+        }
+    }
+}

@@ -37,62 +37,47 @@ const buildRatingDB = async (noLog = false) => {
 };
 
 // Function can be used for user-user or other expansion of program in future use 
-/* const buildMovieLensUserDatabase = async (ratingsDB, noLog = false) => {
+const buildMovieLensUserDatabase = async (ratingsDB, noLog = false) => {
     let startTime = performance.now();
     let MovieLensUserDB = await dataHandler.buildMovieLensUserDB(ratingsDB);
     if (noLog === false) utility.printTestAndTime("MovieLensUserDB", MovieLensUserDB, startTime);
     return MovieLensUserDB;
-}; */
+};
 
 const buildMovieDB = async (ratingsDB, noLog = false) => {
     let startTime = performance.now();
     const movieDB = await loadData.getMovieData();
     const links = await loadData.getLinkData();
-    // 9742 movies in DB. The forEach makes this take a lot longer, but is necessary for recommender system.
-    // Perhaps there is a better & faster solution?
+    // Adds essential data to each movie entry in the database
     await movieDB.forEach(async movie => {
-
-        // The code below adds the year for each movie
-        // TODO: MOVE CODE TO RELEVANT PLACE (Christian pls help)
-        // TODO: Make it prettier =) 
-
-        // Split each character in the title into individual elements
-        let splitMovieTitle = movie["title"].split((""));
-
-        // Finds last index of ')', which is always the year of the movie
-        let index = splitMovieTitle.lastIndexOf(')');
-        let year = [];
-
-        // Adds the 4 elements to the year array. Every year is always 4 characters long.
-        year.push(splitMovieTitle[index - 4] + splitMovieTitle[index - 3] + splitMovieTitle[index - 2] + splitMovieTitle[index - 1]);
-
-        // If the string contained a year we add this property to the movie in the movieDB
-        if(index) {
-            year = Number(year);
-            if(!isNaN(year)){
-                movie.year = year;
-            }
-        }
+        // Adds the year for each movie
+        movie.year = utility.getYearFromMovieString(movie.title)
+        // Finds movies TMDBIDs in the dataset links.csv file and adds it to the movie. Used to receive data on client side about movie.
         const movieLink = links.find(link => link.movieId === movie.movieId);
         movie.tmdbId = movieLink.tmdbId;
+        // Finds genres from movie and adds them to both and object and array (array is used in group recommendation system)
         movie.genres = dataHandler.getGenresFromMovie(movie);
         if (movie["genres"]["genres"]["(no genres listed)"] === 1) {movie.skip = true} else {movie.skip = false};
+        // Adds ratings given by datasets users
         movie.ratings = await dataHandler.getRatingsForMovieID(movie.movieId, ratingsDB);
+        // Calculates average rating based on above ratings
         movie.averageRating = dataHandler.getAverage(movie.ratings);
     });
     if (noLog === false) utility.printTestAndTime("MovieDB, Ratings, & Average Ratings", movieDB, startTime);
-    // console.log(movieDB);
     return movieDB;
 };
 
+// Creates a test group based on users from dataset.
 const buildTestGroup = async (inputDB, noLog = false) => {
     let startTime = performance.now();
+    // Gets 5 users from the movielens database for testing.
     let testGroup = await dataHandler.groupUsers(inputDB, 5, arrayOfUserIds);
     if (noLog === false) utility.printTestAndTime("Testgroup", testGroup, startTime);
     return testGroup;
 };
 
-module.exports.buildUserDB = async (noLog = true) => { // noLog parameter just to toggle print to console or not
+// Builds the user database (actual users)
+module.exports.buildUserDB = async (noLog = true) => {
     let startTime = performance.now();
     let userDB = await loadData.getUserDB();
     if (noLog === false) utility.printTestAndTime("userDB", userDB, startTime);
@@ -131,13 +116,13 @@ module.exports.initializeDatabase = async () => {
             db.ratingDB = await loadData.getRatingDB();
         };
         
-        /* // Building and writing movieLensUserDB
-        if (!checkIfFileExists(MOVIELENS_USER_DB_PATH)) {
+         // Building and writing movieLensUserDB
+         if (!checkIfFileExists(MOVIELENS_USER_DB_PATH)) {
             db.movieLensUserDB = await buildMovieLensUserDatabase(db.ratingDB)
             this.writeToFile(MOVIELENS_USER_DB_PATH, db.movieLensUserDB);
         } else {
             db.movieLensUserDB = await loadData.getMovieLensUserDB();
-        }; */
+        };
         
         // Building and writing movieDB
         if (!checkIfFileExists(MOVIE_DB_PATH)) {
