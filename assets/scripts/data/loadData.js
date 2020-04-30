@@ -1,12 +1,10 @@
 /* 
     Exports data so that user, rating, movie, and link-databases can be accessed easily.
-    To use, one should include a setTimeout() such that the functions can load the
-        files and parse the data, otherwise it will fail.
 */
 const neatCsv = require('neat-csv'); // Used to parse CSV files.
-const fs = require('fs').promises; // Used to read files.
-const utility = require('../../../utility');
-const {performance} = require('perf_hooks');
+const fs = require('fs'); // Used to read files.
+const utility = require('../../../utility'); // Using logging functions from Utility.
+const {performance} = require('perf_hooks'); // Used to time the reading of the file. 
 
 // PATHS & USER-COUNT
 const MOVIES_CSV_PATH = './dataset/ml-latest-small/movies.csv';
@@ -37,11 +35,12 @@ async function getData(path, type, noLog = true) {
     if (type === JSON_TYPE) return JSON.parse(result);
 };
 
+// Getting all data with type csv
 module.exports.getMovieData = async() => { return await getData(MOVIES_CSV_PATH, CSV_TYPE) };
 module.exports.getLinkData = async() => { return await getData(LINKS_CSV_PATH, CSV_TYPE) };
 module.exports.getRatingData = async() => { return await getData(RATINGS_CSV_PATH, CSV_TYPE) };
+// Getting all data with type JSON
 module.exports.getTestGroupData = async() => { return await getData(TESTGROUP_PATH, JSON_TYPE) };
-
 module.exports.getMovieDB = async() => { return await getData(MOVIE_DB_PATH, JSON_TYPE) };
 module.exports.getRatingDB = async() => { return await getData(RATING_DB_PATH, JSON_TYPE) };
 module.exports.getMovieLensUserDB = async() => { return await getData(MOVIELENS_USER_DB_PATH, JSON_TYPE) };
