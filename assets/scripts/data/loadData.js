@@ -2,7 +2,7 @@
     Exports data so that user, rating, movie, and link-databases can be accessed easily.
 */
 const neatCsv = require('neat-csv'); // Used to parse CSV files.
-const fs = require('fs'); // Used to read files.
+const fs = require('fs').promises; // Used to read files.
 const utility = require('../../../utility'); // Using logging functions from Utility.
 const {performance} = require('perf_hooks'); // Used to time the reading of the file. 
 
