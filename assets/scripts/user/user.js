@@ -1,11 +1,10 @@
-'use strict';
 const dbOfUsers = './db/dbOfUsers.json';
 const initialize = require('../../../initialize');
 const dataHandler = require('../../scripts/data/dataHandler');
 const utility = require('../../../utility')
 const fs = require('fs');
 
-// The blueprint of our user.
+// Our user class
 module.exports.User = class User {
     constructor(id, username){
         this.id = id;
@@ -36,7 +35,7 @@ module.exports.createUser = async function(req) {
         fs.writeFile(dbOfUsers, JSON.stringify(userDB), err => {if (err) throw err; utility.newUserConsoleMessage(user);});
         return {
             userCreated: true,
-            user: user
+            user
         };
     } else return {
         userCreated: false,
