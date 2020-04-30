@@ -24,7 +24,7 @@ const buildMoviesForRating = async () => {
     // Gets all movies from the database that complies with the demands
     const topMovies = movieDB.filter(movie => movie["ratings"].length > MIN_RATINGS && movie.averageRating > RATINGS_THRESHOLD)
     
-    this.writeToFile(USER_MOVIES_FOR_RATING, topMovies);
+    utility.writeToFile(USER_MOVIES_FOR_RATING, topMovies);
     utility.successMessage('User Movies for ratings', 'now built');
 } 
 
@@ -84,73 +84,55 @@ module.exports.buildUserDB = async (noLog = true) => {
     return userDB;
 };
 
-// FIXME: ? Maybe move this to dataHandler?
-module.exports.writeToFile = (path, variableToWrite) => {
-    let tempJSON = JSON.stringify(variableToWrite);
-    fs.writeFile(path, tempJSON, (err) => { if (err) throw err; });
-};
-
-// Given a file path as string, return whether it is valid by referencing file system
-const checkIfFileExists = (path) => {
-    try {
-        if (fs.existsSync(path)) {
-            utility.successMessage(path, "exists"); return true;
-        } else {
-            utility.errorMessage(path, "does not exist"); return false;
-        }
-    } catch (err) { console.error(err); }
-};
 
 // Checks if it is necessary to build database & test group.
 // - Basically used for anything that should be loaded or written before the user interacts with the web application.
-// And then it starts the sever.
 module.exports.initializeDatabase = async () => {
     console.log(SEPARATOR);
     let db = {};
     try {
         // Building and writing ratingDB
-        if (!checkIfFileExists(RATING_DB_PATH)) {
+        if (!utility.checkIfFileExists(RATING_DB_PATH)) {
             db.ratingDB = await buildRatingDB();
-            this.writeToFile(RATING_DB_PATH, db.ratingDB);
+            utility.writeToFile(RATING_DB_PATH, db.ratingDB);
         } else {
             db.ratingDB = await loadData.getRatingDB();
         };
         
          // Building and writing movieLensUserDB
-         if (!checkIfFileExists(MOVIELENS_USER_DB_PATH)) {
+         if (!utility.checkIfFileExists(MOVIELENS_USER_DB_PATH)) {
             db.movieLensUserDB = await buildMovieLensUserDatabase(db.ratingDB)
-            this.writeToFile(MOVIELENS_USER_DB_PATH, db.movieLensUserDB);
+            utility.writeToFile(MOVIELENS_USER_DB_PATH, db.movieLensUserDB);
         } else {
             db.movieLensUserDB = await loadData.getMovieLensUserDB();
         };
         
         // Building and writing movieDB
-        if (!checkIfFileExists(MOVIE_DB_PATH)) {
+        if (!utility.checkIfFileExists(MOVIE_DB_PATH)) {
             db.movieDB = await buildMovieDB(db.ratingDB);
-            this.writeToFile(MOVIE_DB_PATH, db.movieDB);
+            utility.writeToFile(MOVIE_DB_PATH, db.movieDB);
         } else {
             db.movieDB = await loadData.getMovieDB();
         };
         
         // Building and writing testgroup
-        if (!checkIfFileExists(TESTGROUP_PATH)) {
+        if (!utility.checkIfFileExists(TESTGROUP_PATH)) {
             db.testGroup = await buildTestGroup(db.movieLensUserDB);   
-            this.writeToFile(TESTGROUP_PATH, db.testGroup);
+            utility.writeToFile(TESTGROUP_PATH, db.testGroup);
         } else {
             db.testGroup = await loadData.getTestGroupData();
         };
 
-        if (!checkIfFileExists(USER_DB_PATH)) {
+        if (!utility.checkIfFileExists(USER_DB_PATH)) {
             console.log("UserDB doesn't exist.")
-        }
-        if (!checkIfFileExists(USER_MOVIES_FOR_RATING)) {
+        };
+        
+        if (!utility.checkIfFileExists(USER_MOVIES_FOR_RATING)) {
             buildMoviesForRating();
             utility.infoMessage('Building...')
-        }
+        };
         
     } catch(error) { utility.logError(error) };
 
     console.log(SEPARATOR);
-
-    return db;
 }

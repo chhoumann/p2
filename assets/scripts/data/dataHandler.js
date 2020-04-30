@@ -15,8 +15,6 @@ module.exports.getGroupRatings = async function getGroupRatings(group) {
     });
     return groupRatings;
 }
-
-
 // This was used to group users for a test group based on users in the MovieLens dataset.
 // However, now we use the function 'getGroupRatings' to get the users from out user database.
 module.exports.groupUsers = function groupUsers(fromArrayOfUsers, groupSize = 5, arrayOfUserIds) {
@@ -184,7 +182,7 @@ const findUserInUserDB = async (user) => {
 // If something user related is changed (added friend/rating) the userDB file is rewritten
 const updateUserDBFile = async (newUserDB) => {
     const USER_DB_PATH = './db/dbOfUsers.json';
-    initialize.writeToFile(USER_DB_PATH, newUserDB)
+    utility.writeToFile(USER_DB_PATH, newUserDB)
 }
 
 // Given a user object the friend list of this user is returned

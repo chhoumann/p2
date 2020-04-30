@@ -15,6 +15,14 @@ module.exports.User = class User {
     }
 }
 
+const usernameDuplicateChecker = (arrayOfUsers, username) => {
+    let result = true;
+    arrayOfUsers.forEach(user => {
+        if (user["username"] === username) result = false;
+    });
+    return result;
+}
+
 module.exports.createUser = async function(req) {
     let userDB = await initialize.buildUserDB();
 
@@ -22,7 +30,7 @@ module.exports.createUser = async function(req) {
     const user = dataHandler.formatUser(req, userDB["users"].length);
 
     // Checking for duplicates
-    if (utility.usernameDuplicateChecker(userDB["users"], user.username)) {
+    if (usernameDuplicateChecker(userDB["users"], user.username)) {
         // Add to DB and save to file.
         userDB["users"].push(user);
         fs.writeFile(dbOfUsers, JSON.stringify(userDB), err => {if (err) throw err; utility.newUserConsoleMessage(user);});

@@ -11,6 +11,7 @@ module.exports.logError = (error) => { log(chalk.red(error)) };
 module.exports.testIfUndefined = (item, itemName) => { if (item === undefined) { throw this.errorLoading(itemName) } else { this.successLoading(itemName); return true; } };
 module.exports.timeFunction = (item, initialTime) => { log(`   - Loading ${item} took ${((performance.now() - initialTime)/1000).toPrecision(2)} seconds.`); }
 module.exports.printTestAndTime = (itemName, item, startTime) => { if (this.testIfUndefined(item, itemName)) this.timeFunction(itemName, startTime); };
+
 // (Test) For finding the total amount of genres as well as their names:
 module.exports.getTotalGenresInDB = (movieDB) => {
     let totalMovieGenres = [];
@@ -24,6 +25,7 @@ module.exports.getTotalGenresInDB = (movieDB) => {
 }
 module.exports.reduceArray = (arrayOfArrays) => { return Array.prototype.concat.apply([], arrayOfArrays)};
 module.exports.serverRunningMsg = (port) => { log(chalk.bold.yellow(`\n Server successfully running at http://127.0.0.1:${port}/`)) };
+// Used because of issues with RAM (no longer used)
 module.exports.logMemoryUsage = () => {
     const used = process.memoryUsage();
     for (let key in used) {
@@ -31,14 +33,8 @@ module.exports.logMemoryUsage = () => {
     }
 }
 module.exports.newUserConsoleMessage = (user) => { log(chalk.cyan(`New user: #${user.id} - ${chalk.bold(user.username)}!`)) }
-// This (below) needs to go somewhere else.
-module.exports.usernameDuplicateChecker = (arrayOfUsers, username) => {
-    let result = true;
-    arrayOfUsers.forEach(user => {
-        if (user["username"] === username) result = false;
-    });
-    return result;
-}
+
+// Seperates the year from the title, so we can sort by year later.
 module.exports.getYearFromMovieString = (title) => {
     const splitMovieTitle = title.split("");
     const indexOfParenthesis = splitMovieTitle.lastIndexOf(')');
@@ -54,3 +50,19 @@ module.exports.getYearFromMovieString = (title) => {
         }
     }
 }
+// Given a variable and a path, writes the variable to a file
+module.exports.writeToFile = (path, variableToWrite) => {
+    let tempJSON = JSON.stringify(variableToWrite);
+    fs.writeFile(path, tempJSON, (err) => { if (err) throw err; });
+};
+
+// Given a file path as string, return whether it is valid by referencing file system
+module.exports.checkIfFileExists = (path) => {
+    try {
+        if (fs.existsSync(path)) {
+            this.successMessage(path, "exists"); return true;
+        } else {
+            this.errorMessage(path, "does not exist"); return false;
+        }
+    } catch (err) { console.error(err); }
+};
