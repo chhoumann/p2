@@ -28,6 +28,7 @@ const buildMoviesForRating = async () => {
     utility.successMessage('User Movies for ratings', 'now built');
 } 
 
+// Builds a database of ratings, by reading CSV file
 const buildRatingDB = async (noLog = false) => {
     let startTime = performance.now();
     let ratingsDB = await loadData.getRatingData();
@@ -35,12 +36,13 @@ const buildRatingDB = async (noLog = false) => {
     return ratingsDB;
 };
 
-const buildMovieLensUserDatabase = async (ratingsDB, noLog = false) => {
+// Function can be used for user-user or other expansion of program in future use 
+/* const buildMovieLensUserDatabase = async (ratingsDB, noLog = false) => {
     let startTime = performance.now();
     let MovieLensUserDB = await dataHandler.buildMovieLensUserDB(ratingsDB);
     if (noLog === false) utility.printTestAndTime("MovieLensUserDB", MovieLensUserDB, startTime);
     return MovieLensUserDB;
-};
+}; */
 
 const buildMovieDB = async (ratingsDB, noLog = false) => {
     let startTime = performance.now();
@@ -129,13 +131,13 @@ module.exports.initializeDatabase = async () => {
             db.ratingDB = await loadData.getRatingDB();
         };
         
-        // Building and writing movieLensUserDB
+        /* // Building and writing movieLensUserDB
         if (!checkIfFileExists(MOVIELENS_USER_DB_PATH)) {
             db.movieLensUserDB = await buildMovieLensUserDatabase(db.ratingDB)
             this.writeToFile(MOVIELENS_USER_DB_PATH, db.movieLensUserDB);
         } else {
             db.movieLensUserDB = await loadData.getMovieLensUserDB();
-        };
+        }; */
         
         // Building and writing movieDB
         if (!checkIfFileExists(MOVIE_DB_PATH)) {
