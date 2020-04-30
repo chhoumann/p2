@@ -15,27 +15,17 @@ const TESTGROUP_PATH = './db/testGroup.json';
 const USER_DB_PATH = './db/dbOfUsers.json';
 const USER_MOVIES_FOR_RATING = './db/userMoviesForRating.json';
 
-// Builds a top 100 movies list to be rated by the users on the client
+// Builds a list of top (rating over 3) movies to be rated by the users client-side
 const buildMoviesForRating = async () => {
-    let index = [];
-    let top100Movies = [];
     const movieDB = await loadData.getMovieDB();
+    const RATINGS_THRESHOLD = 3;
+    const MIN_RATINGS = 5;
 
-    movieDB.forEach(movie => {
-        if (movie["ratings"].length > 5 && movie.averageRating > 3.5) {
-            // Using unshift (adding to beginning of array) means getting the newest movies from the movieDB
-            index.unshift({title: movie.title, id: movie.movieId, avgRating: movie.averageRating, tmdbId: movie.tmdbId, year: movie.year});
-        }
-    });
-
-    // If the array is sorted the top 100 movies are primarily very old 
-    // index.sort((a,b) => (a.avgRating > b.avgRating) ? -1 : 1);
+    // Gets all movies from the database that complies with the demands
+    const topMovies = movieDB.filter(movie => movie["ratings"].length > MIN_RATINGS && movie.averageRating > RATINGS_THRESHOLD)
     
-    // The first 100 elements in the index array are assigned the top100Movies
-    top100Movies = index.slice();
-
-    this.writeToFile(USER_MOVIES_FOR_RATING, top100Movies);
-    utility.successMessage('User Movies for ratings', 'now built')
+    this.writeToFile(USER_MOVIES_FOR_RATING, topMovies);
+    utility.successMessage('User Movies for ratings', 'now built');
 } 
 
 const buildRatingDB = async (noLog = false) => {
