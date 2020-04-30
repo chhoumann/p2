@@ -1,5 +1,6 @@
 const {performance} = require('perf_hooks');
 const chalk = require('chalk');
+const fs = require('fs');
 const log = console.log;
 
 module.exports.successMessage = (item, message) => { log(chalk.green(`✔ ${item} ${message}.`)) };
