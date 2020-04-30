@@ -115,17 +115,6 @@ const fetchMovie = async (movie) => {
     return apiRes;
 };
 
-// Removes (year) from each movie title so it can be searched
-const formatMovieTitle = (movie) => {
-    // Split and remove from start of year-parentheses
-    const movieTitle = movie["title"].split("");
-    const idx = movieTitle.indexOf("(");
-    movieTitle.splice(idx, 6);
-    // Join the remaining parts
-    const colMovTitle = movieTitle.join("");
-    return colMovTitle;
-}
-
 function changePoster(response) {
     if (!response) {
         console.log("No movie found");
@@ -148,7 +137,20 @@ const getRatingForMovie = () => {
     return false;
 }
 
+function makeSubmitButton(movie) {
+    let submitRatingButton = document.getElementById('submitRating');
+    // To remove existing event listeners.
+    submitRatingButton.replaceWith(submitRatingButton.cloneNode(true));
+    submitRatingButton = document.getElementById('submitRating');
+    submitRatingButton.disabled = false;
+    submitRatingButton.addEventListener('click', submitRatingHandler.bind(null, movie, submitRatingButton))
+}
+
 function submitRatingHandler(movie, button) {
+    if (checkIfAlreadyRated(movie)) {
+        sweetAlert("Error", "You cannot rate a movie twice", "error");
+        return;
+    }
     button.disabled = true;
     if (getRatingForMovie() === false) {
         sweetAlert('Error', 'Please give a rating to the movie before submitting.', 'error');
@@ -168,18 +170,9 @@ function submitRatingHandler(movie, button) {
     buildPage();
 }
 
-function makeSubmitButton(movie) {
-    let submitRatingButton = document.getElementById('submitRating');
-    // To remove existing event listeners.
-    submitRatingButton.replaceWith(submitRatingButton.cloneNode(true));
-    submitRatingButton = document.getElementById('submitRating');
-    submitRatingButton.disabled = false;
-    submitRatingButton.addEventListener('click', submitRatingHandler.bind(null, movie, submitRatingButton))
-}
-
 async function getRatingsForUser() {
     const response = await axios.get('/fetchRatedMoviesForUser', {params: {
-        username: localStorage.getItem('username') // should already be validated when logging in.
+        username: localStorage.getItem('username') // Should already be validated when logging in.
     }});
     return response["data"];
 }
@@ -204,6 +197,31 @@ function getMovieDescription(response) {
     return true;
 }
 
+function checkIfAlreadyRated(movie) {
+    const found = app.ratedMovies.find(rMov => rMov.title === movie.title)
+    return found;
+}
+
+function getMovie(){
+    const MAX_ITERATIONS_BEFORE_STOP = 150;
+
+    let movie = getRandomMovie(app.movieData);
+    // Get a random movie and show it on the page
+    const checkConditions = (iterations) => {
+        if (iterations >= MAX_ITERATIONS_BEFORE_STOP) {
+            sweetAlert("Error", "Couldn't find any movies in that range. Try again.\nPerhaps try to search for the title.", "error");
+            return;
+        };
+        if (!(movie.year <= parseInt(app.to) && movie.year >= parseInt(app.from)) || checkIfAlreadyRated(movie)) {
+            movie = getRandomMovie(app.movieData);
+            checkConditions(++iterations);
+        }
+    }
+    checkConditions(0);
+    
+    return movie;
+}
+
 // Check if user is logged in
 async function buildPage(movieInput = false) {
     // Get movieData if it isn't already loaded
@@ -211,29 +229,9 @@ async function buildPage(movieInput = false) {
         app.movieData = await getMovieData();
     }
     
-    
-    // Makes it possible to give buildPage a preselected movie instead
-    // of a random one each time.
-    let movie;
-    if (movieInput) {
-        movie = movieInput;
-    } else {
-        const MAX_ITERATIONS_BEFORE_STOP = 150;
-        movie = getRandomMovie(app.movieData);
-        // Get a random movie and show it on the page
-        const checkConditions = (iterations) => {
-            if (iterations >= MAX_ITERATIONS_BEFORE_STOP) {
-                sweetAlert("Error", "Couldn't find any movies in that range. Try again.\nPerhaps try to search for the title.", "error");
-                return;
-            };
-            if (!(movie.year <= parseInt(app.to) && movie.year >= parseInt(app.from))) {
-                movie = getRandomMovie(app.movieData);
-                checkConditions(++iterations);
-            }
-        }
-        checkConditions(0);
-    }
-    
+    // Makes it possible to give buildPage a preselected movie instead of a random one each time.
+    const movie = movieInput ? movieInput : getMovie();
+
     // Skip anything existing in ratedMovies
     const found = app.ratedMovies.find(ratedMovie => { ratedMovie.movieID == movie.movieId })
     if (found) buildPage();
@@ -253,17 +251,3 @@ async function buildPage(movieInput = false) {
 };
 
 if (app.loggedIn) buildPage();
-
-/*
-TODOS
-* [X] Hvis film er unknown skal der ikke pushes
-* []  Der skal ikke pushes / vises film som allerede er rated
-    - DONE: Få brugeres 'moviePreferences' array (indlæs fra userDB)
-    - DONE: Print til siden (for at vise bedømte film og deres ratings - evt inkluder titlen på filmen i moviePreferences så den kan tilgås)
-    - Lav .find() funktion til at tjekke om den film som der skal vises på siden allerede er bedømt
-* [X]  Fix 404 bug for posters (se board)
-* []  Gør koden læsbar
-* [X] Gør sådan at man ikke kan rate uden at være logget ind
-* [] Bug: Hvis man spammer Rate så kan der tilføjes samme film to gange...
-    - Slå knappen fra når den er trykket og slå den til når næste film er klar
-*/
