@@ -1,9 +1,8 @@
 // Constants
 const loadData = require('./loadData');
-const initialize = require('../../../initialize')
 const u = require('../user/user');
 const utility = require('../../../utility');
-const USERS_IN_TOTAL = 610; // Amount of users in the dataset.
+const USERS_IN_TOTAL = 610
 const GENRE_SEPARATOR = '|';
 
 // Makes a group from selected friends by the user
@@ -26,6 +25,7 @@ module.exports.groupUsers = function groupUsers(fromArrayOfUsers, groupSize = 5,
 }
 
 // Used to get the ratings for each individual user.
+// Used to build the movielensDB
 module.exports.getRatingsForUser = async function getRatingsForUser(userID, ratingsData) {
     let results = [];
     ratingsData.forEach(rating => {
@@ -39,7 +39,7 @@ module.exports.getRatingsForUser = async function getRatingsForUser(userID, rati
     return results;
 }
 
-// Builds database of users. Index 0 is empty. Starts from 1 and goes to 610. See why below. FIXME: Fordi det skal stemme med brugerID?
+// Builds database of userDB users. Index 0 is empty. Starts from 1 and goes to 610.
 module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB(ratingsData) {
     let userDB = [];
     try {
@@ -51,19 +51,16 @@ module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB(rating
         utility.logError("Could not build MovieLens UserDB.");
         return;
     }
+    // Fixes so that the first index no longer is empty.
+    userDB.shift();
     return userDB;
 }
 
-// In regards to the project, this function is more of a 'nice-to-have'.
 // Gets ratings for movie depending on given movieId.
 module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id, ratingsData) {
     let results = [];
     try {
-        // let tempArray = ratingsData;
         results = ratingsData.filter(item => item.movieId === id);
-        /* tempArray.forEach(rating => {
-            if (rating.movieId === id) { results.push(rating)};
-        }); */
     }
     catch(error) {
         utility.logError(`Could not get ratings for movie with ID: ${id}`);

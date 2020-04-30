@@ -3,7 +3,6 @@ const dataHandler = require('./assets/scripts/data/dataHandler');
 const loadData = require('./assets/scripts/data/loadData');
 const utility = require('./utility');
 const {performance} = require('perf_hooks');
-const fs = require('fs');
 
 // Constants
 const arrayOfUserIds = [610, 609, 608, 607, 606]; // Used for testing. Users 1-5 are test-users.
@@ -102,7 +101,8 @@ module.exports.initializeDatabase = async () => {
          // Building and writing movieLensUserDB
          if (!utility.checkIfFileExists(MOVIELENS_USER_DB_PATH)) {
             db.movieLensUserDB = await buildMovieLensUserDatabase(db.ratingDB)
-            utility.writeToFile(MOVIELENS_USER_DB_PATH, db.movieLensUserDB);
+            module.exports.numberOfUsersInDB = db.movieLensUserDB.length - 1;
+            utility.writeToFile(MOVIELENS_USER_DB_PATH, db.movieLensUserDB);0
         } else {
             db.movieLensUserDB = await loadData.getMovieLensUserDB();
         };
