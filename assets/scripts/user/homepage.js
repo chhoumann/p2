@@ -241,7 +241,6 @@ async function buildPage(movieInput = false) {
     getImdbLink(response);
     document.getElementById("imdbLink").href = app.imdbLink;
     getMovieDescription(response);
-    document.getElementById("movieDescription").innerHTML = app.movieDescription;
     
     // Build the list of items that the user has rated already
     app.ratedMovies = await getRatingsForUser();
