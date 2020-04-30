@@ -3,7 +3,6 @@ const utility = require('./utility');
 const initialize = require('./initialize');
 const express = require('express');
 const app = express();
-const groupRec = require('./assets/scripts/recSys/groupRecommendation');
 let port;
 
 // Setting the template engine (ejs)
@@ -27,10 +26,4 @@ const startServer = () => {
 
 startServer();
 
-initialize.initializeDatabase().then(db => {
-    // Run it here if something needs to run after having initialized the DB.
-
-    // Code to check current memory usage.
-    // utility.logMemoryUsage();
-    // groupRec.makeGroupRec(db.testGroup, db.movieDB, 3);
-});
+initialize.initializeDatabase();
