@@ -56,7 +56,6 @@ let app = new Vue({
             this.clearUsernameField();
         },
         createNewUser: async function() {
-            // TODO: Error if less than 3 but more than 12 characters.
             const username = document.querySelector("#usernameField").value;
 
             if (username.length < 3 || username.length > 12) {
