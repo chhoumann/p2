@@ -160,7 +160,7 @@ function submitRatingHandler(movie, button) {
     } else {
         axios.get('/submitRating', {params: {
             username: localStorage.getItem('username'),
-            movieDB_ID: parseInt(movie.id),
+            movieDB_ID: parseInt(movie.movieId),
             title: movie.title,
             rating: getRatingForMovie(),
         }});
@@ -235,7 +235,7 @@ async function buildPage(movieInput = false) {
     }
     
     // Skip anything existing in ratedMovies
-    const found = app.ratedMovies.find(ratedMovie => { ratedMovie.movieID == movie.id })
+    const found = app.ratedMovies.find(ratedMovie => { ratedMovie.movieID == movie.movieId })
     if (found) buildPage();
     // Show the poster for the movie
     const response = await fetchMovie(movie);

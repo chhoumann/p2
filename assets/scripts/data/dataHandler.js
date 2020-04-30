@@ -100,19 +100,11 @@ module.exports.getGenresFromMovie = function getGenresFromMovie(movieEntry) {
     // In the CSV file movies are written in the form e.g.: Comedy|Crime|Thriller
     const splitString = genreString.split(GENRE_SEPARATOR);
     // Each of the elements obtained through the splitting
-    splitString.forEach(genre => { genres[genre]++; });
+    splitString.forEach(genre => {genres[genre]++; });
 
     let genreNumArray = Object.keys(genres).map((value) => {return genres[value]});
     
     return {genres, genreNumArray};
-}
-
-// FIXME: Fejler måske? Tjek om vi stadig skal bruge den
-// Gets movies watched based on the user's ratings.
-module.exports.getMoviesWatched = (user) => {
-    let moviesWatched = [];
-    user.forEach(entry => {moviesWatched.push(entry.movieId)});
-    return moviesWatched;
 }
 
 // Binary Search
@@ -145,28 +137,15 @@ module.exports.findMovieByID = (movieID, movieDB) => {
     return movieDB[indexOfMovie];
 }
 
+// Creates user with requested username and id based on current amount of users
 module.exports.formatUser = (req, currentUserAmount) => {
     const username = req.query.username;
     const id = currentUserAmount + 1;
     const user = new u.User(id, username);
-
     return user;
 }
 
-// FIXME: Kan vi gøre søgningen bedre?
-module.exports.checkForUserInDB = async (usernameString) => {
-    const userDB = (await loadData.getUserDB())["users"];
-    let foundStatus = false;
-    // Temp O(n) søgning...
-    userDB.forEach(user => {
-        if (user.username === usernameString) {
-            foundStatus = true;
-        }
-    })
-    return foundStatus;
-}
-
-const findUserInUserDB = async (user) => {
+module.exports.findUserInUserDB = async (user) => {
     const userDB = (await loadData.getUserDB());
     const foundUser = userDB["users"].find(person => {
         return person.username === user;
@@ -184,20 +163,20 @@ const updateUserDBFile = async (newUserDB) => {
 
 // Given a user object the friend list of this user is returned
 module.exports.getFriendsList = async (user) => {
-    const retObj = await findUserInUserDB(user);    
+    const retObj = await this.findUserInUserDB(user);    
     if (retObj.foundUser === -1) return false;
     return retObj.foundUser["friends"];
 }
 
 // 'requestBy' represents the user that makes the friend addition of user 'addName'
 module.exports.addFriend = async (requestBy, addName) => {
-    const retObj = await findUserInUserDB(requestBy);
+    const retObj = await this.findUserInUserDB(requestBy);
     retObj.foundUser["friends"].push({name: addName})
     updateUserDBFile(retObj.userDB);
 }
 
 module.exports.addRatingToUser = async (username, movieDB_ID, rating, title) => {
-    const retObj = await findUserInUserDB(username);
+    const retObj = await this.findUserInUserDB(username);
     retObj.foundUser["moviePreferences"].push({
         movieID: parseInt(movieDB_ID), rating: parseInt(rating), title
     })
@@ -207,7 +186,7 @@ module.exports.addRatingToUser = async (username, movieDB_ID, rating, title) => 
 }
 
 module.exports.deleteAllRatingsForUser = async (username) => {
-    const retObj = await findUserInUserDB(username);
+    const retObj = await this.findUserInUserDB(username);
     retObj.foundUser["moviePreferences"] = [];
     updateUserDBFile(retObj.userDB);
     console.log(`${username} deleted their rated movies`);
@@ -215,13 +194,13 @@ module.exports.deleteAllRatingsForUser = async (username) => {
 }
 
 module.exports.getRatingsUserDB = async (username) => {
-    const retObj = await findUserInUserDB(username);
+    const retObj = await this.findUserInUserDB(username);
     if (retObj !== false) return retObj["foundUser"]["moviePreferences"];
     return false;
 }
 
 module.exports.removeRating = async (username, movieDB_ID) => {
-    const retObj = await findUserInUserDB(username);
+    const retObj = await this.findUserInUserDB(username);
     const foundMovie = retObj.foundUser["moviePreferences"].find(foundMovie => foundMovie.movieID == movieDB_ID);
     const index = retObj.foundUser["moviePreferences"].index(foundMovie);
     retObj.foundUser["moviePreferences"].splice(index, 1);

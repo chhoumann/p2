@@ -67,14 +67,14 @@ router.get('/createUser', urlencodedParser, async function (req, res) {
 
 router.get('/loginUsername', async (req, res) => {
     const data = req.query;
-    const user = await dataHandler.checkForUserInDB(data.username);
-    res.send(user);
+    const user = await dataHandler.findUserInUserDB(data.username);
+    user ? res.send(true) : res.send(false)
 });
 
 router.get('/addFriend', async (req, res) => {
     const data = req.query;
     // Validation - does the user exist?
-    const validateUsername = await dataHandler.checkForUserInDB(data.addName);
+    const validateUsername = await dataHandler.findUserInUserDB(data.addName);
     // If yes, add as friend and update DB file
     if (validateUsername) await dataHandler.addFriend(data.requestBy, data.addName);
     res.send({valid: validateUsername});
