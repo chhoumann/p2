@@ -113,4 +113,10 @@ router.get('/getRecommendations', async (req, res) => {
     res.send({rec: recommendations, ratings: numOfRatings});
 });
 
+router.get('/removeRating', async (req, res)=>{
+    const data = req.query;
+    const resp = await dataHandler.removeRating(data.username, data.movieDB_ID);
+    res.send({valid: resp});
+})
+
 module.exports = router;

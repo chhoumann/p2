@@ -12,7 +12,7 @@ module.exports.getGroupRatings = async function getGroupRatings(group) {
     const groupRatings = group.map(member => {
         const {moviePreferences} = userDB["users"].find((user => (user["username"].localeCompare(member)) == 0));
         return moviePreferences;
-    })
+    });
     return groupRatings;
 }
 
@@ -223,4 +223,13 @@ module.exports.getRatingsUserDB = async (username) => {
     const retObj = await findUserInUserDB(username);
     if (retObj !== false) return retObj["foundUser"]["moviePreferences"];
     return false;
+}
+
+module.exports.removeRating = async (username, movieDB_ID) => {
+    const retObj = await findUserInUserDB(username);
+    const foundMovie = retObj.foundUser["moviePreferences"].find(foundMovie => foundMovie.movieID == movieDB_ID);
+    const index = retObj.foundUser["moviePreferences"].index(foundMovie);
+    retObj.foundUser["moviePreferences"].splice(index, 1);
+    updateUserDBFile(retObj.user);
+    return true;
 }
