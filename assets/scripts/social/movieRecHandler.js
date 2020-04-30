@@ -49,7 +49,6 @@ let app = new Vue({
             this.clearUsernameField();
         },
         createNewUser: async function() {
-            // TODO: Error if less than 3 but more than 12 characters.
             const username = document.querySelector("#usernameField").value;
 
             if (username.length < 3 || username.length > 12) {
@@ -81,8 +80,9 @@ let app = new Vue({
             app.friendsList.push(buddy);
         },
         getMovieRec: async function(obj) {
+            this.movieCounter = 1;
+            // To prevent spam clicking
             obj.toElement.disabled = true;
-            this.allowChanges = true;
 
             // Clone selected list and append self
             const group = app.selectedList.map((member) => member.name);
@@ -90,24 +90,22 @@ let app = new Vue({
 
             // Send to server and get recommendations, and total number of ratings for the group
             const recommendationsForGroup = await axios.get('/getRecommendations', {params: { group }});
-            console.log(recommendationsForGroup);
             const {data} = recommendationsForGroup;
             
-            // If there are 0 ratings alert the user, and dont print any recommendations
+            // If there are 0 ratings alert the user, and don't print any recommendations
             // If there is is less than 5 total ratings, alert the user
             if(data.ratings === 0) sweetAlert('Error', `There are no ratings in your group. Please rate some movies to get a recommendation!`, 'error');
             else if(data.ratings < 5) sweetAlert('Info', `There is only a total of ${data.ratings} ratings in the group. We recommend to rate at least 5 movies pr. person, to get better recommendations`, 'info');
-
-            console.log(data.rec);
 
             // Append the posters to the page, only if there is enough ratings!
             if(data.ratings > 0) data.rec.forEach(rec => this.getPoster(rec));
 
             this.recommendations = data.rec;
+            // Allows to click button again
             obj.toElement.disabled = false;
         },
         getPoster: async function(rec) {
-            // Used to get the poster api via PRIVATE api key
+            // Used to get the poster api via PRIVATE (please don't use) api key
             const tmdbAPIURL = `https://api.themoviedb.org/3/movie/${rec.movieObj.tmdbId}?api_key=eced0a249b99903b17b0cf910c02c201`
             const {data: {poster_path}} = await axios.get(tmdbAPIURL);
             // Poster temp is set to a link with a variable posterpath
@@ -122,46 +120,28 @@ let app = new Vue({
             let poster = document.createElement("img");
             poster.style = "margin-bottom: 2rem"
             poster.src = poster_temp;
-            // Insert the posterelement
+            // Insert the poster element
             div.appendChild(header, div);
             div.appendChild(poster, div);
 
             this.movieCounter++;
-            if (this.movieCounter > 10) this.movieCounter = 1;
         }
     }
 });
 
-// Clear the poster-div of elements when the getMoviesButton is clicked.
-const getMoviesButton = document.getElementById("getMoviesButton");
-getMoviesButton.addEventListener('click', () => {
-    let div = document.querySelector("#poster-div");
-    div.innerHTML = '<br>';
-    if (div.textContent) div.textContent = '';
-})
 
-function fetchAndSetUsername() {
-    const username = localStorage.getItem('username');
-    if ( app.username !== username ) app.username = username;
-    return username;
-}
-
-// Fetch the friend list of logged-in user.
-async function fetchFriendsList(user) {
-    const response = await axios.get('/fetchFriends', {params: {user}});
-    const friendsList = response.data;
-    return friendsList;
-};
-
-// Uses Vue functionality to update list of friends on page.
-const updateFriendsListOnPage = async () => { app.friendsList = await fetchFriendsList(fetchAndSetUsername())};
 async function getFriendList() {
     const response = await axios.get('/fetchFriends', {params: { user: localStorage.getItem('username') }});
     app.friendsList = response["data"];
 }
 
 if(app.loggedIn) {
-    updateFriendsListOnPage();
     getFriendList();
+    // Clear the poster-div of elements when the getMoviesButton is clicked.
+    const getMoviesButton = document.getElementById("getMoviesButton");
+    getMoviesButton.addEventListener('click', () => {
+        let div = document.querySelector("#poster-div");
+        div.innerHTML = '<br>';
+        if (div.textContent) div.textContent = '';
+    })
 }
-
