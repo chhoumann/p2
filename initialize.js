@@ -21,7 +21,13 @@ const buildMoviesForRating = async () => {
     const MIN_RATINGS = 5;
 
     // Gets all movies from the database that complies with the demands
-    const topMovies = movieDB.filter(movie => movie["ratings"].length > MIN_RATINGS && movie.averageRating > RATINGS_THRESHOLD)
+    let topMovies = [];
+    movieDB.forEach(movie => {
+        if (movie["ratings"].length > MIN_RATINGS && movie.averageRating > RATINGS_THRESHOLD) {
+            const {title, movieId, averageRating, tmdbId, year} = movie;
+            topMovies.push({title, movieId, averageRating, tmdbId, year});
+        }
+    })
     
     utility.writeToFile(USER_MOVIES_FOR_RATING, topMovies);
     utility.successMessage('User Movies for ratings', 'now built');
