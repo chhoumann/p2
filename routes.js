@@ -44,6 +44,11 @@ router.get('/deleteAllRatings', async (req, res) => {
     res.send({valid: resp});
 })
 
+router.get('/removeRating', async (req, res)=>{
+    const data = req.query;
+    const resp = await dataHandler.removeRating(data.username, data.movieDB_ID);
+    res.send({data: resp});
+});
 router.get('/fetchRatedMoviesForUser', async (req, res) => {
     const data = req.query;
     const ratedMovies = await dataHandler.getRatingsUserDB(data.username);
@@ -103,10 +108,5 @@ router.get('/getRecommendations', async (req, res) => {
     res.send({rec: recommendations, ratings: numOfRatings});
 });
 
-router.get('/removeRating', async (req, res)=>{
-    const data = req.query;
-    const resp = await dataHandler.removeRating(data.username, data.movieDB_ID);
-    res.send({valid: resp});
-});
 
 module.exports = router;

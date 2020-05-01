@@ -200,10 +200,12 @@ module.exports.getRatingsUserDB = async (username) => {
 }
 
 module.exports.removeRating = async (username, movieDB_ID) => {
-    const retObj = await this.findUserInUserDB(username);
-    const foundMovie = retObj.foundUser["moviePreferences"].find(foundMovie => foundMovie.movieID == movieDB_ID);
-    const index = retObj.foundUser["moviePreferences"].index(foundMovie);
+    const retObj = await this.findUserInUserDB(username); 
+    console.log(movieDB_ID);
+    let foundMovie = retObj.foundUser["moviePreferences"].find(foundMovie => foundMovie.movieID == movieDB_ID);
+    console.log(foundMovie);
+    const index = retObj.foundUser["moviePreferences"].indexOf(foundMovie);
     retObj.foundUser["moviePreferences"].splice(index, 1);
-    updateUserDBFile(retObj.user);
+    updateUserDBFile(retObj.userDB);
     return true;
 }
