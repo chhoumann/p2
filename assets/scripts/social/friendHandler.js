@@ -94,6 +94,13 @@ let app = new Vue({
                 app.error = '';
             } else { app.error = 'No user with that name exists.'; }
         },
+        removeFriend: async function(friend) {
+            const {data:{valid}} = await axios.get('/removeFriend', {params: 
+                { username: localStorage.getItem('username'),
+                  friend: (friend.friends) }});
+                  this.updateFriendsListOnPage();
+        },
+
         // Fetch the friend list of logged-in user.
         fetchFriendsList: async function(user) {
             const response = await axios.get('/fetchFriends', {params: {user}});

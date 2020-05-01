@@ -69,7 +69,7 @@ let app = new Vue({
                     sweetAlert('Error', 'User could not be created.', 'error');
                 }
             }
-            
+        
         },
         deleteAllRatings: async function() {
             const valid = await axios.get('/deleteAllRatings', {params: { username: localStorage.getItem('username') }});
@@ -80,7 +80,7 @@ let app = new Vue({
                   { username: localStorage.getItem('username'),
                     movieDB_ID: parseInt(movie.movieID) }});
             this.buildPage();
-        },
+        }, 
         searchForMovie: function() {
             if (this.searchTerm === "") this.moviesFoundInSearch = [];
             const found = this.movieData.filter(movie => {

@@ -175,6 +175,14 @@ module.exports.addFriend = async (requestBy, addName) => {
     updateUserDBFile(retObj.userDB);
 }
 
+module.exports.removeFriend = async (username, friend) => {
+    const retObj = await this.findUserInUserDB(username);
+    let foundFriend = retObj.foundUser["friends"].find(foundFriend => foundFriend.friends == friend)
+    const index = retObj.foundUser["friends"].indexOf(foundFriend);
+    retObj.foundUser["friends"].splice(index, 1);
+    updateUserDBFile(retObj.userDB);
+}
+
 module.exports.addRatingToUser = async (username, movieDB_ID, rating, title) => {
     const retObj = await this.findUserInUserDB(username);
     retObj.foundUser["moviePreferences"].push({
@@ -201,9 +209,7 @@ module.exports.getRatingsUserDB = async (username) => {
 
 module.exports.removeRating = async (username, movieDB_ID) => {
     const retObj = await this.findUserInUserDB(username); 
-    console.log(movieDB_ID);
     let foundMovie = retObj.foundUser["moviePreferences"].find(foundMovie => foundMovie.movieID == movieDB_ID);
-    console.log(foundMovie);
     const index = retObj.foundUser["moviePreferences"].indexOf(foundMovie);
     retObj.foundUser["moviePreferences"].splice(index, 1);
     updateUserDBFile(retObj.userDB);

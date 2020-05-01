@@ -85,6 +85,12 @@ router.get('/addFriend', async (req, res) => {
     res.send({valid: validateUsername});
 });
 
+router.get('/removeFriend', async (req, res) => {
+    const data = req.query;
+     const usernameToRemove = await dataHandler.removeFriend(data.username, data.friend);
+    res.send({valid: usernameToRemove});
+});
+
 router.get('/fetchFriends', async (req, res) => {
     const username = req.query.user;
     const found = await dataHandler.getFriendsList(username);
