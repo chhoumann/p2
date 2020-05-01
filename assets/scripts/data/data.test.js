@@ -36,7 +36,7 @@ test('Loads rating data', async () => {
 // ---------- Testing dataHandler.js -------
 
 // Constants for testing.
-const USERS_IN_DB = 611; // Total of 610 users. First index in array is empty.
+const USERS_IN_DB = 610; // Total of 610 users. First index in array is empty.
 const USER_TO_TEST = 1;
 const USER_TO_TEST_HAS_X_RATINGS = 232;
 const USER_RATING_ID = 0;
@@ -69,11 +69,6 @@ test('Finds movie by ID 1', async () => {
     const {title} = dataHandler.findMovieByID(MOVIE_ID_TO_TEST, movieDB)
     
     expect(title).toBe('Toy Story (1995)');
-});
-
-test('User "Christian" exists in UserDB', async () => {
-    const foundStatus = await dataHandler.checkForUserInDB('Christian');
-    expect(foundStatus).toBe(true);
 });
 
 test('Gets friend list for user "Christian"', async () => {
