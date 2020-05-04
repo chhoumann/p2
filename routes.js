@@ -11,6 +11,19 @@ router.get('/', (req, res) => {
     res.render('index');
 });
 
+/* FOR MODELS */
+router.get('/models', (req, res) => {
+    res.render('models');
+});
+
+router.get('/getMovieDB', async (req, res) => {
+    const loadData = require('./assets/scripts/data/loadData');
+    const movieDB = await loadData.getMovieDB();
+    res.send(movieDB)
+})
+
+/* MODELS END */
+
 router.get('/movieRatings', (req, res) => {
     let movies;
 
