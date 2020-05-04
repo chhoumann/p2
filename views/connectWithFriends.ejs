@@ -52,7 +52,7 @@
                         <h1 class="title is-medium">Your friends</h1>
                         <div class="content is-medium" style="text-align: center;">
                             <div style="text-align: left; margin-left: 14rem;">
-                                <p class = "column" v-for="friend in friendsList">🤩 {{ friend.name }} <a class="column" @click=removeFriend(friend) > ❌</a> </p>
+                                <p class = "column" v-for="friend in friendsList">🤩 {{ friend.name }} <a @click=removeFriend(friend) style="text-align: right;">  ❌</a> </p>
                             </div>
                         </div>
                     </div>
