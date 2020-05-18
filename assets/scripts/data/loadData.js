@@ -6,7 +6,7 @@ const fs = require('fs').promises; // Used to read files.
 const utility = require('../../../utility'); // Using logging functions from Utility.
 const {performance} = require('perf_hooks'); // Used to time the reading of the file. 
 
-// PATHS & USER-COUNT
+// PATHS
 const MOVIES_CSV_PATH = './dataset/ml-latest-small/movies.csv';
 const LINKS_CSV_PATH = './dataset/ml-latest-small/links.csv';
 const RATINGS_CSV_PATH = './dataset/ml-latest-small/ratings.csv';

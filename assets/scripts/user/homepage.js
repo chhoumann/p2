@@ -36,7 +36,7 @@ let app = new Vue({
                 localStorage.setItem("loggedIn", true);
                 localStorage.setItem("username", username);
                 app.username = username;
-                this.buildPage(); // build page for new user
+                this.buildPage();
             } else {
                 sweetAlert('Error', `Login unsuccessful. Try again.`, 'error');
                 localStorage.setItem("loggedIn", false);
@@ -57,8 +57,10 @@ let app = new Vue({
         buildPage: () => {buildPage()},
         createNewUser: async function() {
             const username = document.querySelector("#usernameField").value;
+            const minUsernameLength = 3;
+            const maxUsernameLength = 12;
 
-            if (username.length < 3 || username.length > 12) {
+            if (username.length < minUsernameLength || username.length > maxUsernameLength) {
                 sweetAlert('Error', 'Could not create a user with entered username. Please make sure that it has between 3 - 12 characters.', 'info');
             } else {
                 const response = await axios.get('/createUser', {params: { username }});
@@ -211,6 +213,7 @@ function getMovie(){
             sweetAlert("Error", "Couldn't find any movies in that range. Try again.\nPerhaps try to search for the title.", "error");
             return;
         };
+        // Read the "to" and "from" fields related to requested movie year, and also check that the movie hasn't already been rated
         if (!(movie.year <= parseInt(app.to) && movie.year >= parseInt(app.from)) || checkIfAlreadyRated(movie)) {
             movie = getRandomMovie(app.movieData);
             checkConditions(++iterations);

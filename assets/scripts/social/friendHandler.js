@@ -57,8 +57,10 @@ let app = new Vue({
         },
         createNewUser: async function() {
             const username = document.querySelector("#usernameField").value;
+            const minUsernameLength = 3;
+            const maxUsernameLength = 12;
 
-            if (username.length < 3 || username.length > 12) {
+            if (username.length < minUsernameLength || username.length > maxUsernameLength) {
                 sweetAlert('Error', 'Could not create a user with entered username. Please make sure that it has between 3 - 12 characters.', 'info');
             } else {
                 const response = await axios.get('/createUser', {params: { username }});

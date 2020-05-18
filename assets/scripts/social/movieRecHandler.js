@@ -23,7 +23,7 @@ let app = new Vue({
             this.username = "";
             this.toggleLoggedInState();
         },
-        clearUsernameField: function() { document.querySelector("#usernameField").value = "" },
+        clearUsernameField: function() { document.querySelector("#usernameField") = "" },
         isLoggedIn: function() { return (localStorage.getItem('loggedIn') === 'true')},
         toggleLoggedInState: function() { app.loggedIn = this.isLoggedIn() },
         usernameCheckResponseHandler: function (response, username) {
@@ -50,10 +50,14 @@ let app = new Vue({
         },
         createNewUser: async function() {
             const username = document.querySelector("#usernameField").value;
+            const minUsernameLength = 3;
+            const maxUsernameLength = 12;
 
-            if (username.length < 3 || username.length > 12) {
+            // Client side 'verification' of username. We just picked these values
+            if (username.length < minUsernameLength || username.length > maxUsernameLength) {
                 sweetAlert('Error', 'Could not create a user with entered username. Please make sure that it has between 3 - 12 characters.', 'info');
             } else {
+                // If valid username format, send it to the server for user creation
                 const response = await axios.get('/createUser', {params: { username }});
                 if (response["data"].userCreated === true) {
                     sweetAlert('Success!', `Your user '${username}' has been created! Logging you in.`, 'success');
@@ -63,21 +67,22 @@ let app = new Vue({
                 }
             }
         },
-        addToGroup: function(buddy) {
-            if(app.selectedList.length < 4) {
-                if (!app.selectedList.includes(buddy)) {
-                    app.selectedList.push(buddy);
-                    const idx = app.friendsList.indexOf(buddy);
+        addToGroup: function(user) {
+            const maxGroupSize = 4;
+            if(app.selectedList.length < maxGroupSize) {
+                if (!app.selectedList.includes(user)) {
+                    app.selectedList.push(user);
+                    const idx = app.friendsList.indexOf(user);
                     app.friendsList.splice(idx, 1);
-                } else { sweetAlert('Error', `You can't add ${buddy.name} to your group more than once.`, 'error') }
+                } else { sweetAlert('Error', `You can't add ${user.name} to your group more than once.`, 'error') }
             } else {
                 sweetAlert('Error', `You can't add more than 4 members to the group.`, 'error')
             }
         },
-        removeFromGroup: function(buddy) {
-            const idx = app.selectedList.indexOf(buddy);
+        removeFromGroup: function(user) {
+            const idx = app.selectedList.indexOf(user);
             app.selectedList.splice(idx, 1);
-            app.friendsList.push(buddy);
+            app.friendsList.push(user);
         },
         getMovieRec: async function(obj) {
             this.movieCounter = 1;
