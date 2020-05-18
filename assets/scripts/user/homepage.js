@@ -28,6 +28,7 @@ let app = new Vue({
             this.username = "";
             this.toggleLoggedInState();
         },
+        // document.querySelector gets used alot in several files, but not necessary if Vue is utilised?
         clearUsernameField: function() { document.querySelector("#usernameField").value = "" },
         isLoggedIn: function() { return (localStorage.getItem('loggedIn') === 'true')},
         toggleLoggedInState: function() { app.loggedIn = this.isLoggedIn() },
