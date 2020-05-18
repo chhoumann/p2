@@ -23,7 +23,7 @@ let app = new Vue({
             this.username = "";
             this.toggleLoggedInState();
         },
-        clearUsernameField: function() { document.querySelector("#usernameField") = "" },
+        clearUsernameField: function() { document.querySelector("#usernameField").value = "" },
         isLoggedIn: function() { return (localStorage.getItem('loggedIn') === 'true')},
         toggleLoggedInState: function() { app.loggedIn = this.isLoggedIn() },
         usernameCheckResponseHandler: function (response, username) {
