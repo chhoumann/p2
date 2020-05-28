@@ -89,6 +89,7 @@ let app = new Vue({
             const found = this.movieData.filter(movie => {
                 return movie["title"].toLowerCase().includes((this.searchTerm).toLowerCase());
             })
+            // We want to limit the amount of search results that will get displayed
             if (found.length <= 5) {
                 this.moviesFoundInSearch = found;
             }
@@ -205,6 +206,7 @@ function checkIfAlreadyRated(movie) {
 }
 
 function getMovie(){
+    // Could run endless otherwise, if e.g. year 0 to 0 chosen
     const MAX_ITERATIONS_BEFORE_STOP = 150;
 
     let movie = getRandomMovie(app.movieData);
@@ -225,7 +227,6 @@ function getMovie(){
     return movie;
 }
 
-// Check if user is logged in
 async function buildPage(movieInput = false) {
     // Get movieData if it isn't already loaded
     if (app.movieData.length === 0) {
@@ -234,7 +235,7 @@ async function buildPage(movieInput = false) {
     
     // Makes it possible to give buildPage a preselected movie instead of a random one each time.
     const movie = movieInput ? movieInput : getMovie();
-
+    
     // Skip anything existing in ratedMovies
     const found = app.ratedMovies.find(ratedMovie => { ratedMovie.movieID == movie.movieId })
     if (found) buildPage();
@@ -252,4 +253,5 @@ async function buildPage(movieInput = false) {
     makeSubmitButton(movie);
 };
 
+// Check if user is logged in
 if (app.loggedIn) buildPage();
