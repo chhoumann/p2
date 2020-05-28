@@ -45,11 +45,12 @@ const buildRatingDB = async (noLog = false) => {
 // Function can be used for user-user or other expansion of program in future use 
 const buildMovieLensUserDatabase = async (ratingsDB, noLog = false) => {
     let startTime = performance.now();
-    let MovieLensUserDB = await dataHandler.buildMovieLensUserDB(ratingsDB);
-    if (noLog === false) utility.printTestAndTime("MovieLensUserDB", MovieLensUserDB, startTime);
-    return MovieLensUserDB;
+    let movieLensUserDB = await dataHandler.buildMovieLensUserDB(ratingsDB);
+    if (noLog === false) utility.printTestAndTime("MovieLensUserDB", movieLensUserDB, startTime);
+    return movieLensUserDB;
 };
 
+// Returns an object containing the built movieDB
 const buildMovieDB = async (ratingsDB, noLog = false) => {
     let startTime = performance.now();
     const movieDB = await loadData.getMovieData();
@@ -75,7 +76,7 @@ const buildMovieDB = async (ratingsDB, noLog = false) => {
     return movieDB;
 };
 
-// Creates a test group based on users from dataset.
+// Creates a test group based on users from movielens dataset
 const buildTestGroup = async (inputDB, noLog = false) => {
     let startTime = performance.now();
     // Gets 5 users from the movielens database for testing.
@@ -84,7 +85,7 @@ const buildTestGroup = async (inputDB, noLog = false) => {
     return testGroup;
 };
 
-// Builds the user database (actual users)
+// Builds the user database (our platform users)
 module.exports.buildUserDB = async (noLog = true) => {
     let startTime = performance.now();
     let userDB = await loadData.getUserDB();
@@ -93,8 +94,10 @@ module.exports.buildUserDB = async (noLog = true) => {
 };
 
 
-// Checks if it is necessary to build database & test group.
-// - Basically used for anything that should be loaded or written before the user interacts with the web application.
+// Checks if it is necessary to build database & test group
+// When the files exist there is no need to spend time rebuilding
+// The files checked are basically anything that should be loaded or
+// written before the user interacts with the web application
 module.exports.initializeDatabase = async () => {
     console.log(SEPARATOR);
     let db = {};

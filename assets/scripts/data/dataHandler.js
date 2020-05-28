@@ -25,7 +25,7 @@ module.exports.groupUsers = function groupUsers(fromArrayOfUsers, groupSize = 5,
     return tempGroup;
 }
 
-// Used to get the ratings for each individual user.
+// Used to get the ratings for each individual user
 // Used to build the movielensDB
 module.exports.getRatingsForUser = async function getRatingsForUser(userID, ratingsData) {
     let results = [];
@@ -120,7 +120,7 @@ const movieSearch = (movieDB, movieID) => {
   
     // While start index is less than or equal to end index
     while(startIndex <= endIndex) {
-      // Define middle index (this will change when comparing )
+      // Define middle index (this will change when comparing)
       let middleIndex = Math.floor((startIndex + endIndex) / 2);
   
       // Compare middle index with target for match
@@ -144,10 +144,12 @@ module.exports.findMovieByID = (movieID, movieDB) => {
 module.exports.formatUser = (req, currentUserAmount) => {
     const username = req.query.username;
     const id = currentUserAmount + 1;
+    // Create a new instance of the user with the id (current amount of users + 1) and requested username
     const user = new u.User(id, username);
     return user;
 }
 
+// Returns user from the userDB
 module.exports.findUserInUserDB = async (user) => {
     const userDB = (await loadData.getUserDB());
     const foundUser = userDB["users"].find(person => {
@@ -158,7 +160,7 @@ module.exports.findUserInUserDB = async (user) => {
     return retObj;
 }
 
-// If something user related is changed (added friend/rating) the userDB file is rewritten
+// If something user related is changed (added friend or a rating) the userDB file is rewritten
 const updateUserDBFile = async (newUserDB) => {
     const USER_DB_PATH = './db/dbOfUsers.json';
     utility.writeToFile(USER_DB_PATH, newUserDB)
