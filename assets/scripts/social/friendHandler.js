@@ -29,6 +29,7 @@ let app = new Vue({
             this.username = "";
             this.toggleLoggedInState();
         },
+        // document.queryselector is not nessecary because we are using vue
         clearUsernameField: function() { document.querySelector("#usernameField").value = "" },
         isLoggedIn: function() { return (localStorage.getItem('loggedIn') === 'true')},
         toggleLoggedInState: function() { app.loggedIn = this.isLoggedIn() },
@@ -44,6 +45,7 @@ let app = new Vue({
             }
             this.toggleLoggedInState();
         },
+        // not needed since we have login
         submitLogin: async function() {
             const usernameField = document.querySelector("#usernameField");
             const submittedUsername = usernameField.value;
@@ -64,7 +66,7 @@ let app = new Vue({
                 const response = await axios.get('/createUser', {params: { username }});
                 if (response["data"].userCreated === true) {
                     sweetAlert('Success!', `Your user '${username}' has been created! Logging you in.`, 'success');
-                    this.submitLogin();
+                    this.login();
                 } else {
                     sweetAlert('Error', 'User could not be created.', 'error');
                 }

@@ -1,4 +1,4 @@
-// Modules
+ // Modules
 const dataHandler = require('./assets/scripts/data/dataHandler');
 const loadData = require('./assets/scripts/data/loadData');
 const utility = require('./utility');
@@ -24,6 +24,7 @@ const buildMoviesForRating = async () => {
     let topMovies = [];
     movieDB.forEach(movie => {
         if (movie["ratings"].length > MIN_RATINGS && movie.averageRating > RATINGS_THRESHOLD) {
+            // Only some properties from movie are needed (object destructering)
             const {title, movieId, averageRating, tmdbId, year} = movie;
             topMovies.push({title, movieId, averageRating, tmdbId, year});
         }
@@ -52,6 +53,7 @@ const buildMovieLensUserDatabase = async (ratingsDB, noLog = false) => {
 const buildMovieDB = async (ratingsDB, noLog = false) => {
     let startTime = performance.now();
     const movieDB = await loadData.getMovieData();
+    // Links between movieDB an tmdb
     const links = await loadData.getLinkData();
     // Adds essential data to each movie entry in the database
     await movieDB.forEach(async movie => {
@@ -62,6 +64,7 @@ const buildMovieDB = async (ratingsDB, noLog = false) => {
         movie.tmdbId = movieLink.tmdbId;
         // Finds genres from movie and adds them to both and object and array (array is used in group recommendation system)
         movie.genres = dataHandler.getGenresFromMovie(movie);
+        // Makes sure all movies without a genre gets skipped
         if (movie["genres"]["genres"]["(no genres listed)"] === 1) {movie.skip = true} else {movie.skip = false};
         // Adds ratings given by datasets users
         movie.ratings = await dataHandler.getRatingsForMovieID(movie.movieId, ratingsDB);

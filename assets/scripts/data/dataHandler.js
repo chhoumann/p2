@@ -8,6 +8,7 @@ const GENRE_SEPARATOR = '|';
 // Makes a group from selected friends by the user
 module.exports.getGroupRatings = async function getGroupRatings(group) {
     const userDB = await loadData.getUserDB();
+    // Map runs through all members, (and therefore doesn't overwrite it) and stores it in an array of members moviepreferences
     const groupRatings = group.map(member => {
         const {moviePreferences} = userDB["users"].find((user => (user["username"].localeCompare(member)) == 0));
         return moviePreferences;
@@ -60,6 +61,7 @@ module.exports.buildMovieLensUserDB = async function buildMovieLensUserDB(rating
 module.exports.getRatingsForMovieID = async function getRatingsForMovieID(id, ratingsData) {
     let results = [];
     try {
+        // .filter() returns everything that holds true (array)
         results = ratingsData.filter(item => item.movieId === id);
     }
     catch(error) {
@@ -102,8 +104,9 @@ module.exports.getGenresFromMovie = function getGenresFromMovie(movieEntry) {
     // Each of the elements obtained through the splitting
     splitString.forEach(genre => {genres[genre]++; });
 
+    // Returns an array only with the values of each genre (0 if the movie does not have the genre, 1 if it does)
     let genreNumArray = Object.keys(genres).map((value) => {return genres[value]});
-    
+
     return {genres, genreNumArray};
 }
 

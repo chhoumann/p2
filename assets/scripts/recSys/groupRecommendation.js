@@ -19,10 +19,12 @@ module.exports.makeGroupRec = async function makeGroupRecommendations(group) {
     
     // Adds every movie that the user rated that is under the set threshold to a list of 'bad movies'
     R_G.forEach(member => { badMovieList.push(member[U_THRES]); });
-    badMovieList = utility.reduceArray(badMovieList);
+    badMovieList = utility.reduceArray(badMovieList);  // reduceArray merges multiple arrays into one
     
-    // Check if any aboveThreshold list includes any of the movies in the list of 'bad' movies:
+    // Check if any aboveThreshold list includes any of the movies in the list of 'bad' movies: (and removes them)
+    // DET ER FORKERT. badMovieList SKAL NEGERES (!)
     R_G.forEach(member => member[A_THRES].filter(entry => badMovieList.includes(entry)));
+
     const R_G_COR = findCorrelations(R_G, movieDB);
 
     return getFinalRec(R_G_COR, movieDB);
@@ -78,13 +80,13 @@ function getFinalRec(group, movieDB){
     // Since we are using the "+=" operator, we have to do the following - otherwise we will be trying to add a number to an undefined value.
     for(i = 0; i < movieDB.length; i++) {topArray[i] = 0};
     
-    
+    // collectedLength is no. of ratings?
     const collectedLength = sumCorr(group, topArray);
     
     topArray = topArray.map((correlation) => { return (correlation / collectedLength); });
     let resultArray = createResultArray(topArray);
-    // pushes an object containing correlation and movieID to the final array
     
+    // pushes an object containing correlation and movieID to the final array
     let corrValSorted = [];
     resultArray.forEach(id => {
         corrValSorted.push({ id, cor: topArray[id] })
@@ -115,10 +117,11 @@ function sumCorr(group, topArray){
             }); 
         });      
     });
+
     return collectedLength;
 }
 
-// Used to filter movies that have a rating of 2.5 or above and has been rated at least 3 times.
+// Used to filter movies that have a rating of 3 or above and has been rated at least 3 times.
 function filterBelowThreshold(entry) {
     if (entry["movie"].averageRating >= RATING_THRESHOLD && entry["movie"]["ratings"].length > 3) { return true } else {return false}
 }
@@ -137,7 +140,6 @@ function createResultArray(topArray){
         modifiableArray.splice(topMovies[i], 1, 0);
     }
     
-    // index might contain duplicates and therefore we make it to a set to remove duplicates, and then turn it back into the result array
     let resultArray = [];
     topMovies.forEach(index => resultArray.push(index));
     return resultArray;
